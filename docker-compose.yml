@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    ports:
+      - ${MYSQL_LOCAL_PORT}:${MYSQL_DOCKER_PORT}
+    volumes:
+      - db:/var/lib/mysql
+      - ./mysql:/docker-entrypoint-initdb.d:ro
+
+  webproxy:
+    image: nginx
+    environment:
+      - WEBAPP_PORT=${APP_DOCKER_PORT}
+      - HTTP_PORT=${NGINX_DOCKER_PORT}
+      - WWW_ROOT=${NGINX_WWW_ROOT}
+    volumes:
+      - storage:${NGINX_WWW_ROOT}
+      - ./nginx/snap-camera-categories-media:${NGINX_WWW_ROOT}/snap-camera-categories-media:ro
+      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./ssl/studio-app.snapchat.com.crt:/etc/ssl/certs/studio-app.snapchat.com.crt
+      - ./ssl/studio-app.snapchat.com.key:/etc/ssl/private/studio-app.snapchat.com.key
+    ports:
+      - ${NGINX_LOCAL_PORT}:${NGINX_DOCKER_PORT}
+      - 443:443
+
+  webapp:
+    build: .
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=${MYSQL_USER}
+      - DB_PASS=${MYSQL_ROOT_PASSWORD}
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_PORT=${MYSQL_DOCKER_PORT}
+      - PORT=${APP_DOCKER_PORT}
+      - STORAGE_SERVER=http://127.0.0.1:${NGINX_LOCAL_PORT}
+      - STORAGE_PATH=/var/lib/snapcamera
+    volumes:
+      - storage:/var/lib/snapcamera
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - ${APP_LOCAL_PORT}:${APP_DOCKER_PORT}
+    restart: on-failure
+    depends_on:
+      - mysql
+      - webproxy
+
+volumes:
+  storage:
+    name: server-storage
+  db:
+    name: mysql-db

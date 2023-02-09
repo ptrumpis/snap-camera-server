@@ -1,0 +1,8 @@
+.git
+mysql
+nginx
+node_modules
+ssl
+.env
+gencert.sh
+npm-debug.log

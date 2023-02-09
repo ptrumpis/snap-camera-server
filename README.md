@@ -1,55 +1,94 @@
-## Notice
-   As of January 26th, 2023 the domain Snap Camera normally uses is now offline. We will not be able to recovery any lenses that are missing, please do not create issues looking for lenses or messaging me about it. If I find a way to bring missing lenses I will make an update but as of now, we do not have the ability to do this. 
+## Information
+Host your own Snap Camera Lens server after the shutdown on January 25, 2023 and continue using Snap Camera by Snap Inc. as usual without restrictions.
 
-   If you do not have 1.21.0 installed for Windows you can search for the installer, be careful though some installers may have extra software packed in with them. You can check the installer is the original one from Snap Camera by uploading your installer to https://emn178.github.io/online-tools/md5_checksum.html, if you get an MD5 of anything other than ec0816368314db8a35ddf06784ffadfe I recommend finding site with the installer.
+The code is a fork of https://github.com/jaku/SnapCameraPreservation and has been changed for running your own local server with Docker. An S3 Storage solution is no longer required.
 
+By default `snapchatreverse.jaku.tv` is configured as relay server to download Snap Lenses.
+All files will be stored on your local machine inside a Docker Volume and you may disable the relay server at any time.
 
-# SnapCameraPreservation
-The purpose of this project is to allow users to still use and find snap chat lenses with the snap camera application after the Jan 25th, 2023 shutdown.
+### New Features & Improvements
+- Run your own server locally with Docker (no S3 Storage required)
+- Access, Browse and Backup all server files locally
+- Use *snapchatreverse.jaku.tv* or any other public server as relay for missing Snap Lenses
+- No patching or swapping .exe files, keep the original
+- Improved search functionality to find Snap Lenses easier
+  - Search by lens ID e.g. => *47655570879*
+  - Search by hash/UUID e.g. => *93776b3a994440c4b069b5c61ae352eb*
+  - Search by link share URL e.g. => *https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=b534a2ce946c4c87ac089e7abed05bc9&metadata=01*
+  - Search by creator name (automatically without special syntax) e.g. => *Snap Inc*
 
-This project uses a modified version of the 1.21.0 version of Snap Chat for Windows. Be sure to install that one before following the instructions on this page.
+### Requirements
+- Docker
+- OpenSSL (for .key and .crt file generation)
 
-# Instructions for PC
-Head over to https://snapchatreverse.jaku.tv/snap/ and make sure you have 1.21.0 installed. Provide the site the 1.21.0 version of "Snap Camera.exe" located at the default install location of "C:\Program Files\Snap Inc\Snap Camera". Do not patch the installer, this will not work if you patch the installer. Make sure the 1.21.0 PC patch file is selected on the site, and make sure you replace the original "Snap Camera.exe" file with the newly created patch file, you will need to remove/renme the original file and then rename the patched file to "Snap Camera.exe" when neither one is running.
+You can download [Docker Desktop](https://www.docker.com/products/docker-desktop/) from the offical website.
 
-If you have issues, make sure you don't have any adblock or things blocking the patch site and that you are patching the correct version. Additionally make sure that the original Snap Camera application is stopped and not running at all. I recommend checking your task manager and searching for "Snap Camera" and closing it there to be sure. If it is running you will not be able to replace it's file with mine.
+### Usage
+You need to complete the following 4 steps:
+- Configuration
+- Generating SSL Certificate
+- Importing Root Certificate
+- Starting Docker
 
-I cannot host the EXE due to possible copyrights but I can patch it if you provide the original exe.
+#### Configuration
+Make sure there is a file named `.env` in the directory. Just `.env` without a filename.
+If it is missing create a copy of the file `example.env` and name the copy `.env`.
 
-You'll know you are communicating with my server because a new category will be listed in the app called "Jaku Snap Backup".
+You can go with all default values and don't need to change anything unless your having problems with certain ports being occupied.
 
-If you see the above, go ahead and click on each of your saved lenses and activat them once to ensure they are backed up. After that you are free to sit back and relax.
+#### Generating SSL Certificate
+Snap Camera will refuse to connect to your local server if you don't have a trusted SSL certificate.
+You need to generate a .crt and .key file and have the .crt file installed as trusted root certificate on your operating system.
 
-# Instructions for Mac
-Patching the application similar to Windows does not work. The built-in security of MacOS is preventing modified binaries to run, and attempts to resign are failing. However another solution for MacOS users exists, it's not my favoriate approach, but it does work and is available for users.
+The required files can be generated with the included script `./gencert.sh` which will output:
+- ./ssl/studio-app.snapchat.com.crt
+- ./ssl/studio-app.snapchat.com.key
 
-Download the [studio-app.snapchat.com.crt.zip](https://github.com/jaku/SnapCameraPreservation/raw/main/studio-app.snapchat.com.zip) file in this repository, and extract it. You should now have a studio-app.snapchat.com.crt file, double-clicking it should open up your Keychain Manager, click on the login option on the left-hand side of the Keychain Manager, and then on the right-hand side click Certificates. You should see studio-app.snapchat.com listed with a red icon to the left of the name. Go ahead and right-click on this file and select "Get Info", click the Trust arrow at the top and for the option "When using this certificate" select "Always Trust", close this window and it should prompt you for your MacOS password.
+Docker compose expects these two files by default, otherwise the containers will not start.
 
-Almost done!
+#### Importing Root Certificate
+On Windows you can import the certificate in two differnt ways
+- By double-clicking the file and going through the pop up dialog (not recommended)
+- By simply executing a command called *certutil* (what I recommend)
 
-Open up terminal, you can type terminal into spotlight. Next you'll need to type this into the terminal ```echo "66.228.41.64    studio-app.snapchat.com" | sudo tee -a /etc/hosts```, it will prompt for your local computers password. But from there you should be all set.
+```bash
+certutil -addstore -enterprise Root ./ssl/studio-app.snapchat.com.crt
+```
 
-With that you can now close the terminal window and open Snap Camera, if everything works you should see "Jaku Snap Backup" as one of the categories.
+#### Starting Docker
+You may start the docker containers now with
+```bash
+docker compose up
+```
 
-# Unlock Lenses?
-**The below will no longer work now that they shutdown the servers.**
+Or run the docker containers in the background with
+```bash
+docker compose up -d
+```
 
-Since starting this project I learned that some lenses are not available in the search of Snap Camera and instead must be directly searched for by their URL in the search box. I'm happy to report that these also work on this project and as an extra bounus I made it so that you can use links like ``https://lens.snapchat.com/81f476238cf84615ba349efe82b36c27`` instead of the ``https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=81f476238cf84615ba349efe82b36c27&metadata=01`` style links. However at this time there are still some lenses that remain locked even when searching directly. I'm currently investigating that.
+### Connecting Snap Camera application to the server
 
-**The above will no longer work now that they shutdown the servers.**
+Patching the exe file may work, but I find it much easier to edit a line in a text file. This step is also easier to undo.
 
-# How does this work?
-I've modified the Snap Camera.exe (for Windows) to use my servers instead of the Snap Chat servers. This was done with a hex editor and 2 modifications were made. Instead of communicating with studio-app.snapchat.com it now communicates with snapchatreverse.jaku.tv.For Mac users we aren't changing the host but instead telling it that the hosts IP is something else and installing a self-signed certificate  By doing so my server then communicates to the Snap servers to get the lenses data as if you were accessing it directly and downloads the lenses to an S3 bucket on Amazon. 
+1. I suggest to edit your `/etc/hosts` file. For Windows users that file is located at `%SYSTEMROOT%\System32\drivers\etc\hosts`
 
-I then wrote a server that relays the information from the camera app to the snap chat servers (for now), which downloads the lenses separately and communicates back to the app in the way it expects.  
+2. Open the file as Administrator and add a single line to connect your Snap Camera application to the local server
+   ```hosts
+   127.0.0.1       studio-app.snapchat.com
+   ```
+   
+3. You can disable the connection anytime by placing a hash before the line
+   ```hosts
+   #127.0.0.1       studio-app.snapchat.com
+   ```
 
+### Additional Information
 
-# Where is the code?
-Server code can be found in the server folder. After being sick for way to long I finally got around to clearning it up from the pervious attempts. You can see how the server works by relaying the information from the Snap Chat servers for now. I also created a reference folder which contains all the known endpoints and their expected responses.
+I was able to reverse engineer the Snap Lens file format. The file format is now documented and open source.
 
-# Who are you and why are you doing this?
-I am Jaku. If you're familiar with the software on Twitch called Crowd Control then you're already familiar with some of my work as I run the company behind that. Or maybe you were an Animal Crossing fan and played in 2020 and used https://turnip.exchange, I along with another friend (Ross) built that. You can find more about me at https://about.me/jaku but overall I just like to build things and have been building things for Twitch streamers, gamers and others for over 7 years now. I have a background that allows for this sort of stuff, and I enjoy working on them. 
+I also provided an example Snap Lens File to Zip converter purely written in JavaScript. It will work on modern Browsers without installation or NodeJS.
 
+- https://github.com/ptrumpis/snap-lens-file-format
+- https://github.com/ptrumpis/snap-lens-file-extractor
 
-# I have more questions or comments.
-Feel free to submit an issue on Github with questions or message me on Twitter at https://twitter.com/jaku. 
+This conversion process is important because the Lens files are actually stored and served as zip archives on the server.

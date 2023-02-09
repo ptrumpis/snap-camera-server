@@ -1,4 +1,5 @@
-
-server/.env
-server/package-lock.json
-server/node_modules/*
+node_modules/
+ssl/studio-app.snapchat.com.crt
+ssl/studio-app.snapchat.com.key
+.env
+package-lock.json

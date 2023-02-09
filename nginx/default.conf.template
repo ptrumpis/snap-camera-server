@@ -1,0 +1,40 @@
+server {
+    listen *:${HTTP_PORT} default_server;
+    listen *:443 default_server ssl;
+
+    server_name studio-app.snapchat.com;
+
+    ssl_certificate /etc/ssl/certs/studio-app.snapchat.com.crt;
+    ssl_certificate_key /etc/ssl/private/studio-app.snapchat.com.key;
+
+    # redirect all API calls
+    location /vc/ {
+        proxy_pass http://webapp:${WEBAPP_PORT}/vc/;
+        proxy_redirect off;
+        proxy_http_version 1.1;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_set_header   X-Forwarded-Host $server_name;
+    }
+
+    # serve lens media
+    location / {
+        root ${WWW_ROOT};
+
+        sendfile on;
+        tcp_nopush on;
+
+        autoindex on;
+        autoindex_exact_size off;
+        autoindex_format html;
+        autoindex_localtime on;
+    }
+
+    # new snapcode url support
+    location = /web/deeplink/snapcode {
+        rewrite "^/web/deeplink/snapcode?data=([a-f0-9]{32]})&version=(\d+)&type=([a-z]{3})$" /web/deeplink/snapcode/$1.$3 break;
+        return 404;
+    }
+}
