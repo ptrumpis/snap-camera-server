@@ -1,4 +1,4 @@
-import express from 'express'
+import express from "express";
 import * as Util from '../utils/helper.js';
 import * as DB from '../utils/db.js';
 
@@ -16,13 +16,13 @@ router.get('/', async function (req, res, next) {
     } else if (Util.relay()) {
         let data = await Util.relayGetRequest(req.originalUrl);
         if (data && data['lens_id']) {
-            await DB.insertUnlock(data);
-            return res.json(Util.modifyResponseURLs(data));
+            DB.insertUnlock(data);
+
+            return res.json(data);
         }
     }
 
     return res.json({});
-
 });
 
 export default router;

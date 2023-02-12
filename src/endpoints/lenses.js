@@ -1,4 +1,4 @@
-import express from 'express'
+import express from "express";
 import * as Util from '../utils/helper.js';
 import * as DB from '../utils/db.js';
 
@@ -21,13 +21,18 @@ router.post('/', async function (req, res, next) {
     // always consider local results even if relay is activated
     if (lensIds.length > 1) {
         lenses = await DB.getMultipleLenses(lensIds);
-    } else {
-        lenses = await DB.getSingleLens(parseInt(lensIds[0]));
+    } else if (lensIds.length === 1) {
+        const id = parseInt(lensIds[0]);
+        lenses = await DB.getSingleLens(id);
     }
 
     if (lenses) {
+        lenses = Util.modifyResponseURLs(lenses);
+
+        // remove found lenses from id array
         for (var i = 0; i < lenses.length; i++) {
-            let index = lensIds.indexOf(parseInt(lenses[i].unlockable_id));
+            let unlockId = parseInt(lenses[i].unlockable_id);
+            let index = lensIds.indexOf(unlockId);
             if (index !== -1) {
                 lensIds.splice(index, 1);
             }
@@ -38,7 +43,7 @@ router.post('/', async function (req, res, next) {
     if (Util.relay() && lensIds.length) {
         let data = await Util.relayPostRequest(req.originalUrl, { "lenses": lensIds });
         if (data && data['lenses']) {
-            await DB.insertLens(data['lenses']);
+            DB.insertLens(data['lenses']);
 
             // merge with local results
             if (lenses) {
@@ -47,12 +52,6 @@ router.post('/', async function (req, res, next) {
                 lenses = data['lenses'];
             }
         }
-    }
-
-    if (lenses) {
-        lenses = Util.modifyResponseURLs(lenses);
-    } else {
-        lenses = [];
     }
 
     return res.json({

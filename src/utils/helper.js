@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import { Headers } from 'node-fetch';
 import * as dotenv from 'dotenv';
 import * as DB from './db.js';
+import * as Storage from './storage.js';
 
 dotenv.config()
 
@@ -14,6 +15,7 @@ const modifyServer = [
     'https://community-lens.storage.googleapis.com',
     'https://storage.googleapis.com',
     'https://app.snapchat.com',
+    'https://bolt-gcdn.sc-cdn.net',
     'https://s3.amazonaws.com',
 ];
 
@@ -90,11 +92,46 @@ async function relayPostRequest(path, body) {
     return {};
 }
 
-async function resolveUnlockableId(unlockable_id) {
-    const data = await relayGetRequest(`/vc/v1/explorer/unlock?uid=${unlockable_id}`);
-    if (data && data['lens_id']) {
-        await DB.insertUnlock(data);
+async function mirrorLens(lens) {
+    const result = await Storage.saveLens(lens);
+    if (result) {
+        DB.markLensAsMirrored(lens.unlockable_id);
     }
+    return result;
+}
+
+async function mirrorUnlock(lensId, lensUrl) {
+    const result = await Storage.saveUnlock(lensId, lensUrl);
+    if (result) {
+        DB.markUnlockAsMirrored(lensId);
+    }
+    return result;
+}
+
+async function getUnlockUrl(unlockable_id, forceMirror = false) {
+    let lens = await DB.getLensUnlock(unlockable_id);
+    if (lens && lens[0]) {
+        return lens[0].lens_url;
+    }
+
+    lens = await relayGetRequest(`/vc/v1/explorer/unlock?uid=${unlockable_id}`);
+    if (lens && lens['lens_id']) {
+        DB.insertUnlock(lens, forceMirror);
+        return lens.lens_url;
+    }
+
+    return '';
+}
+
+function extractUuidFromDeeplink(deeplink) {
+    if (typeof deeplink === "string" && deeplink.startsWith("https://www.snapchat.com/unlock/?")) {
+        let deeplinkURL = new URL(deeplink);
+        const regexExp = /^[a-f0-9]{32}$/gi;
+        if (regexExp.test(deeplinkURL.searchParams.get('uuid'))) {
+            return deeplinkURL.searchParams.get('uuid');
+        }
+    }
+    return '';
 }
 
 function modifyResponseURLs(orgResponse) {
@@ -115,4 +152,10 @@ function relay() {
     }
 }
 
-export { advancedSearch, relayGetRequest, relayPostRequest, resolveUnlockableId, modifyResponseURLs, relay };
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
+export { advancedSearch, relayGetRequest, relayPostRequest, mirrorLens, mirrorUnlock, getUnlockUrl, extractUuidFromDeeplink, modifyResponseURLs, relay, sleep };

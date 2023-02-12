@@ -1,4 +1,4 @@
-import express from 'express'
+import express from "express";
 import * as Util from '../utils/helper.js';
 import * as DB from '../utils/db.js';
 
@@ -15,17 +15,21 @@ router.post('/', async function (req, res, next) {
 
     // search local database
     let searchResults = await Util.advancedSearch(searchTerm);
+    if (searchResults) {
+        searchResults = Util.modifyResponseURLs(searchResults);
+    }
 
     if (relay) {
         let data = await Util.relayPostRequest(req.originalUrl, { "query": searchTerm });
         if (data && data['lenses']) {
-            // merge relay results with local results and remove duplicates
             if (searchResults) {
+                // collect all lens id's of local results to identify duplicates
                 let localLensIds = [];
                 for (var i = 0; i < searchResults.length; i++) {
                     localLensIds.push(searchResults[i].unlockable_id);
                 }
 
+                // remove duplicated local results from relay results
                 for (var j = 0; j < localLensIds.length; j++) {
                     let index = data['lenses'].indexOf(localLensIds[i]);
                     if (index !== -1) {
@@ -33,18 +37,15 @@ router.post('/', async function (req, res, next) {
                     }
                 }
 
+                // merge new relay search results with local
                 searchResults = searchResults.concat(data['lenses']);
+            } else {
+                searchResults = data['lenses'];
             }
 
-            // add newly found lenses to our database
-            await DB.insertLens(data['lenses']);
+            // add newly found lenses from relay to our database
+            DB.insertLens(data['lenses']);
         }
-    }
-
-    if (searchResults) {
-        searchResults = Util.modifyResponseURLs(searchResults);
-    } else {
-        searchResults = [];
     }
 
     return res.json({ "lenses": searchResults });

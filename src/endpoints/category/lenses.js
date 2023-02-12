@@ -1,6 +1,5 @@
-import express from 'express'
+import express from "express";
 import * as Util from '../../utils/helper.js';
-import * as DB from '../../utils/db.js';
 import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
@@ -29,7 +28,6 @@ router.get('/', async function (req, res, next) {
 		return res.json({});
 	}
 
-	await DB.insertLens(originalResponses[category]['lenses']);
 	return res.json(Util.modifyResponseURLs(originalResponses[category]));
 });
 

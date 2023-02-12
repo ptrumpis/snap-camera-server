@@ -1,16 +1,48 @@
-import path from "path"
+import path from "path";
 import fetch from "node-fetch";
 import * as dotenv from 'dotenv';
 import * as fs from "fs/promises";
-import * as DB from './db.js';
 
 dotenv.config()
 
 const storagePath = process.env.STORAGE_PATH;
 
+async function saveLens(lens) {
+    if (!lens) {
+        return false;
+    }
+
+    if (lens.icon_url) {
+        await savePNG(lens.icon_url);
+    }
+    if (lens.snapcode_url) {
+        await savePNG(lens.snapcode_url);
+    }
+    if (lens.thumbnail_media_url) {
+        await savePreviews(lens.thumbnail_media_url);
+    }
+    if (lens.thumbnail_media_poster_url) {
+        await savePreviews(lens.thumbnail_media_poster_url);
+    }
+    if (lens.standard_media_url) {
+        await savePreviews(lens.standard_media_url);
+    }
+    if (lens.standard_media_poster_url) {
+        await savePreviews(lens.standard_media_poster_url);
+    }
+    if (lens.image_sequence && lens.image_sequence?.size) {
+        let { url_pattern, size } = lens.image_sequence;
+        for (let i = 0; i < size; i++) {
+            await savePreviews(url_pattern.replace('%d', i));
+        }
+    }
+
+    return true;
+}
+
 async function savePreviews(url) {
     if (typeof url !== 'string' || !url.startsWith('http')) {
-        return;
+        return false;
     }
 
     try {
@@ -27,9 +59,10 @@ async function savePreviews(url) {
         // TODO: check mime-type instead
         if (!validExtensions.includes(ext)) {
             console.error("Unsupported Preview file extension", ext, "in URL", url);
-            return;
+            return false;
         }
 
+        // community-lens.storage.googleapis.com
         if (filePath.includes("/preview-media/thumbnail_seq")) {
             await downloadFile(previewUrl.toString(), filePath, fileName);
         } else if (filePath.endsWith('/preview-media/thumbnail_poster')) {
@@ -42,15 +75,19 @@ async function savePreviews(url) {
             await downloadFile(previewUrl.toString(), filePath, fileName);
         } else {
             console.error("Unsupported Preview path", filePath, "in URL", url);
+            return false;
         }
     } catch (e) {
         console.error("savePreviews error:", e, url);
+        return false;
     }
+
+    return true;
 }
 
 async function savePNG(url) {
     if (typeof url !== 'string' || !url.startsWith('http')) {
-        return;
+        return false;
     }
 
     try {
@@ -60,8 +97,14 @@ async function savePNG(url) {
 
         // preserve original filepath
         if (filePath.endsWith("/png")) {
+            // snapcodes.storage.googleapis.com
+            // lens-storage.storage.googleapis.com
+            await downloadFile(pngUrl.toString(), filePath, fileName);
+        } else if (filePath.endsWith("/3")) {
+            // bolt-gcdn.sc-cdn.net
             await downloadFile(pngUrl.toString(), filePath, fileName);
         } else if (filePath.startsWith("/web/deeplink") && fileName === "snapcode" && pngUrl.searchParams.has('data') && pngUrl.searchParams.has('type')) {
+            // app.snapchat.com
             filePath = filePath.concat("/snapcode");
             fileName = pngUrl.searchParams.get('data').concat('.png');
             const regUuid = /^[a-f0-9]{32}\.png$/gi;
@@ -69,18 +112,23 @@ async function savePNG(url) {
                 await downloadFile(pngUrl.toString(), filePath, fileName);
             } else {
                 console.error("Dynamic png URL parsing missmtach", url);
+                return false;
             }
         } else {
             console.error("Unsupported PNG path", filePath, "in URL", url);
+            return false;
         }
     } catch (e) {
         console.error("savePNG error:", e, url);
+        return false;
     }
+
+    return true;
 }
 
-async function saveLens(id, url) {
+async function saveUnlock(id, url) {
     if (typeof url !== 'string' || !url.startsWith('http')) {
-        return;
+        return false;
     }
 
     try {
@@ -91,38 +139,62 @@ async function saveLens(id, url) {
         // whitelist all paths for now
         if (filePath.startsWith("/") && fileName) {
             await downloadFile(lensUrl.toString(), filePath, fileName);
-            DB.markUnlockAsMirrored(id);
         } else {
             console.error("Unsupported Lens path", filePath, "in URL", url);
+            return false;
         }
     } catch (e) {
-        console.error("saveLens error:", e, url);
+        console.error("saveUnlock error:", e, url);
+        return false;
     }
+
+    return true;
 }
 
 async function downloadFile(targetUrl, subDirectory, fileName) {
     const dir = storagePath.concat(path.normalize(subDirectory));
     const newFile = `${dir}/${fileName}`;
 
+    if (await isFile(newFile)) {
+        return false;
+    }
+
     const dirExists = await isDirectory(dir);
     if (!dirExists) {
         await fs.mkdir(dir, { recursive: true });
     }
 
-    //console.log("Downloading", targetUrl);
+    console.log("Downloading", targetUrl);
 
-    const response = await fetch(targetUrl);
-    const buffer = await response.buffer();
-    return await fs.writeFile(newFile, buffer);
+    try {
+        const response = await fetch(targetUrl);
+        const buffer = await response.buffer();
+        await fs.writeFile(newFile, buffer);
+    } catch (e) {
+        console.error("downloadFile error:", e, targetUrl);
+        return false;
+    }
+
+    return true;
 }
 
-async function isDirectory(path) {
-    const result = await fs.stat(path).catch(err => {
+async function isFile(filePath) {
+    const result = await pathStat(filePath);
+    return !result ? result : result.isFile();
+}
+
+async function isDirectory(filePath) {
+    const result = await pathStat(filePath);
+    return !result ? result : result.isDirectory();
+}
+
+async function pathStat(filePath) {
+    const result = await fs.stat(filePath).catch(err => {
         if (err) {
             return false;
         }
     });
-    return !result ? result : result.isDirectory();
+    return result;
 }
 
-export { saveLens, savePNG, savePreviews };
+export { saveLens, saveUnlock };

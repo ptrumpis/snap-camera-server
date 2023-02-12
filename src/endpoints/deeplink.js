@@ -1,4 +1,4 @@
-import express from 'express'
+import express from "express";
 import * as Util from '../utils/helper.js';
 import * as DB from '../utils/db.js';
 
@@ -19,8 +19,8 @@ router.post('/', async function (req, res, next) {
     } else if (Util.relay()) {
         let data = await Util.relayPostRequest(req.originalUrl, { "deeplink": searchUrl });
         if (data && data['lenses']) {
-            await DB.insertLens(data['lenses']);
-            return res.json(Util.modifyResponseURLs(data));
+            DB.insertLens(data['lenses']);
+            return res.json(data);
         }
     }
 

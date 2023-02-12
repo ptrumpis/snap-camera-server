@@ -1,14 +1,15 @@
 {
   "type": "module",
   "name": "snap-camera-server",
-  "version": "1.21.0",
+  "version": "2.0.0",
   "description": "Host your own Snap Camera private server",
   "keywords": [
     "snapchat",
     "snapcamera",
     "snap",
     "lens",
-    "server"
+    "server",
+    "docker"
   ],
   "main": "server.js",
   "scripts": {

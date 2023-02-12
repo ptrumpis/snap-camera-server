@@ -1,0 +1,50 @@
+</div>
+</div>
+</body>
+  <script type="text/javascript">
+    var pathElement = document.querySelector('#listing h1');
+    pathElement.className = 'listing';
+
+    var pathName = pathElement.innerHTML;
+    pathName = pathName.replace('Index of ', '');
+    pathElement.innerHTML = pathName;
+
+    var fileCount = 0
+      ,dirCount = 0
+      ,dirStatElem = document.getElementById('dir-stats')
+      ,fileStatElem = document.getElementById('file-stats')
+    ;
+
+    var allLinks = document.getElementsByTagName('a');
+    for (let item of allLinks){
+      if (item.innerHTML != "../"){
+        if (item.innerHTML.endsWith('/')){
+          dirCount += 1;
+        }
+        else {
+          fileCount += 1;
+        }
+      }
+      item.className = "link-icon";
+    }
+
+    var parentFolderElement = document.querySelector("a[href='../']");
+    parentFolderElement.className = "folderup";
+    parentFolderElement.innerHTML = "&#8682; Up";
+
+    if (dirCount == 1){
+      dirStatElem.innerHTML = dirCount + " directory";
+    }
+    else {
+      dirStatElem.innerHTML = dirCount + " directories";
+    }
+
+    if (fileCount == 1){
+      fileStatElem.innerHTML = fileCount + " file";
+    }
+    else {
+      fileStatElem.innerHTML = fileCount + " files";
+    }
+
+  </script>
+</html>

@@ -12,6 +12,16 @@ services:
       - db:/var/lib/mysql
       - ./mysql:/docker-entrypoint-initdb.d:ro
 
+  adminer:
+    image: adminer
+    environment:
+      - ADMINER_DEFAULT_SERVER=mysql
+      - ADMINER_DESIGN=${ADMINER_DESIGN}
+    ports:
+      - ${ADMINER_LOCAL_PORT}:${ADMINER_DOCKER_PORT}
+    depends_on:
+      - mysql
+
   webproxy:
     image: nginx
     environment:
@@ -21,12 +31,17 @@ services:
     volumes:
       - storage:${NGINX_WWW_ROOT}
       - ./nginx/snap-camera-categories-media:${NGINX_WWW_ROOT}/snap-camera-categories-media:ro
+      - ./nginx/snap-camera-media:${NGINX_WWW_ROOT}/snap-camera-media:ro
       - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./nginx/theme:/etc/nginx/theme:ro
       - ./ssl/studio-app.snapchat.com.crt:/etc/ssl/certs/studio-app.snapchat.com.crt
       - ./ssl/studio-app.snapchat.com.key:/etc/ssl/private/studio-app.snapchat.com.key
+      - ./import/:/${NGINX_WWW_ROOT}/import
     ports:
       - ${NGINX_LOCAL_PORT}:${NGINX_DOCKER_PORT}
       - 443:443
+    depends_on:
+      - webapp
 
   webapp:
     build: .
@@ -42,16 +57,16 @@ services:
     volumes:
       - storage:/var/lib/snapcamera
       - ./:/usr/src/app
-      - /usr/src/app/node_modules
+      - modules:/usr/src/app/node_modules
     ports:
       - ${APP_LOCAL_PORT}:${APP_DOCKER_PORT}
-    restart: on-failure
     depends_on:
       - mysql
-      - webproxy
 
 volumes:
   storage:
     name: server-storage
   db:
     name: mysql-db
+  modules:
+    name: node-modules

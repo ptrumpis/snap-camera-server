@@ -1,7 +1,6 @@
 import mysql from "mysql2";
 import * as dotenv from 'dotenv';
 import * as Util from './helper.js';
-import * as Storage from './storage.js';
 
 dotenv.config()
 
@@ -77,7 +76,7 @@ function getMultipleLenses(lenses) {
 				if (err) {
 					console.error(err, lenses);
 				}
-				resolve();
+				resolve([]);
 			}
 		})
 	});
@@ -94,7 +93,7 @@ function getSingleLens(lensID) {
 				if (err) {
 					console.error(err, lensID);
 				}
-				resolve();
+				resolve([]);
 			}
 		});
 	});
@@ -111,37 +110,38 @@ function getLensUnlock(lensID) {
 				if (err) {
 					console.error(err, lensID);
 				}
-				resolve();
+				resolve([]);
 			}
 		});
 	});
 }
 
-async function insertLens(lenses, report) {
-	lenses.forEach(async function (lens, index) {
+async function insertLens(lenses, forceMirror = false) {
+	if (!Array.isArray(lenses)) {
+		console.error("Invalid argument, expected array");
+		return;
+	}
 
+	lenses.forEach(function (lens, index) {
 		let { unlockable_id, snapcode_url, user_display_name, lens_name, lens_status, deeplink, icon_url, thumbnail_media_url,
 			thumbnail_media_poster_url, standard_media_url, standard_media_poster_url, obfuscated_user_slug, image_sequence } = lens;
 
-		if (!image_sequence) image_sequence = {};
+		if (!lens_status) lens_status = "Live";
+		if (!snapcode_url) snapcode_url = "";
+		if (!deeplink) deeplink = "";
+		if (!icon_url) icon_url = "";
 		if (!thumbnail_media_url) thumbnail_media_url = "";
 		if (!thumbnail_media_poster_url) thumbnail_media_poster_url = "";
-		if (!obfuscated_user_slug) obfuscated_user_slug = "";
-		if (!standard_media_poster_url) standard_media_poster_url = "";
 		if (!standard_media_url) standard_media_url = "";
+		if (!standard_media_poster_url) standard_media_poster_url = "";
+		if (!obfuscated_user_slug) obfuscated_user_slug = "";
+		if (!image_sequence) image_sequence = {};
 
-		// extract and save UUID separately
-		let uuid = "";
-		if (deeplink && deeplink.startsWith("https://www.snapchat.com/unlock/?")) {
-			let deeplinkURL = new URL(deeplink);
-			const regexExp = /^[a-f0-9]{32}$/gi;
-			if (regexExp.test(deeplinkURL.searchParams.get('uuid'))) {
-				uuid = deeplinkURL.searchParams.get('uuid');
-			}
-		}
+		// uuid is not part of the original data structure
+		let uuid = Util.extractUuidFromDeeplink(deeplink);
 
-		//requests the unlock URL with the unlockable_id to get more info on the lens
-		Util.resolveUnlockableId(unlockable_id);
+		// will trigger insertUnlock if unlock data is present on relay but not locally
+		Util.getUnlockUrl(unlockable_id, forceMirror);
 
 		return new Promise(resolve => {
 			// rebuild the passed object manually
@@ -163,52 +163,25 @@ async function insertLens(lenses, report) {
 				image_sequence: JSON.stringify(image_sequence)
 			};
 
-			connection.query(`INSERT INTO lenses SET ?`, args, function (err, results) {
-				if (err && err.code !== "ER_DUP_ENTRY") {
-					console.log(err, unlockable_id, lens_name);
-
-					if (report) { //if report argument is true, we will resave the PNGs/previews 
-						Storage.savePNG(icon_url);
-						Storage.savePNG(snapcode_url);
-						Storage.savePreviews(thumbnail_media_url);
-						Storage.savePreviews(thumbnail_media_poster_url);
-						Storage.savePreviews(standard_media_url);
-						Storage.savePreviews(standard_media_poster_url);
-
-						if (image_sequence && image_sequence?.size) {
-							let { url_pattern, size } = image_sequence;
-							for (let i = 0; i < size; i++) {
-								Storage.savePreviews(url_pattern.replace('%d', i));
-							}
-						}
+			try {
+				connection.query(`INSERT INTO lenses SET ?`, args, async function (err, results) {
+					if (!err) {
+						await Util.mirrorLens(args);
+						console.log("Saved Lens:", unlockable_id);
+					} else if (err.code !== "ER_DUP_ENTRY") {
+						console.log(err, unlockable_id, lens_name);
+					} else if (forceMirror) {
+						await Util.mirrorLens(lens);
 					}
-				}
-
-				if (!err) {
-					Storage.savePNG(icon_url);
-					Storage.savePNG(snapcode_url);
-					Storage.savePreviews(thumbnail_media_url);
-					Storage.savePreviews(thumbnail_media_poster_url);
-					Storage.savePreviews(standard_media_url);
-					Storage.savePreviews(standard_media_poster_url);
-
-					//this is frames of the video as jpg, so we need to back up each frame...
-					if (image_sequence && image_sequence?.size) {
-						let { url_pattern, size } = image_sequence;
-						for (let i = 0; i < size; i++) {
-							Storage.savePreviews(url_pattern.replace('%d', i));
-						}
-					}
-
-					console.log("Saved Meta:", unlockable_id);
-					connection.query(`UPDATE lenses SET mirrored=1 WHERE unlockable_id=?`, [unlockable_id]);
-				}
-			});
+				});
+			} catch (e) {
+				console.log(e);
+			}
 		});
 	});
 }
 
-async function insertUnlock(lens) {
+async function insertUnlock(lens, forceMirror = false) {
 	let { lens_id, lens_url, signature, hint_id, additional_hint_ids } = lens;
 
 	if (!additional_hint_ids) additional_hint_ids = {};
@@ -226,20 +199,29 @@ async function insertUnlock(lens) {
 			additional_hint_ids: JSON.stringify(additional_hint_ids)
 		};
 
-		connection.query(`INSERT INTO unlocks SET ?`, args, function (err, results) {
-			if (err && err.code !== "ER_DUP_ENTRY") {
-				console.log(err, lens_id);
-			}
-			if (!err) {
-				Storage.saveLens(lens_id, lens_url);
-				console.log('Unlocked Lens:', lens_id);
-			}
-		});
+		try {
+			connection.query(`INSERT INTO unlocks SET ?`, args, async function (err, results) {
+				if (!err) {
+					await Util.mirrorUnlock(lens_id, lens_url);
+					console.log('Unlocked Lens:', lens_id);
+				} else if (err.code !== "ER_DUP_ENTRY") {
+					console.log(err, lens_id);
+				} else if (forceMirror) {
+					await Util.mirrorLens(lens);
+				}
+			});
+		} catch (e) {
+			console.log(e);
+		}
 	});
+}
+
+function markLensAsMirrored(id) {
+	connection.query(`UPDATE lenses SET mirrored=1 WHERE unlockable_id=?`, [id]);
 }
 
 function markUnlockAsMirrored(id) {
 	connection.query(`UPDATE unlocks SET mirrored=1 WHERE lens_id=?`, [id]);
 }
 
-export { searchLensByName, searchLensById, searchLensByUuid, getMultipleLenses, getSingleLens, getLensUnlock, insertLens, insertUnlock, markUnlockAsMirrored };
+export { searchLensByName, searchLensById, searchLensByUuid, getMultipleLenses, getSingleLens, getLensUnlock, insertLens, insertUnlock, markLensAsMirrored, markUnlockAsMirrored };
