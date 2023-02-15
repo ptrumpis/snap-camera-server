@@ -17,7 +17,7 @@ All files will be stored on your local machine inside a Docker Volume and you ma
 - **[New]** Improved search functionality to find Snap Lenses easier
   - Search by lens ID e.g. => *47655570879*
   - Search by hash/UUID e.g. => *93776b3a994440c4b069b5c61ae352eb*
-  - Search by link share URL e.g. => *https​:​//www.​snapchat.​com/unlock/?type=SNAPCODE&uuid=b534a2ce946c4c87ac089e7abed05bc9&metadata=01*
+  - Search by link share URL e.g. => *https​:​//www​.​snapchat​.​com/unlock/?type=SNAPCODE&uuid=b534a2ce946c4c87ac089e7abed05bc9&metadata=01*
   - Search by creator name (automatically without special syntax) e.g. => *Snap Inc*
   - Search by custom hashtags e.g. => #funny, #makeup
 
@@ -97,8 +97,9 @@ Patching the exe file may work, but I find it much easier to edit a line in a te
 - New import API to add missing lenses from your own application cache
 - New editable media file templates for lens customization
 - Adminer docker image is now included to edit lens information easily
+- Changed database schema to include tags for lenses
 - New nginx server theme to browse stored files easily
-- Featured, top and category lenses will be auto downloaded right after server.
+- Featured, top and category lenses will be auto downloaded right after server start
 - Reworked code and performance optimizations
 - Some Bug fixes
 
