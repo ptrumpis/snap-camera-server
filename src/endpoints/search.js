@@ -15,14 +15,14 @@ router.post('/', async function (req, res, next) {
 
     // search local database
     let searchResults = await Util.advancedSearch(searchTerm);
-    if (searchResults) {
+    if (searchResults && searchResults.length) {
         searchResults = Util.modifyResponseURLs(searchResults);
     }
 
     if (relay) {
         let data = await Util.relayPostRequest(req.originalUrl, { "query": searchTerm });
         if (data && data['lenses']) {
-            if (searchResults) {
+            if (searchResults && searchResults.length) {
                 // collect all lens id's of local results to identify duplicates
                 let localLensIds = [];
                 for (var i = 0; i < searchResults.length; i++) {

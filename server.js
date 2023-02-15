@@ -16,7 +16,7 @@ import wildcard from './src/endpoints/wildcard.js';
 import * as init from './src/utils/init.js';
 import * as dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 
 const serverPort = process.env.PORT;
 const enableCacheImport = process.env.ENABLE_CACHE_IMPORT;
@@ -34,12 +34,11 @@ app.use('/vc/v1/explorer/deeplink_search', deeplink);
 app.use('/vc/v1/reporting/lens', reporting);
 app.use('/vc/v1/update/latest', latest);
 app.use('/vc/v1/update/download', download);
-app.use('/vc/v1', v1);
-app.use('*', wildcard);
-
 if (enableCacheImport.toLowerCase() == 'true' || enableCacheImport == 1) {
 	app.use('/vc/v1/import/cache', importCache);
 }
+app.use('/vc/v1', v1);
+app.use('*', wildcard);
 
 app.listen(serverPort, () => {
 	console.log(`Snap Camera Server is running on port ${serverPort}`);

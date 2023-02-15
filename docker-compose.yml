@@ -29,14 +29,15 @@ services:
       - HTTP_PORT=${NGINX_DOCKER_PORT}
       - WWW_ROOT=${NGINX_WWW_ROOT}
     volumes:
-      - storage:${NGINX_WWW_ROOT}
-      - ./nginx/snap-camera-categories-media:${NGINX_WWW_ROOT}/snap-camera-categories-media:ro
-      - ./nginx/snap-camera-media:${NGINX_WWW_ROOT}/snap-camera-media:ro
+      - ./ssl/studio-app.snapchat.com.crt:/etc/ssl/certs/studio-app.snapchat.com.crt:ro
+      - ./ssl/studio-app.snapchat.com.key:/etc/ssl/private/studio-app.snapchat.com.key:ro
       - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
       - ./nginx/theme:/etc/nginx/theme:ro
-      - ./ssl/studio-app.snapchat.com.crt:/etc/ssl/certs/studio-app.snapchat.com.crt
-      - ./ssl/studio-app.snapchat.com.key:/etc/ssl/private/studio-app.snapchat.com.key
-      - ./import/:/${NGINX_WWW_ROOT}/import
+      - ./nginx/snap-camera-categories-media:${NGINX_WWW_ROOT}/snap-camera-categories-media:ro
+      - ./nginx/snap-camera-media:${NGINX_WWW_ROOT}/snap-camera-media:ro
+      - ./nginx/snap-camera-media-alt:${NGINX_WWW_ROOT}/snap-camera-media-alt:ro
+      - ./import:${NGINX_WWW_ROOT}/import
+      - storage:${NGINX_WWW_ROOT}
     ports:
       - ${NGINX_LOCAL_PORT}:${NGINX_DOCKER_PORT}
       - 443:443
@@ -54,10 +55,16 @@ services:
       - PORT=${APP_DOCKER_PORT}
       - STORAGE_SERVER=http://127.0.0.1:${NGINX_LOCAL_PORT}
       - STORAGE_PATH=/var/lib/snapcamera
+      - IMPORT_DIR=import
+      - MEDIA_DIR=snap-camera-media
+      - MEDIA_DIR_ALT=snap-camera-media-alt
     volumes:
-      - storage:/var/lib/snapcamera
+      # content of snap-camera-media (MEDIA_DIR) is not getting included automatically through storage
+      - ./nginx/snap-camera-media:/var/lib/snapcamera/snap-camera-media:ro
+      - ./import:/var/lib/snapcamera/import
       - ./:/usr/src/app
       - modules:/usr/src/app/node_modules
+      - storage:/var/lib/snapcamera
     ports:
       - ${APP_LOCAL_PORT}:${APP_DOCKER_PORT}
     depends_on:

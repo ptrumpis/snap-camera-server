@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `lenses` (
   `snapcode_url` varchar(300) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `user_display_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `lens_name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `lens_tags` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `lens_status` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Live',
   `deeplink` varchar(300) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `icon_url` varchar(300) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',

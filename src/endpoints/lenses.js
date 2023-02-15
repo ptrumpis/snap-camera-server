@@ -16,7 +16,7 @@ router.post('/', async function (req, res, next) {
     }
 
     let lensIds = req.body['lenses'];
-    let lenses;
+    let lenses = [];
 
     // always consider local results even if relay is activated
     if (lensIds.length > 1) {
@@ -26,7 +26,7 @@ router.post('/', async function (req, res, next) {
         lenses = await DB.getSingleLens(id);
     }
 
-    if (lenses) {
+    if (lenses && lenses.length) {
         lenses = Util.modifyResponseURLs(lenses);
 
         // remove found lenses from id array
@@ -46,7 +46,7 @@ router.post('/', async function (req, res, next) {
             DB.insertLens(data['lenses']);
 
             // merge with local results
-            if (lenses) {
+            if (lenses && lenses.length) {
                 lenses = lenses.concat(data['lenses']);
             } else {
                 lenses = data['lenses'];

@@ -14,7 +14,7 @@ router.post('/', async function (req, res, next) {
     // search local database
     const searchResults = await Util.advancedSearch(searchUrl);
 
-    if (searchResults) {
+    if (searchResults && searchResults.length) {
         return res.json({ "lenses": Util.modifyResponseURLs(searchResults) });
     } else if (Util.relay()) {
         let data = await Util.relayPostRequest(req.originalUrl, { "deeplink": searchUrl });

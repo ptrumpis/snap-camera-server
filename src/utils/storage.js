@@ -3,9 +3,10 @@ import fetch from "node-fetch";
 import * as dotenv from 'dotenv';
 import * as fs from "fs/promises";
 
-dotenv.config()
+dotenv.config();
 
 const storagePath = process.env.STORAGE_PATH;
+const storageServer = process.env.STORAGE_SERVER;
 
 async function saveLens(lens) {
     if (!lens) {
@@ -41,7 +42,7 @@ async function saveLens(lens) {
 }
 
 async function savePreviews(url) {
-    if (typeof url !== 'string' || !url.startsWith('http')) {
+    if (typeof url !== 'string' || !url.startsWith('http') || url.startsWith(storageServer)) {
         return false;
     }
 
@@ -86,16 +87,17 @@ async function savePreviews(url) {
 }
 
 async function savePNG(url) {
-    if (typeof url !== 'string' || !url.startsWith('http')) {
+    if (typeof url !== 'string' || !url.startsWith('http') || url.startsWith(storageServer)) {
         return false;
     }
 
     try {
         let pngUrl = new URL(url);
+
+        // preserve original filepath
         let filePath = path.normalize(path.dirname(pngUrl.pathname));
         let fileName = path.basename(pngUrl.pathname);
 
-        // preserve original filepath
         if (filePath.endsWith("/png")) {
             // snapcodes.storage.googleapis.com
             // lens-storage.storage.googleapis.com
@@ -127,7 +129,7 @@ async function savePNG(url) {
 }
 
 async function saveUnlock(id, url) {
-    if (typeof url !== 'string' || !url.startsWith('http')) {
+    if (typeof url !== 'string' || !url.startsWith('http') || url.startsWith(storageServer)) {
         return false;
     }
 
@@ -179,16 +181,16 @@ async function downloadFile(targetUrl, subDirectory, fileName) {
 }
 
 async function isFile(filePath) {
-    const result = await pathStat(filePath);
+    const result = await fileStat(filePath);
     return !result ? result : result.isFile();
 }
 
 async function isDirectory(filePath) {
-    const result = await pathStat(filePath);
+    const result = await fileStat(filePath);
     return !result ? result : result.isDirectory();
 }
 
-async function pathStat(filePath) {
+async function fileStat(filePath) {
     const result = await fs.stat(filePath).catch(err => {
         if (err) {
             return false;
@@ -197,4 +199,4 @@ async function pathStat(filePath) {
     return result;
 }
 
-export { saveLens, saveUnlock };
+export { saveLens, saveUnlock, isFile, isDirectory, fileStat };

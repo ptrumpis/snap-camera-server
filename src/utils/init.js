@@ -28,7 +28,7 @@ const staticLenses = [
 async function loadStaticLenses() {
     for (let i = 0; i < staticLenses.length; i++) {
         await DB.insertLens(staticLenses[i]["lenses"], true);
-        Util.sleep(1500);
+        await Util.sleep(5000);
     }
     return true;
 }

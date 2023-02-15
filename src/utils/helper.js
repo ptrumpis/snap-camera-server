@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 import * as DB from './db.js';
 import * as Storage from './storage.js';
 
-dotenv.config()
+dotenv.config();
 
 const relayServer = process.env.RELAY_SERVER;
 const storageServer = process.env.STORAGE_SERVER;
@@ -19,12 +19,11 @@ const modifyServer = [
     'https://s3.amazonaws.com',
 ];
 
-const snapHeaders = {
+const headers = new Headers({
     'User-Agent': 'SnapCamera/1.21.0.0 (Windows 10 Version 2009)',
     'Content-Type': 'application/json',
     'X-Installation-Id': 'default'
-};
-const headers = new Headers(snapHeaders);
+});
 
 async function advancedSearch(searchTerm) {
     try {
@@ -50,6 +49,14 @@ async function advancedSearch(searchTerm) {
     const regLensId = /^[0-9]{10,12}$/gi;
     if (regLensId.test(searchTerm)) {
         return await DB.searchLensById(searchTerm);
+    }
+
+    // search lens by custom hashtags
+    if (searchTerm.startsWith('#') && searchTerm.length >= 2) {
+        const hashtags = searchTerm.match(/#\w+/gi) || [];
+        if (hashtags && hashtags.length) {
+            return await DB.searchLensByTags(hashtags);
+        }
     }
 
     // search by lens name and creator name
