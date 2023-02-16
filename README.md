@@ -21,7 +21,7 @@ All files will be stored on your local machine inside a Docker Volume and you ma
   - Search by creator name (automatically without special syntax) e.g. => *Snap Inc*
   - Search by custom hashtags e.g. => #funny, #makeup
 
-*See the **Changelog** below for a full list of changes*
+See the [Changelog](https://github.com/ptrumpis/snap-camera-server/blob/main/CHANGELOG.md) for a full list of changes
 
 ### Snap Camera Cache Import
 You can import your local cached lenses through this online interface [Snap Lens Cache Import](https://ptrumpis.github.io/snap-lens-cache-import/)
@@ -31,6 +31,8 @@ You can import your local cached lenses through this online interface [Snap Lens
 - OpenSSL (for .key and .crt file generation)
 
 You can download [Docker Desktop](https://www.docker.com/products/docker-desktop/) from the offical website.
+
+Windows users can download OpenSSL from [slproweb.com](https://slproweb.com/products/Win32OpenSSL.html)
 
 ## Usage
 You need to complete the following 5 steps:
@@ -91,33 +93,6 @@ Patching the exe file may work, but I find it much easier to edit a line in a te
    ```hosts
    #127.0.0.1       studio-app.snapchat.com
    ```
-
-## Changelog
-### v2.0.0 - Lens Cache Import Release
-- New import API to add missing lenses from your own application cache
-- New editable media file templates for lens customization
-- Adminer docker image is now included to edit lens information easily
-- Changed database schema to include tags for lenses
-- New nginx server theme to browse stored files easily
-- Featured, top and category lenses will be auto downloaded right after server start
-- Reworked code and performance optimizations
-- Some Bug fixes
-
-### v1.21.0 - Initial Public Release
-- New completely revised Docker port
-- New nginx file/web server storage system
-- Changed database schema to include UUID of lenses
-- Improved search functionality to find Snap Lenses easier
-  - Search by lens ID
-  - Search by hash/UUID
-  - Search by link share URL
-  - Search by creator name without special syntax
-- Auto backup of featured, top and category lenses to serve files locally
-- Support for new image and snapcode URL's
-- New dynamic server relay system
-- Removed dead code that would rely on the original *studio-app.snapchat.com* server
-- The category thumbnails are now included in the project
-- Included script to generate local SSL certificate
 
 ## Additional Information
 I was able to reverse engineer the Snap Lens file format. The file format is now documented and open source.
