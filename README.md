@@ -52,7 +52,7 @@ You can go with all default values and don't need to change anything unless your
 Snap Camera will refuse to connect to your local server if you don't have a trusted SSL certificate.
 You need to generate a .crt and .key file and have the .crt file installed as trusted root certificate on your operating system.
 
-The required files can be generated with the included script `./gencert.sh` which will output:
+The required files can be generated with the included script `./gencert.bat` or `./gencert.sh` which will output:
 - ./ssl/studio-app.snapchat.com.crt
 - ./ssl/studio-app.snapchat.com.key
 

@@ -1,0 +1,1 @@
+openssl req -x509 -nodes -days 3650 -subj "/C=CA/ST=QC/O=Snap Inc./CN=studio-app.snapchat.com" -addext "subjectAltName=DNS:studio-app.snapchat.com" -newkey rsa:2048 -keyout ./ssl/studio-app.snapchat.com.key -out ./ssl/studio-app.snapchat.com.crt
