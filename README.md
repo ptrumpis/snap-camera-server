@@ -42,13 +42,18 @@ You need to complete the following 5 steps:
 4. Starting Docker
 5. Edit the /etc/hosts file
 
-### 1. Configuration
+## How To Video Guide
+You can watch this step by step video guide on YouTube if you need help with any of the 5 steps above
+
+[![Snap Camera Installation Guide](https://img.youtube.com/vi/bcsjvWHUr7c/0.jpg)](https://www.youtube.com/watch?v=bcsjvWHUr7c)
+
+### 1. Configuration [Tutorial](https://youtu.be/wZIPBPVs-70)
 Make sure there is a file named `.env` in the directory. Just `.env` without a filename.
 If it is missing create a copy of the file `example.env` and name the copy `.env`.
 
 You can go with all default values and don't need to change anything unless your having problems with certain ports being occupied.
 
-### 2. Generating SSL Certificate
+### 2. Generating SSL Certificate [Tutorial](https://youtu.be/4QJP8MLvSdA)
 Snap Camera will refuse to connect to your local server if you don't have a trusted SSL certificate.
 You need to generate a .crt and .key file and have the .crt file installed as trusted root certificate on your operating system.
 
@@ -58,7 +63,7 @@ The required files can be generated with the included script `./gencert.bat` or 
 
 Docker compose expects these two files by default, otherwise the containers will not start.
 
-### 3. Importing Root Certificate
+### 3. Importing Root Certificate [Tutorial](https://youtu.be/mJFmvTg1yfE)
 On Windows you can import the certificate in two differnt ways
 - By double-clicking the file and going through the pop up dialog (not recommended)
 - By simply executing a command called *certutil* (what I recommend)
@@ -67,7 +72,7 @@ On Windows you can import the certificate in two differnt ways
 certutil -addstore -enterprise Root ./ssl/studio-app.snapchat.com.crt
 ```
 
-### 4. Starting Docker
+### 4. Starting Docker [Tutorial](https://youtu.be/2siSkWdZLbo)
 You may start the docker containers now with
 ```bash
 docker compose up
@@ -78,7 +83,7 @@ Or run the docker containers in the background with
 docker compose up -d
 ```
 
-### 5. Edit the /etc/hosts file
+### 5. Edit the /etc/hosts file [Tutorial](https://youtu.be/o9gAo5VH2cw)
 #### Connecting your Snap Camera application to your local server
 Patching the exe file may work, but I find it much easier to edit a line in a text file. This step is also easier to undo.
 
