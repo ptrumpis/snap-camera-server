@@ -210,7 +210,7 @@ async function insertLens(lenses, forceMirror = false) {
 			try {
 				connection.query(`INSERT INTO lenses SET ?`, args, async function (err, results) {
 					if (!err) {
-						await Util.mirrorLens(args);
+						await Util.mirrorLens(lens);
 						console.log("Saved Lens:", unlockable_id);
 					} else if (err.code !== "ER_DUP_ENTRY") {
 						console.log(err, unlockable_id, lens_name);
@@ -262,7 +262,7 @@ async function insertUnlock(lenses, forceMirror = false) {
 					} else if (err.code !== "ER_DUP_ENTRY") {
 						console.log(err, lens_id);
 					} else if (forceMirror) {
-						await Util.mirrorLens(lens);
+						await Util.mirrorUnlock(lens_id, lens_url);
 					}
 				});
 			} catch (e) {
@@ -273,11 +273,19 @@ async function insertUnlock(lenses, forceMirror = false) {
 }
 
 function markLensAsMirrored(id) {
-	connection.query(`UPDATE lenses SET mirrored=1 WHERE unlockable_id=?`, [id]);
+	try {
+		connection.query(`UPDATE lenses SET mirrored=1 WHERE unlockable_id=?`, [id]);
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 function markUnlockAsMirrored(id) {
-	connection.query(`UPDATE unlocks SET mirrored=1 WHERE lens_id=?`, [id]);
+	try {
+		connection.query(`UPDATE unlocks SET mirrored=1 WHERE lens_id=?`, [id]);
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 export { searchLensByName, searchLensByTags, searchLensById, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, insertLens, insertUnlock, markLensAsMirrored, markUnlockAsMirrored };

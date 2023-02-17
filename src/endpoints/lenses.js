@@ -1,6 +1,7 @@
 import express from "express";
 import * as Util from '../utils/helper.js';
 import * as DB from '../utils/db.js';
+import * as Storage from '../utils/storage.js';
 
 var router = express.Router();
 
@@ -27,16 +28,19 @@ router.post('/', async function (req, res, next) {
     }
 
     if (lenses && lenses.length) {
-        lenses = Util.modifyResponseURLs(lenses);
-
-        // remove found lenses from id array
+        // trigger re-download 
+        // and remove found lenses from id array
         for (var i = 0; i < lenses.length; i++) {
+            await Storage.saveLens(lenses[i]);
+
             let unlockId = parseInt(lenses[i].unlockable_id);
             let index = lensIds.indexOf(unlockId);
             if (index !== -1) {
                 lensIds.splice(index, 1);
             }
         }
+
+        lenses = Util.modifyResponseURLs(lenses);
     }
 
     // use relay for missing lens id's

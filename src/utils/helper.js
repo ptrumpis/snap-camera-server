@@ -30,7 +30,7 @@ async function advancedSearch(searchTerm) {
         // support search by lens URL
         if (searchTerm.startsWith("https://lens.snapchat.com/")) {
             let myURL = new URL(searchTerm);
-            searchTerm = myURL.pathname;
+            searchTerm = myURL.pathname.replace(/^\/+/, '');
         } else if (searchTerm.startsWith("https://www.snapchat.com/unlock/?")) {
             let myURL = new URL(searchTerm);
             searchTerm = myURL.searchParams.get('uuid')
