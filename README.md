@@ -6,7 +6,7 @@ By default `snapchatreverse.jaku.tv` is configured as relay server to download S
 
 All files will be stored on your local machine inside a Docker Volume and you may disable or change the relay server at any time.
 
-## New Features & Improvements
+### New Features & Improvements
 - **[New]** **Import missing lenses from your own application cache!**
 - **[New]** Run your own server locally with Docker
 - **[New]** No Amazon S3 Storage solution required
@@ -27,33 +27,33 @@ See the [Changelog](https://github.com/ptrumpis/snap-camera-server/blob/main/CHA
 You can import your local cached lenses through this online interface [Snap Lens Cache Import](https://ptrumpis.github.io/snap-lens-cache-import/)
 
 ## Requirements
-- Docker
-- OpenSSL (for .key and .crt file generation)
-
-You can download [Docker Desktop](https://www.docker.com/products/docker-desktop/) from the offical website.
-
-Windows users can download OpenSSL from [slproweb.com](https://slproweb.com/products/Win32OpenSSL.html)
+- Docker (download from [docker.com](https://www.docker.com/))
+- OpenSSL (download from [slproweb.com](https://slproweb.com/products/Win32OpenSSL.html) for Windows)
 
 ## Usage
-You need to complete the following 5 steps:
+Start by downloading the latest release: [Latest Release](https://github.com/ptrumpis/snap-camera-server/releases/latest)
+
+After downloading and unpacking the source files you need to complete the following 5 steps:
 1. Configuration
 2. Generating SSL Certificate
 3. Importing Root Certificate
 4. Starting Docker
 5. Edit the /etc/hosts file
 
-## How To Video Guide
-You can watch this step by step video guide on YouTube if you need help with any of the 5 steps above
+### How To Video Guide
+You can watch this step by step video guide on YouTube if you need help with any of the 5 steps below
 
 [![Snap Camera Installation Guide](https://img.youtube.com/vi/bcsjvWHUr7c/0.jpg)](https://www.youtube.com/watch?v=bcsjvWHUr7c)
 
-### 1. Configuration [Tutorial](https://youtu.be/wZIPBPVs-70)
+## Local Installation Steps
+
+### 1. Configuration ([Video Tutorial](https://youtu.be/wZIPBPVs-70))
 Make sure there is a file named `.env` in the directory. Just `.env` without a filename.
 If it is missing create a copy of the file `example.env` and name the copy `.env`.
 
 You can go with all default values and don't need to change anything unless your having problems with certain ports being occupied.
 
-### 2. Generating SSL Certificate [Tutorial](https://youtu.be/4QJP8MLvSdA)
+### 2. Generating SSL Certificate ([Video Tutorial](https://youtu.be/4QJP8MLvSdA))
 Snap Camera will refuse to connect to your local server if you don't have a trusted SSL certificate.
 You need to generate a .crt and .key file and have the .crt file installed as trusted root certificate on your operating system.
 
@@ -63,7 +63,7 @@ The required files can be generated with the included script `./gencert.bat` or 
 
 Docker compose expects these two files by default, otherwise the containers will not start.
 
-### 3. Importing Root Certificate [Tutorial](https://youtu.be/mJFmvTg1yfE)
+### 3. Importing Root Certificate ([Video Tutorial](https://youtu.be/mJFmvTg1yfE))
 On Windows you can import the certificate in two differnt ways
 - By double-clicking the file and going through the pop up dialog (not recommended)
 - By simply executing a command called *certutil* (what I recommend)
@@ -72,7 +72,7 @@ On Windows you can import the certificate in two differnt ways
 certutil -addstore -enterprise Root ./ssl/studio-app.snapchat.com.crt
 ```
 
-### 4. Starting Docker [Tutorial](https://youtu.be/2siSkWdZLbo)
+### 4. Starting Docker ([Video Tutorial](https://youtu.be/2siSkWdZLbo))
 You may start the docker containers now with
 ```bash
 docker compose up
@@ -83,11 +83,14 @@ Or run the docker containers in the background with
 docker compose up -d
 ```
 
-### 5. Edit the /etc/hosts file [Tutorial](https://youtu.be/o9gAo5VH2cw)
+### 5. Edit the /etc/hosts file ([Video Tutorial](https://youtu.be/o9gAo5VH2cw))
 #### Connecting your Snap Camera application to your local server
 Patching the exe file may work, but I find it much easier to edit a line in a text file. This step is also easier to undo.
 
-1. I suggest to edit your `/etc/hosts` file. For Windows users that file is located at `%SYSTEMROOT%\System32\drivers\etc\hosts`
+1. I suggest to edit your `/etc/hosts` file. For Windows users that file is located at 
+   ```
+   %SYSTEMROOT%\System32\drivers\etc\hosts
+   ```
 
 2. Open the file as Administrator and add a single line to connect your Snap Camera application to the local server
    ```hosts
@@ -98,6 +101,8 @@ Patching the exe file may work, but I find it much easier to edit a line in a te
    ```hosts
    #127.0.0.1       studio-app.snapchat.com
    ```
+
+---
 
 ## Additional Information
 I was able to reverse engineer the Snap Lens file format. The file format is now documented and open source.
