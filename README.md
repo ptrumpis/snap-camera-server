@@ -40,12 +40,18 @@ After downloading and unpacking the source files you need to complete the follow
 4. Starting Docker
 5. Edit the /etc/hosts file
 
-### How To Video Guide
+## Automatic Configuration on Windows
+Windows users can now use this [Auto Configuration Tool](https://github.com/ptrumpis/snap-camera-server-auto-config), which will handle all of these tasks for you.
+
+If you are not a Windows user or prefer to do the steps manually then you can watch the video guide below which covers all the steps in detail.
+
+## How To Video Guide
 You can watch this step by step video guide on YouTube if you need help with any of the 5 steps below
 
 [![Snap Camera Installation Guide](https://img.youtube.com/vi/bcsjvWHUr7c/0.jpg)](https://www.youtube.com/watch?v=bcsjvWHUr7c)
 
 ## Local Installation Steps
+In addition to the full video guide each step is also covered by a short video tutorial
 
 ### 1. Configuration ([Video Tutorial](https://youtu.be/wZIPBPVs-70))
 Make sure there is a file named `.env` in the directory. Just `.env` without a filename.
