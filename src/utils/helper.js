@@ -12,6 +12,7 @@ const storageServer = process.env.STORAGE_SERVER;
 const modifyServer = [
     'https://snapcodes.storage.googleapis.com',
     'https://lens-storage.storage.googleapis.com',
+    'https://lens-preview-storage.storage.googleapis.com',
     'https://community-lens.storage.googleapis.com',
     'https://storage.googleapis.com',
     'https://app.snapchat.com',
@@ -123,7 +124,7 @@ async function getUnlockUrl(unlockable_id, forceMirror = false) {
 
     lens = await relayGetRequest(`/vc/v1/explorer/unlock?uid=${unlockable_id}`);
     if (lens && lens['lens_id']) {
-        DB.insertUnlock(lens, forceMirror);
+        await DB.insertUnlock(lens, forceMirror);
         return lens.lens_url;
     }
 
