@@ -92,7 +92,7 @@ function getDuplicatedLensIds(lensIds) {
 				resolve(results.map(obj => { return parseInt(obj.id) }));
 			} else {
 				if (err) {
-					console.error(err, lenses);
+					console.error(err, lensIds);
 				}
 				resolve([]);
 			}
@@ -151,12 +151,29 @@ function getLensUnlock(lensID) {
 	});
 }
 
+function getObfuscatedSlugByDisplayName(userDisplayName) {
+	return new Promise(resolve => {
+		connection.query(`SELECT obfuscated_user_slug as slug FROM users WHERE user_display_name=? LIMIT 1;`, [
+			userDisplayName
+		], async function (err, results) {
+			if (results && results[0]) {
+				resolve(results[0].slug);
+			} else {
+				if (err) {
+					console.error(err, userDisplayName);
+				}
+				resolve([]);
+			}
+		});
+	});
+}
+
 async function insertLens(lenses, forceMirror = false) {
 	if (!Array.isArray(lenses)) {
 		lenses = [lenses];
 	}
 
-	lenses.forEach(function (lens) {
+	for (const lens of lenses) {
 		// check required fields
 		if (!lens || !lens.unlockable_id || !lens.lens_name || !lens.user_display_name) {
 			console.error("Invalid argument, expected lens object", lens);
@@ -186,7 +203,7 @@ async function insertLens(lenses, forceMirror = false) {
 		// will trigger insertUnlock if unlock data is present on relay but not locally
 		Util.getUnlockUrl(unlockable_id, forceMirror);
 
-		return new Promise(resolve => {
+		await new Promise(resolve => {
 			// rebuild the passed object manually
 			// so we know exactly what will be inserted
 			let args = {
@@ -210,40 +227,47 @@ async function insertLens(lenses, forceMirror = false) {
 			try {
 				connection.query(`INSERT INTO lenses SET ?`, args, async function (err, results) {
 					if (!err) {
+						if (obfuscated_user_slug) {
+							insertUser(lens);
+						}
+
 						await Util.mirrorLens(lens);
 						console.log("Saved Lens:", unlockable_id);
 					} else if (err.code !== "ER_DUP_ENTRY") {
 						console.log(err, unlockable_id, lens_name);
+						return resolve(false);
 					} else if (forceMirror) {
 						await Util.mirrorLens(lens);
 					}
+					return resolve(true);
 				});
 			} catch (e) {
-				console.log(e);
+				console.error(e);
+				resolve(false);
 			}
 		});
-	});
+	}
 }
 
-async function insertUnlock(lenses, forceMirror = false) {
-	if (!Array.isArray(lenses)) {
-		lenses = [lenses];
+async function insertUnlock(unlocks, forceMirror = false) {
+	if (!Array.isArray(unlocks)) {
+		unlocks = [unlocks];
 	}
 
-	lenses.forEach(function (lens) {
+	for (const unlock of unlocks) {
 		// check required fields
-		if (!lens || !lens.lens_id || !lens.lens_url) {
-			console.error("Invalid argument, expected unlock object", lens);
+		if (!unlock || !unlock.lens_id || !unlock.lens_url) {
+			console.error("Invalid argument, expected unlock object", unlock);
 			return;
 		}
 
-		let { lens_id, lens_url, signature, hint_id, additional_hint_ids } = lens;
+		let { lens_id, lens_url, signature, hint_id, additional_hint_ids } = unlock;
 
 		if (!signature) signature = "";
 		if (!hint_id) hint_id = "";
 		if (!additional_hint_ids) additional_hint_ids = {};
 
-		return new Promise(resolve => {
+		await new Promise(resolve => {
 			// rebuild the passed object manually
 			// so we know exactly what will be inserted
 			let args = {
@@ -261,14 +285,50 @@ async function insertUnlock(lenses, forceMirror = false) {
 						console.log('Unlocked Lens:', lens_id);
 					} else if (err.code !== "ER_DUP_ENTRY") {
 						console.log(err, lens_id);
+						return resolve(false);
 					} else if (forceMirror) {
 						await Util.mirrorUnlock(lens_id, lens_url);
 					}
+					return resolve(true);
 				});
 			} catch (e) {
-				console.log(e);
+				console.error(e);
+				resolve(false);
 			}
 		});
+	}
+}
+
+async function insertUser(user) {
+	if (!user || !user.obfuscated_user_slug || !user.user_display_name) {
+		console.error("Invalid argument, expected user object", user);
+		return;
+	}
+
+	let { obfuscated_user_slug, user_display_name } = user;
+
+	await new Promise(resolve => {
+		// rebuild the passed object manually
+		// so we know exactly what will be inserted
+		let args = {
+			obfuscated_user_slug: obfuscated_user_slug,
+			user_display_name: user_display_name,
+		};
+
+		try {
+			connection.query(`INSERT INTO users SET ?`, args, async function (err, results) {
+				if (!err) {
+					console.log('New User:', user_display_name);
+				} else if (err.code !== "ER_DUP_ENTRY") {
+					console.log(err, user);
+					return resolve(false);
+				}
+				return resolve(true);
+			});
+		} catch (e) {
+			console.error(e);
+			resolve(false);
+		}
 	});
 }
 
@@ -288,4 +348,4 @@ function markUnlockAsMirrored(id) {
 	}
 }
 
-export { searchLensByName, searchLensByTags, searchLensById, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, insertLens, insertUnlock, markLensAsMirrored, markUnlockAsMirrored };
+export { searchLensByName, searchLensByTags, searchLensById, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, getObfuscatedSlugByDisplayName, insertLens, insertUnlock, insertUser, markLensAsMirrored, markUnlockAsMirrored };

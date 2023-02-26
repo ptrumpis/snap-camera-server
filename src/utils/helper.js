@@ -153,7 +153,7 @@ function modifyResponseURLs(orgResponse) {
 }
 
 function relay() {
-    if (relayServer) {
+    if (relayServer && relayServer.toUpperCase() !== 'FALSE') {
         return true;
     } else {
         return false;
@@ -166,4 +166,11 @@ function sleep(ms) {
     });
 }
 
-export { advancedSearch, relayGetRequest, relayPostRequest, mirrorLens, mirrorUnlock, getUnlockUrl, extractUuidFromDeeplink, modifyResponseURLs, relay, sleep };
+function isOptionTrue(envOptionName) {
+    if (process.env[envOptionName] && (process.env[envOptionName].toUpperCase() === 'TRUE' || process.env[envOptionName] == '1')) {
+        return false;
+    }
+    return true;
+}
+
+export { advancedSearch, relayGetRequest, relayPostRequest, mirrorLens, mirrorUnlock, getUnlockUrl, extractUuidFromDeeplink, modifyResponseURLs, relay, sleep, isOptionTrue };

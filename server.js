@@ -42,5 +42,5 @@ app.use('*', wildcard);
 
 app.listen(serverPort, () => {
 	console.log(`Snap Camera Server is running on port ${serverPort}`);
-	init.loadStaticLenses();
+	init.bootstrap();
 });

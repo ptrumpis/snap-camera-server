@@ -4,3 +4,4 @@ ssl/studio-app.snapchat.com.crt
 ssl/studio-app.snapchat.com.key
 .env
 package-lock.json
+AutoConfig.exe

@@ -1,3 +1,4 @@
+import dbmigrate from 'db-migrate';
 import * as DB from './db.js';
 import * as Util from './helper.js';
 import { createRequire } from "module";
@@ -24,13 +25,34 @@ const staticLenses = [
     character
 ];
 
-// pre-fetch static lenses
-async function loadStaticLenses() {
-    for (let i = 0; i < staticLenses.length; i++) {
-        await DB.insertLens(staticLenses[i]["lenses"], true);
-        await Util.sleep(5000);
-    }
-    return true;
+async function bootstrap() {
+    // Dirty fix to wait for mysql server initialization
+    // TODO: fix inside docker-compose.yml
+    await Util.sleep(15000);
+
+    await runDatabaseMigration();
+    await prefetchPopularLenses();
 }
 
-export { loadStaticLenses };
+async function runDatabaseMigration() {
+    try {
+        const migration = dbmigrate.getInstance(true);
+        await migration.up();
+        console.log('Database migration complete');
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+async function prefetchPopularLenses() {
+    if (Util.isOptionTrue('PREFETCH_POP_LENSES')) {
+        for (let i = 0; i < staticLenses.length; i++) {
+            for (let j = 0; j < staticLenses[i]["lenses"].length; j++) {
+                let lens = staticLenses[i]["lenses"][j];
+                await DB.insertLens(lens, true);
+            }
+        }
+    };
+}
+
+export { bootstrap };

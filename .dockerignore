@@ -6,4 +6,6 @@ node_modules
 ssl
 .env
 gencert.sh
+gencert.bat
 npm-debug.log
+AutoConfig.exe

@@ -64,22 +64,22 @@ async function savePreviews(url) {
         }
 
         if (filePath.includes('/preview-media/thumbnail_seq')) {
-			 // community-lens.storage.googleapis.com
+            // community-lens.storage.googleapis.com
             await downloadFile(previewUrl.toString(), filePath, fileName);
         } else if (filePath.startsWith('/previewmedia/') && filePath.includes('/image_sequence/')) {
-			// lens-preview-storage.storage.googleapis.com
+            // lens-preview-storage.storage.googleapis.com
             await downloadFile(previewUrl.toString(), filePath, fileName);
         } else if (filePath.endsWith('/preview-media/thumbnail_poster')) {
-			 // community-lens.storage.googleapis.com
+            // community-lens.storage.googleapis.com
             await downloadFile(previewUrl.toString(), filePath, fileName);
         } else if (filePath.endsWith('/preview-media/thumbnail')) {
-			 // community-lens.storage.googleapis.com
+            // community-lens.storage.googleapis.com
             await downloadFile(previewUrl.toString(), filePath, fileName);
         } else if (filePath.endsWith('/preview-media/final_poster')) {
-			 // community-lens.storage.googleapis.com
+            // community-lens.storage.googleapis.com
             await downloadFile(previewUrl.toString(), filePath, fileName);
         } else if (filePath.endsWith('/preview-media/final')) {
-			 // community-lens.storage.googleapis.com
+            // community-lens.storage.googleapis.com
             await downloadFile(previewUrl.toString(), filePath, fileName);
         } else {
             console.error("Unsupported Preview path", filePath, "in URL", url);
