@@ -1,37 +1,48 @@
-# Snap Camera Server
-Host your own Snap Camera server after the shutdown on January 25, 2023 and continue using Snap Camera by Snap Inc. as usual without restrictions and even better features than before.
+# Snap Camera Server v3 👻💻
+Host your own Snap Camera server after the shutdown on January 25, 2023.
 
-The code is a fork of *jaku/SnapCameraPreservation* and has been changed for running your own local server with Docker.
-By default `snapchatreverse.jaku.tv` is configured as relay server to download Snap Lenses.
+**This code is a fork of *jaku/SnapCameraPreservation* on steroids.**
+- It does not require any previously backed up files or third party server.
+- Access all web lenses from the offical website `lens.snapchat.com` without restrictions.
+- Import lenses from your local application cache e.g. `AppData\Local\Snap\Snap Camera\cache\lenses`.
+- All files will be stored inside a Docker Volume (e.g. on your local machine).
+- More features than the original Snap Camera application.
+- Works 100% on Windows without limitations.
 
-All files will be stored on your local machine inside a Docker Volume and you may disable or change the relay server at any time.
+You get the full decentralized control and you can use *Snap Camera* until Doomsday.
 
-### New Features & Improvements
-- **[New]** **Import missing lenses from your own application cache!**
-- **[New]** Run your own server locally with Docker
-- **[New]** No Amazon S3 Storage solution required
-- **[New]** No patching or swapping .exe files, keep the original binaries
-- **[New]** Works with Snap Camera [1.21, 1.20, ...] and older versions
-- **[New]** Use your own custom thumbnails/images for your Snap Lenses
-- **[New]** Access, browse and backup all server files locally
-- **[New]** Improved search functionality to find Snap Lenses easier
-  - Search by lens ID e.g. => *47655570879*
-  - Search by hash/UUID e.g. => *93776b3a994440c4b069b5c61ae352eb*
-  - Search by link share URL e.g. => *https​:​//www​.​snapchat​.​com/unlock/?type=SNAPCODE&uuid=b534a2ce946c4c87ac089e7abed05bc9&metadata=01*
-  - Search by creator name (automatically without special syntax) e.g. => *Snap Inc*
-  - Search by custom hashtags e.g. => #funny, #makeup
+See the [Changelog](https://github.com/ptrumpis/snap-camera-server/blob/main/CHANGELOG.md) for a full list of changes and features.
 
-See the [Changelog](https://github.com/ptrumpis/snap-camera-server/blob/main/CHANGELOG.md) for a full list of changes
+## ⚙️ Operation Modes
+This server can operate in different modes:
+1. Relay all requests to another Snap Camera protocol compatible server (server chaining possible).
+   - **snapchatreverse.jaku.tv** is configured as relay server by default.
+2. Download lenses from **lens.snapchat.com** by acting as a proxy between your Snap Camera application and the website.
+   - This requires a special [Patch](https://github.com/ptrumpis/snap-camera-signature-patch) of your `Snap Camera.exe` (*see below*).
 
-### Snap Camera Cache Import
+**The server can run in one of these two modes or in both at the same time (default).**
+
+### 🌐 Web Lens Download
+All Snap Lenses are still available for download at **https://lens.snapchat.com** (hidden from view).
+
+You need to apply a special [Snap Camera Signature Patch](https://github.com/ptrumpis/snap-camera-signature-patch) to your `Snap Camera.exe` to get access to these web lenses. 
+
+ *This patch is only available for Windows as of now (because I don't own a Mac lol).*
+
+### 📥 Snap Camera Cache Import 
 You can import your local cached lenses through this online interface [Snap Lens Cache Import](https://ptrumpis.github.io/snap-lens-cache-import/)
 
-## Requirements
-- Docker (download from [docker.com](https://www.docker.com/))
-- OpenSSL (download from [slproweb.com](https://slproweb.com/products/Win32OpenSSL.html) for Windows)
+Watch the [Re-Import Cache Video Guide](https://www.youtube.com/watch?v=alo49et3QxY) if you need help.
 
-## Usage
-Start by downloading the latest release: [Latest Release](https://github.com/ptrumpis/snap-camera-server/releases/latest)
+---
+
+## ⚠️ Server Requirements
+This server requires Docker and OpenSSL and maybe 10 minutes of your time
+- [Docker](https://www.docker.com/)
+- OpenSSL ([slproweb.com](https://slproweb.com/products/Win32OpenSSL.html) for Windows)
+
+## 🚀 Usage
+Start by downloading the latest release: [Download Latest Release](https://github.com/ptrumpis/snap-camera-server/releases/latest)
 
 After downloading and unpacking the source files you need to complete the following 5 steps:
 1. Configuration
@@ -40,22 +51,25 @@ After downloading and unpacking the source files you need to complete the follow
 4. Starting Docker
 5. Edit the /etc/hosts file
 
-## Automatic Configuration on Windows
-Windows users can now use this [Auto Configuration Tool](https://github.com/ptrumpis/snap-camera-server-auto-config), which will handle all of these tasks for you.
+This can be done manually or automatically (Windows).
+
+## 🦾 Automatic Configuration on Windows
+Windows users can now use this [Windows Auto Configuration Tool](https://github.com/ptrumpis/snap-camera-server-auto-config), which will handle all of these tasks for you.
 
 If you are not a Windows user or prefer to do the steps manually then you can watch the video guide below which covers all the steps in detail.
 
-## How To Video Guide
-You can watch this step by step video guide on YouTube if you need help with any of the 5 steps below
+## 🎓 How To Video Guide
+You can watch this step by step video guide on YouTube if you need help with the configuration on your local Windows machine.
 
 [![Snap Camera Installation Guide](https://img.youtube.com/vi/bcsjvWHUr7c/0.jpg)](https://www.youtube.com/watch?v=bcsjvWHUr7c)
 
-## Local Installation Steps
+## 💪 Manual Configuration Steps
 In addition to the full video guide each step is also covered by a short video tutorial
 
 ### 1. Configuration ([Video Tutorial](https://youtu.be/wZIPBPVs-70))
-Make sure there is a file named `.env` in the directory. Just `.env` without a filename.
-If it is missing create a copy of the file `example.env` and name the copy `.env`.
+You need to create a `.env` configuration file.
+
+Create a copy of the file `example.env` and name the copy `.env` (without filename).
 
 You can go with all default values and don't need to change anything unless your having problems with certain ports being occupied.
 
@@ -70,13 +84,16 @@ The required files can be generated with the included script `./gencert.bat` or 
 Docker compose expects these two files by default, otherwise the containers will not start.
 
 ### 3. Importing Root Certificate ([Video Tutorial](https://youtu.be/mJFmvTg1yfE))
-On Windows you can import the certificate in two differnt ways
-- By double-clicking the file and going through the pop up dialog (not recommended)
-- By simply executing a command called *certutil* (what I recommend)
+On Windows you can import the certificate in three different ways
+1. By double-clicking the file and going through the pop up dialog
+2. By running the Widnows management console application `certlm.msc`
+3. By simply executing a command called *certutil* (what I recommend)
 
 ```bash
 certutil -addstore -enterprise Root ./ssl/studio-app.snapchat.com.crt
 ```
+
+You need to run this command as Administrator on a Windows Powershell.
 
 ### 4. Starting Docker ([Video Tutorial](https://youtu.be/2siSkWdZLbo))
 You may start the docker containers now with
@@ -108,12 +125,10 @@ Patching the exe file may work, but I find it much easier to edit a line in a te
    #127.0.0.1       studio-app.snapchat.com
    ```
 
----
-
-## Additional Information
+## 📢 Additional Information
 I was able to reverse engineer the Snap Lens file format. The file format is now documented and open source.
 
-I also provided an example Snap Lens File to Zip converter purely written in JavaScript. It will work on modern Browsers without installation or NodeJS.
+I also provided an example Snap Lens File to Zip converter purely written in JavaScript. It will work on modern Browsers without installation.
 
 - https://github.com/ptrumpis/snap-lens-file-format
 - https://github.com/ptrumpis/snap-lens-file-extractor
