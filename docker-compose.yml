@@ -63,7 +63,7 @@ services:
       - ./nginx/snap-camera-media:/var/lib/snapcamera/snap-camera-media:ro
       - ./import:/var/lib/snapcamera/import
       - ./:/usr/src/app
-      - modules:/usr/src/app/node_modules
+      - /usr/src/app/node_modules
       - storage:/var/lib/snapcamera
     ports:
       - ${APP_LOCAL_PORT}:${APP_DOCKER_PORT}
@@ -75,5 +75,3 @@ volumes:
     name: server-storage
   db:
     name: mysql-db
-  modules:
-    name: node-modules
