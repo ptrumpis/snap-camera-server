@@ -1,15 +1,24 @@
-# Changelog - Snap Camera Server
+# 📋 Changelog - Snap Camera Server
 Release version history and feature overview
 
-## v3.0.x - Lens Web Crawler Release
+## v3.0.0 - Lens Web Crawler Release
 - New web crawler to download Lenses from `lens.snapchat.com`
+- Search by creator URL's e.g. => https​:​//​lensstudio​.​snapchat​.​com​/creator/wmF-q3w45OG4x4ZRmLGLoA
 - Relay server with backed up Snap Lenses is now fully optional
 - Better control over disk space usage with new `.env` settings
 - New automatic database migration
 - Reworked code and performance optimizations
 - Bug fixes
 
-## v2.0.x - Lens Cache Import Release
+## 2.0.6 Patch Release
+- Added missing nginx CORS headers for cache import
+- Auto download of missing images improved
+- Windows gencert.bat script is now included with PATH detection
+- Added Video Tutorial Links
+- Fix for example.env default values
+- Small bug fixes
+
+## v2.0.0 - Lens Cache Import Release
 - New import API to add missing lenses from your own application cache
   - e.g. *%USERPROFILE%\AppData\Local\Snap\Snap Camera\cache\lenses*
 - New editable media file templates for lens customization
@@ -21,7 +30,7 @@ Release version history and feature overview
 - Reworked code and performance optimizations
 - Bug fixes
 
-## v1.0.x - Initial Public Release
+## v1.0.0 - Initial Public Release
 - New completely revised Docker port
 - New nginx file/web server storage system (removed S3 Storage solution)
 - Changed database schema to include UUID of lenses
