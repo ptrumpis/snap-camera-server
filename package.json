@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "snap-camera-server",
-  "version": "3.0.0-alpha-1",
+  "version": "3.0.0-alpha-2",
   "description": "Host your own Snap Camera private server",
   "keywords": [
     "snapchat",
@@ -25,6 +25,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
     "db-migrate": "1.0.0-beta.18",
     "db-migrate-mysql": "^2.2.0",
     "dotenv": "^16.0.3",
@@ -33,6 +34,8 @@
     "fzstd": "^0.1.0",
     "jszip": "^3.10.1",
     "mysql2": "^2.3.3",
-    "node-fetch": "^3.3.0"
+    "node-cache": "^5.1.2",
+    "node-fetch": "^3.3.0",
+    "sharp": "^0.31.3"
   }
 }
