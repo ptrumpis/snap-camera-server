@@ -13,7 +13,7 @@ import download from './src/endpoints/download.js';
 import importCache from './src/endpoints/import.js';
 import v1 from './src/endpoints/v1.js';
 import wildcard from './src/endpoints/wildcard.js';
-import * as init from './src/utils/init.js';
+import * as init from './src/init.js';
 import * as dotenv from 'dotenv';
 
 dotenv.config();

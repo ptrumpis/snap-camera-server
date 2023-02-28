@@ -1,18 +1,18 @@
 import dbmigrate from 'db-migrate';
-import * as DB from './db.js';
-import * as Util from './helper.js';
+import * as DB from './utils/db.js';
+import * as Util from './utils/helper.js';
 import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 
-const top = require('../json/top.json');
-const scheduled = require('../json/scheduled.json');
-const wfh = require('../json/wfh.json');
-const color_effect = require('../json/color_effect.json');
-const funny = require('../json/funny.json');
-const gaming = require('../json/gaming.json');
-const cute = require('../json/cute.json');
-const character = require('../json/character.json');
+const top = require('./json/top.json');
+const scheduled = require('./json/scheduled.json');
+const wfh = require('./json/wfh.json');
+const color_effect = require('./json/color_effect.json');
+const funny = require('./json/funny.json');
+const gaming = require('./json/gaming.json');
+const cute = require('./json/cute.json');
+const character = require('./json/character.json');
 
 const staticLenses = [
     top,
@@ -28,10 +28,12 @@ const staticLenses = [
 async function bootstrap() {
     // Dirty fix to wait for mysql server initialization
     // TODO: fix inside docker-compose.yml
+    console.log('Execution delayed by 15 seconds.');
     await Util.sleep(15000);
 
     await runDatabaseMigration();
-    await prefetchPopularLenses();
+
+    prefetchStaticLenses();
 }
 
 async function runDatabaseMigration() {
@@ -44,15 +46,17 @@ async function runDatabaseMigration() {
     }
 }
 
-async function prefetchPopularLenses() {
-    if (Util.isOptionTrue('PREFETCH_POP_LENSES')) {
+async function prefetchStaticLenses() {
+    try {
         for (let i = 0; i < staticLenses.length; i++) {
             for (let j = 0; j < staticLenses[i]["lenses"].length; j++) {
                 let lens = staticLenses[i]["lenses"][j];
                 await DB.insertLens(lens, true);
             }
         }
-    };
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 export { bootstrap };
