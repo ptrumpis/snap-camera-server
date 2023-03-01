@@ -1,7 +1,8 @@
 import express from "express";
-import * as Util from '../utils/helper.js';
 import * as DB from '../utils/db.js';
-import * as Storage from '../utils/storage.js';
+import * as Util from '../utils/helper.js';
+
+const useRelay = Util.relay();
 
 var router = express.Router();
 
@@ -16,10 +17,10 @@ router.post('/', async function (req, res, next) {
         return res.json({});
     }
 
+    // initialize ID array
     let lensIds = req.body['lenses'];
     let lenses = [];
 
-    // always consider local results even if relay is activated
     if (lensIds.length > 1) {
         lenses = await DB.getMultipleLenses(lensIds);
     } else if (lensIds.length === 1) {
@@ -28,11 +29,11 @@ router.post('/', async function (req, res, next) {
     }
 
     if (lenses && lenses.length) {
-        // trigger re-download 
-        // and remove found lenses from id array
         for (var i = 0; i < lenses.length; i++) {
-            await Storage.saveLens(lenses[i]);
+            // trigger re-download to catch missing files automatically
+            Util.downloadLens(lenses[i]);
 
+            // remove local found lenses from ID array
             let unlockId = parseInt(lenses[i].unlockable_id);
             let index = lensIds.indexOf(unlockId);
             if (index !== -1) {
@@ -43,8 +44,8 @@ router.post('/', async function (req, res, next) {
         lenses = Util.modifyResponseURLs(lenses);
     }
 
-    // use relay for missing lens id's
-    if (Util.relay() && lensIds.length) {
+    // use relay for missing lens ID's
+    if (useRelay && lensIds.length) {
         let data = await Util.relayPostRequest(req.originalUrl, { "lenses": lensIds });
         if (data && data['lenses']) {
             DB.insertLens(data['lenses']);

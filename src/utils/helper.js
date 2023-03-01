@@ -27,29 +27,16 @@ const headers = new Headers({
 });
 
 async function advancedSearch(searchTerm) {
-    try {
-        // support search by lens URL
-        if (searchTerm.startsWith("https://lens.snapchat.com/")) {
-            let myURL = new URL(searchTerm);
-            searchTerm = myURL.pathname.replace(/^\/+/, '');
-        } else if (searchTerm.startsWith("https://www.snapchat.com/unlock/?")) {
-            let myURL = new URL(searchTerm);
-            searchTerm = myURL.searchParams.get('uuid')
-        }
-    } catch (e) {
-        console.error(e, searchTerm);
-    }
-
-    // UUID's have 32 characters
-    const regUuid = /^[a-f0-9]{32}$/gi;
-    if (regUuid.test(searchTerm)) {
-        return await DB.searchLensByUuid(searchTerm);
+    // search lens by 32 character UUID
+    const uuid = parseLensUuid(searchTerm);
+    if (uuid) {
+        return await DB.searchLensByUuid(uuid);
     }
 
     // lens ID's have 11 digits but we support +/- 1
     const regLensId = /^[0-9]{10,12}$/gi;
     if (regLensId.test(searchTerm)) {
-        return await DB.searchLensById(searchTerm);
+        return await DB.getSingleLens(searchTerm);
     }
 
     // search lens by custom hashtags
@@ -100,7 +87,27 @@ async function relayPostRequest(path, body) {
     return {};
 }
 
-async function mirrorLens(lens) {
+async function getUnlockFromRelay(lensId) {
+    const unlock = await relayGetRequest(`/vc/v1/explorer/unlock?uid=${lensId}`);
+    if (unlock && unlock.lens_id && unlock.lens_url) {
+        return unlock;
+    }
+    return null;
+}
+
+async function mirrorSearchResults(relayResults) {
+    DB.insertLens(relayResults);
+    for (let i = 0; i < relayResults.length; i++) {
+        if (relayResults[i].unlockable_id) {
+            let unlock = await getUnlockFromRelay(relayResults[i].unlockable_id);
+            if (unlock) {
+                await DB.insertUnlock(unlock);
+            }
+        }
+    }
+}
+
+async function downloadLens(lens) {
     const result = await Storage.saveLens(lens);
     if (result) {
         DB.markLensAsMirrored(lens.unlockable_id);
@@ -108,37 +115,61 @@ async function mirrorLens(lens) {
     return result;
 }
 
-async function mirrorUnlock(lensId, lensUrl) {
-    const result = await Storage.saveUnlock(lensId, lensUrl);
+async function downloadUnlock(lensId, lensUrl) {
+    const result = await Storage.saveUnlock(lensUrl);
     if (result) {
         DB.markUnlockAsMirrored(lensId);
     }
     return result;
 }
 
-async function getUnlockUrl(unlockable_id, forceMirror = false) {
-    let lens = await DB.getLensUnlock(unlockable_id);
-    if (lens && lens[0]) {
-        return lens[0].lens_url;
-    }
+function mergeLensesUnique(lenses, newLenses) {
+    if (newLenses && newLenses.length) {
+        if (lenses && lenses.length) {
+            let lensIds = [];
+            for (let i = 0; i < lenses.length; i++) {
+                lensIds.push(lenses[i].unlockable_id);
+            }
 
-    lens = await relayGetRequest(`/vc/v1/explorer/unlock?uid=${unlockable_id}`);
-    if (lens && lens['lens_id']) {
-        await DB.insertUnlock(lens, forceMirror);
-        return lens.lens_url;
-    }
+            for (let j = 0; j < newLenses.length; j++) {
+                if (lensIds.indexOf(newLenses[j].unlockable_id) !== -1) {
+                    // modify original array
+                    newLenses.splice(j, 1);
+                    j--;
+                }
+            }
 
-    return '';
-}
-
-function extractUuidFromDeeplink(deeplink) {
-    if (typeof deeplink === "string" && deeplink.startsWith("https://www.snapchat.com/unlock/?")) {
-        let deeplinkURL = new URL(deeplink);
-        const regexExp = /^[a-f0-9]{32}$/gi;
-        if (regexExp.test(deeplinkURL.searchParams.get('uuid'))) {
-            return deeplinkURL.searchParams.get('uuid');
+            lenses = lenses.concat(newLenses);
+        } else {
+            lenses = newLenses;
         }
     }
+
+    return lenses;
+}
+
+function parseLensUuid(str) {
+    if (typeof str === "string") {
+        let uuid = '';
+        try {
+            if (str.startsWith("https://lens.snapchat.com/")) {
+                let webUrl = new URL(str);
+                uuid = webUrl.pathname.replace(/^\/+/, '');
+            } else if (str.startsWith("https://www.snapchat.com/unlock/?")) {
+                let deeplinkURL = new URL(str);
+                uuid = deeplinkURL.searchParams.get('uuid')
+            }
+        } catch (e) {
+            console.error(e, str);
+        }
+
+        // UUID's have 32 characters
+        const regUuid = /^[a-f0-9]{32}$/gi;
+        if (regUuid.test(uuid)) {
+            return uuid;
+        }
+    }
+
     return '';
 }
 
@@ -168,9 +199,9 @@ function sleep(ms) {
 
 function isOptionTrue(envOptionName) {
     if (process.env[envOptionName] && (process.env[envOptionName].toUpperCase() === 'TRUE' || process.env[envOptionName] == '1')) {
-        return false;
+        return true;
     }
-    return true;
+    return false;
 }
 
-export { advancedSearch, relayGetRequest, relayPostRequest, mirrorLens, mirrorUnlock, getUnlockUrl, extractUuidFromDeeplink, modifyResponseURLs, relay, sleep, isOptionTrue };
+export { advancedSearch, relayGetRequest, relayPostRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, parseLensUuid, modifyResponseURLs, relay, sleep, isOptionTrue };

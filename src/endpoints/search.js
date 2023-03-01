@@ -1,8 +1,10 @@
 import express from "express";
 import * as Util from '../utils/helper.js';
-import * as DB from '../utils/db.js';
+import * as Web from '../utils/web.js';
 
-const relay = Util.relay();
+const useRelay = Util.relay();
+const useWebSource = Util.isOptionTrue('ENABLE_WEB_SOURCE');
+const mirrorSearchResults = Util.isOptionTrue('MIRROR_SEARCH_RESULTS');
 
 var router = express.Router();
 
@@ -12,39 +14,46 @@ router.post('/', async function (req, res, next) {
     }
 
     const searchTerm = req.body['query'].trim();
+    if (searchTerm.length < 3) {
+        return res.json({ "lenses": [] });
+    }
 
-    // search local database
     let searchResults = await Util.advancedSearch(searchTerm);
     if (searchResults && searchResults.length) {
         searchResults = Util.modifyResponseURLs(searchResults);
+
+        // hashtag search (not supported by relay or web)
+        if (searchTerm.startsWith('#') && searchResults.length) {
+            return res.json({ "lenses": searchResults });
+        }
     }
 
-    if (relay) {
-        let data = await Util.relayPostRequest(req.originalUrl, { "query": searchTerm });
-        if (data && data['lenses']) {
-            if (searchResults && searchResults.length) {
-                // collect all lens id's of local results to identify duplicates
-                let localLensIds = [];
-                for (var i = 0; i < searchResults.length; i++) {
-                    localLensIds.push(searchResults[i].unlockable_id);
-                }
+    if (useRelay) {
+        let relayResults = await Util.relayPostRequest(req.originalUrl, { "query": searchTerm });
+        if (relayResults && relayResults['lenses'] && relayResults['lenses'].length) {
+            searchResults = Util.mergeLensesUnique(searchResults, relayResults['lenses']);
 
-                // remove duplicated local results from relay results
-                for (var j = 0; j < localLensIds.length; j++) {
-                    let index = data['lenses'].indexOf(localLensIds[i]);
-                    if (index !== -1) {
-                        data['lenses'].splice(index, 1);
-                    }
-                }
+            if (mirrorSearchResults) {
+                Util.mirrorSearchResults(relayResults['lenses']);
+            }
+        }
+    }
 
-                // merge new relay search results with local
-                searchResults = searchResults.concat(data['lenses']);
-            } else {
-                searchResults = data['lenses'];
+    if (useWebSource) {
+        let webResults = await Web.search(searchTerm);
+        if (webResults && webResults.length) {
+            searchResults = Util.mergeLensesUnique(searchResults, webResults);
+
+            if (mirrorSearchResults) {
+                Web.mirrorSearchResults(webResults);
             }
 
-            // add newly found lenses from relay to our database
-            DB.insertLens(data['lenses']);
+            for (let i = 0; i < webResults.length; i++) {
+                if (webResults[i].unlockable_id && webResults[i].uuid) {
+                    // caching is required to activate the lens if search mirroring is disabled or delayed
+                    Web.Cache.set(webResults[i].unlockable_id, webResults[i].uuid);
+                }
+            }
         }
     }
 

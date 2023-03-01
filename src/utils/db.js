@@ -4,13 +4,24 @@ import * as Util from './helper.js';
 
 dotenv.config();
 
-const connection = mysql.createConnection({
+const connection = mysql.createPool({
 	host: process.env.DB_HOST,
 	port: process.env.DB_PORT,
 	user: process.env.DB_USER,
 	password: process.env.DB_PASS,
-	database: process.env.DB_NAME
+	database: process.env.DB_NAME,
+	waitForConnections: true,
+	connectionLimit: 10,
+	queueLimit: 0
 });
+
+const enableWebSource = Util.isOptionTrue('ENABLE_WEB_SOURCE');
+function webImportFilter(arr) {
+	if (enableWebSource) {
+		return arr;
+	}
+	return arr.filter(element => (!element.web_import));
+}
 
 function searchLensByName(term) {
 	const wildcardSearch = '%' + term + '%';
@@ -20,7 +31,7 @@ function searchLensByName(term) {
 			wildcardSearch
 		], async function (err, results) {
 			if (results && results[0]) {
-				resolve(results);
+				resolve(webImportFilter(results));
 			} else {
 				if (err) {
 					console.error(err, wildcardSearch);
@@ -38,27 +49,10 @@ function searchLensByTags(hashtags) {
 			regSearch
 		], async function (err, results) {
 			if (results && results[0]) {
-				resolve(results);
+				resolve(webImportFilter(results));
 			} else {
 				if (err) {
 					console.error(err, regSearch);
-				}
-				resolve([]);
-			}
-		});
-	});
-}
-
-function searchLensById(lensId) {
-	return new Promise(resolve => {
-		connection.query(`SELECT * FROM lenses WHERE unlockable_id=? LIMIT 1;`, [
-			lensId
-		], async function (err, results) {
-			if (results && results[0]) {
-				resolve(results);
-			} else {
-				if (err) {
-					console.error(err, lensId);
 				}
 				resolve([]);
 			}
@@ -72,7 +66,7 @@ function searchLensByUuid(uuid) {
 			uuid
 		], async function (err, results) {
 			if (results && results[0]) {
-				resolve(results);
+				resolve(webImportFilter(results));
 			} else {
 				if (err) {
 					console.error(err, uuid);
@@ -85,11 +79,13 @@ function searchLensByUuid(uuid) {
 
 function getDuplicatedLensIds(lensIds) {
 	return new Promise(resolve => {
-		connection.query(`SELECT unlockable_id as id FROM lenses WHERE unlockable_id IN (?);`, [
+		connection.query(`SELECT web_import, unlockable_id as id FROM lenses WHERE unlockable_id IN (?);`, [
 			lensIds
 		], async function (err, results) {
 			if (results && results[0]) {
-				resolve(results.map(obj => { return parseInt(obj.id) }));
+				resolve(webImportFilter(results).map(obj => {
+					return parseInt(obj.id);
+				}));
 			} else {
 				if (err) {
 					console.error(err, lensIds);
@@ -106,7 +102,7 @@ function getMultipleLenses(lenses) {
 			lenses
 		], async function (err, results) {
 			if (results && results[0]) {
-				resolve(results);
+				resolve(webImportFilter(results));
 			} else {
 				if (err) {
 					console.error(err, lenses);
@@ -117,16 +113,16 @@ function getMultipleLenses(lenses) {
 	});
 }
 
-function getSingleLens(lensID) {
+function getSingleLens(lensId) {
 	return new Promise(resolve => {
 		connection.query(`SELECT * FROM lenses WHERE unlockable_id=? LIMIT 1;`, [
-			lensID
+			lensId
 		], async function (err, results) {
 			if (results && results[0]) {
-				resolve(results);
+				resolve(webImportFilter(results));
 			} else {
 				if (err) {
-					console.error(err, lensID);
+					console.error(err, lensId);
 				}
 				resolve([]);
 			}
@@ -134,16 +130,16 @@ function getSingleLens(lensID) {
 	});
 }
 
-function getLensUnlock(lensID) {
+function getLensUnlock(lensId) {
 	return new Promise(resolve => {
 		connection.query(`SELECT * FROM unlocks WHERE lens_id=? LIMIT 1;`, [
-			lensID
+			lensId
 		], async function (err, results) {
 			if (results && results[0]) {
-				resolve(results);
+				resolve(webImportFilter(results));
 			} else {
 				if (err) {
-					console.error(err, lensID);
+					console.error(err, lensId);
 				}
 				resolve([]);
 			}
@@ -162,13 +158,13 @@ function getObfuscatedSlugByDisplayName(userDisplayName) {
 				if (err) {
 					console.error(err, userDisplayName);
 				}
-				resolve([]);
+				resolve('');
 			}
 		});
 	});
 }
 
-async function insertLens(lenses, forceMirror = false) {
+async function insertLens(lenses, forceDownload = false) {
 	if (!Array.isArray(lenses)) {
 		lenses = [lenses];
 	}
@@ -181,47 +177,30 @@ async function insertLens(lenses, forceMirror = false) {
 		}
 
 		let { unlockable_id, uuid, snapcode_url, user_display_name, lens_name, lens_tags, lens_status, deeplink, icon_url, thumbnail_media_url,
-			thumbnail_media_poster_url, standard_media_url, standard_media_poster_url, obfuscated_user_slug, image_sequence } = lens;
+			thumbnail_media_poster_url, standard_media_url, standard_media_poster_url, obfuscated_user_slug, image_sequence, web_import } = lens;
 
-		if (!lens_tags) lens_tags = "";
-		if (!lens_status) lens_status = "Live";
-		if (!snapcode_url) snapcode_url = "";
-		if (!deeplink) deeplink = "";
-		if (!icon_url) icon_url = "";
-		if (!thumbnail_media_url) thumbnail_media_url = "";
-		if (!thumbnail_media_poster_url) thumbnail_media_poster_url = "";
-		if (!standard_media_url) standard_media_url = "";
-		if (!standard_media_poster_url) standard_media_poster_url = "";
-		if (!obfuscated_user_slug) obfuscated_user_slug = "";
 		if (!image_sequence) image_sequence = {};
-
-		// uuid is not part of the original data structure
-		if (!uuid) {
-			uuid = Util.extractUuidFromDeeplink(deeplink);
-		}
-
-		// will trigger insertUnlock if unlock data is present on relay but not locally
-		Util.getUnlockUrl(unlockable_id, forceMirror);
 
 		await new Promise(resolve => {
 			// rebuild the passed object manually
 			// so we know exactly what will be inserted
 			let args = {
 				unlockable_id: unlockable_id,
-				uuid: uuid,
+				uuid: uuid || Util.parseLensUuid(deeplink),
 				snapcode_url: snapcode_url,
 				user_display_name: user_display_name,
 				lens_name: lens_name,
-				lens_tags: lens_tags,
-				lens_status: lens_status,
-				deeplink: deeplink,
-				icon_url: icon_url,
-				thumbnail_media_url: thumbnail_media_url,
-				thumbnail_media_poster_url: thumbnail_media_poster_url,
-				standard_media_url: standard_media_url,
-				standard_media_poster_url: standard_media_poster_url,
-				obfuscated_user_slug: obfuscated_user_slug,
-				image_sequence: JSON.stringify(image_sequence)
+				lens_tags: lens_tags || "",
+				lens_status: lens_status || "Live",
+				deeplink: deeplink || "",
+				icon_url: icon_url || "",
+				thumbnail_media_url: thumbnail_media_url || "",
+				thumbnail_media_poster_url: thumbnail_media_poster_url || "",
+				standard_media_url: standard_media_url || "",
+				standard_media_poster_url: standard_media_poster_url || "",
+				obfuscated_user_slug: obfuscated_user_slug || "",
+				image_sequence: JSON.stringify(image_sequence),
+				web_import: web_import || 0
 			};
 
 			try {
@@ -230,14 +209,13 @@ async function insertLens(lenses, forceMirror = false) {
 						if (obfuscated_user_slug) {
 							insertUser(lens);
 						}
-
-						await Util.mirrorLens(lens);
+						await Util.downloadLens(lens);
 						console.log("Saved Lens:", unlockable_id);
 					} else if (err.code !== "ER_DUP_ENTRY") {
 						console.log(err, unlockable_id, lens_name);
 						return resolve(false);
-					} else if (forceMirror) {
-						await Util.mirrorLens(lens);
+					} else if (forceDownload) {
+						await Util.downloadLens(lens);
 					}
 					return resolve(true);
 				});
@@ -249,7 +227,7 @@ async function insertLens(lenses, forceMirror = false) {
 	}
 }
 
-async function insertUnlock(unlocks, forceMirror = false) {
+async function insertUnlock(unlocks, forceDownload = false) {
 	if (!Array.isArray(unlocks)) {
 		unlocks = [unlocks];
 	}
@@ -261,10 +239,8 @@ async function insertUnlock(unlocks, forceMirror = false) {
 			return;
 		}
 
-		let { lens_id, lens_url, signature, hint_id, additional_hint_ids } = unlock;
+		let { lens_id, lens_url, signature, hint_id, additional_hint_ids, web_import } = unlock;
 
-		if (!signature) signature = "";
-		if (!hint_id) hint_id = "";
 		if (!additional_hint_ids) additional_hint_ids = {};
 
 		await new Promise(resolve => {
@@ -273,21 +249,22 @@ async function insertUnlock(unlocks, forceMirror = false) {
 			let args = {
 				lens_id: lens_id,
 				lens_url: lens_url,
-				signature: signature,
-				hint_id: hint_id,
-				additional_hint_ids: JSON.stringify(additional_hint_ids)
+				signature: signature || "",
+				hint_id: hint_id || "",
+				additional_hint_ids: JSON.stringify(additional_hint_ids),
+				web_import: web_import || 0
 			};
 
 			try {
 				connection.query(`INSERT INTO unlocks SET ?`, args, async function (err, results) {
 					if (!err) {
-						await Util.mirrorUnlock(lens_id, lens_url);
+						await Util.downloadUnlock(lens_id, lens_url);
 						console.log('Unlocked Lens:', lens_id);
 					} else if (err.code !== "ER_DUP_ENTRY") {
 						console.log(err, lens_id);
 						return resolve(false);
-					} else if (forceMirror) {
-						await Util.mirrorUnlock(lens_id, lens_url);
+					} else if (forceDownload) {
+						await Util.downloadUnlock(lens_id, lens_url);
 					}
 					return resolve(true);
 				});
@@ -348,4 +325,4 @@ function markUnlockAsMirrored(id) {
 	}
 }
 
-export { searchLensByName, searchLensByTags, searchLensById, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, getObfuscatedSlugByDisplayName, insertLens, insertUnlock, insertUser, markLensAsMirrored, markUnlockAsMirrored };
+export { searchLensByName, searchLensByTags, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, getObfuscatedSlugByDisplayName, insertLens, insertUnlock, insertUser, markLensAsMirrored, markUnlockAsMirrored };

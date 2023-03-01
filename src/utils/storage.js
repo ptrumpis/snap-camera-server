@@ -1,5 +1,6 @@
-import path from "path";
 import fetch from "node-fetch";
+import path from "path";
+import sharp from "sharp";
 import * as dotenv from 'dotenv';
 import * as fs from "fs/promises";
 
@@ -66,9 +67,10 @@ async function savePreviews(url) {
         if (filePath.includes('/preview-media/thumbnail_seq')) {
             // community-lens.storage.googleapis.com
             await downloadFile(previewUrl.toString(), filePath, fileName);
-        } else if (filePath.startsWith('/previewmedia/') && filePath.includes('/image_sequence/')) {
+        } else if (filePath.startsWith('/previewmedia/')) {
             // lens-preview-storage.storage.googleapis.com
-            await downloadFile(previewUrl.toString(), filePath, fileName);
+            const file = await downloadFile(previewUrl.toString(), filePath, fileName);
+            await convertWebpToPng(file);
         } else if (filePath.endsWith('/preview-media/thumbnail_poster')) {
             // community-lens.storage.googleapis.com
             await downloadFile(previewUrl.toString(), filePath, fileName);
@@ -112,7 +114,8 @@ async function savePNG(url) {
             await downloadFile(pngUrl.toString(), filePath, fileName);
         } else if (filePath.endsWith("/webp")) {
             // lens-storage.storage.googleapis.com
-            await downloadFile(pngUrl.toString(), filePath, fileName);
+            const file = await downloadFile(pngUrl.toString(), filePath, fileName);
+            await convertWebpToPng(file);
         } else if (filePath.endsWith("/3")) {
             // bolt-gcdn.sc-cdn.net
             await downloadFile(pngUrl.toString(), filePath, fileName);
@@ -139,7 +142,7 @@ async function savePNG(url) {
     return true;
 }
 
-async function saveUnlock(id, url) {
+async function saveUnlock(url) {
     if (typeof url !== 'string' || !url.startsWith('http') || url.startsWith(storageServer)) {
         return false;
     }
@@ -188,7 +191,24 @@ async function downloadFile(targetUrl, subDirectory, fileName) {
         return false;
     }
 
-    return true;
+    return newFile;
+}
+
+async function convertWebpToPng(file) {
+    try {
+        if (typeof file === 'string' && file.endsWith('.webp')) {
+            const fileAsPng = file.substring(0, fileName.lastIndexOf('.')).concat('.png');
+
+            console.log("Converting WEBP to PNG", file);
+
+            await sharp(file).toFile(fileAsPng);
+            await fs.unlink(file);
+            return fileAsPng;
+        }
+    } catch (e) {
+        console.error("convertWebpToPng error:", e, file);
+    }
+    return false;
 }
 
 async function isFile(filePath) {
