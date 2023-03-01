@@ -78,7 +78,7 @@ async function mirrorSearchResults(webResults) {
             if (webResults[i].uuid) {
                 try {
                     // object has both lens/unlock attributes on success (with more info)
-                    const lens = await getLensByHash(uuid);
+                    const lens = await getLensByHash(webResults[i].uuid);
                     if (lens && lens.unlockable_id && lens.lens_name && lens.user_display_name) {
                         await DB.insertLens(lens);
                     } else {
