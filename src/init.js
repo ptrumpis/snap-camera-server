@@ -28,12 +28,11 @@ const staticLenses = [
 async function bootstrap() {
     // Dirty fix to wait for mysql server initialization
     // TODO: fix inside docker-compose.yml
-    console.log('Execution delayed by 15 seconds.');
-    await Util.sleep(15000);
+    console.log('Execution delayed by 30 seconds.');
+    await Util.sleep(30000);
 
     await runDatabaseMigration();
-
-    prefetchStaticLenses();
+    await prefetchStaticLenses();
 }
 
 async function runDatabaseMigration() {
@@ -49,10 +48,8 @@ async function runDatabaseMigration() {
 async function prefetchStaticLenses() {
     try {
         for (let i = 0; i < staticLenses.length; i++) {
-            for (let j = 0; j < staticLenses[i]["lenses"].length; j++) {
-                let lens = staticLenses[i]["lenses"][j];
-                await DB.insertLens(lens, true);
-            }
+            DB.insertLens(staticLenses[i]["lenses"], true);
+            await Util.sleep(1000);
         }
     } catch (e) {
         console.error(e);

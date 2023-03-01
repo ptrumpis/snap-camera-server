@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "snap-camera-server",
-  "version": "3.0.0-alpha-3",
+  "version": "3.0.0-beta-1",
   "description": "Host your own Snap Camera private server",
   "keywords": [
     "snapchat",

@@ -16,11 +16,32 @@ const connection = mysql.createPool({
 });
 
 const enableWebSource = Util.isOptionTrue('ENABLE_WEB_SOURCE');
+const ignoreAltMedia = Util.isOptionTrue('IGNORE_ALT_MEDIA');
+const ignoreImgSequence = Util.isOptionTrue('IGNORE_IMG_SEQUENCE');
+
 function webImportFilter(arr) {
-	if (enableWebSource) {
-		return arr;
+	if (!enableWebSource) {
+		return arr.filter(element => (!element.web_import));
 	}
-	return arr.filter(element => (!element.web_import));
+	return arr;
+}
+
+function lensesMediaFilter(lenses) {
+	if (ignoreAltMedia || ignoreImgSequence) {
+		return lenses.map(lens => {
+			// other media can be ignored if thumbnail_media is present
+			if (!lens.thumbnail_media_url) lens.thumbnail_media_url = lens.thumbnail_media_poster_url || "";
+			if (ignoreAltMedia) {
+				lens.standard_media_url = '';
+				lens.standard_media_poster_url = '';
+				lens.image_sequence = {};
+			} else {
+				lens.image_sequence = {};
+			}
+			return lens;
+		});
+	}
+	return lenses;
 }
 
 function searchLensByName(term) {
@@ -31,7 +52,11 @@ function searchLensByName(term) {
 			wildcardSearch
 		], async function (err, results) {
 			if (results && results[0]) {
-				resolve(webImportFilter(results));
+				resolve(
+					lensesMediaFilter(
+						webImportFilter(results)
+					)
+				);
 			} else {
 				if (err) {
 					console.error(err, wildcardSearch);
@@ -49,7 +74,11 @@ function searchLensByTags(hashtags) {
 			regSearch
 		], async function (err, results) {
 			if (results && results[0]) {
-				resolve(webImportFilter(results));
+				resolve(
+					lensesMediaFilter(
+						webImportFilter(results)
+					)
+				);
 			} else {
 				if (err) {
 					console.error(err, regSearch);
@@ -66,7 +95,11 @@ function searchLensByUuid(uuid) {
 			uuid
 		], async function (err, results) {
 			if (results && results[0]) {
-				resolve(webImportFilter(results));
+				resolve(
+					lensesMediaFilter(
+						webImportFilter(results)
+					)
+				);
 			} else {
 				if (err) {
 					console.error(err, uuid);
@@ -83,9 +116,11 @@ function getDuplicatedLensIds(lensIds) {
 			lensIds
 		], async function (err, results) {
 			if (results && results[0]) {
-				resolve(webImportFilter(results).map(obj => {
-					return parseInt(obj.id);
-				}));
+				resolve(
+					webImportFilter(results).map(obj => {
+						return parseInt(obj.id);
+					})
+				);
 			} else {
 				if (err) {
 					console.error(err, lensIds);
@@ -102,7 +137,11 @@ function getMultipleLenses(lenses) {
 			lenses
 		], async function (err, results) {
 			if (results && results[0]) {
-				resolve(webImportFilter(results));
+				resolve(
+					lensesMediaFilter(
+						webImportFilter(results)
+					)
+				);
 			} else {
 				if (err) {
 					console.error(err, lenses);
@@ -119,7 +158,11 @@ function getSingleLens(lensId) {
 			lensId
 		], async function (err, results) {
 			if (results && results[0]) {
-				resolve(webImportFilter(results));
+				resolve(
+					lensesMediaFilter(
+						webImportFilter(results)
+					)
+				);
 			} else {
 				if (err) {
 					console.error(err, lensId);

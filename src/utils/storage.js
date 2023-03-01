@@ -3,11 +3,15 @@ import path from "path";
 import sharp from "sharp";
 import * as dotenv from 'dotenv';
 import * as fs from "fs/promises";
+import * as Util from './helper.js';
 
 dotenv.config();
 
 const storagePath = process.env.STORAGE_PATH;
 const storageServer = process.env.STORAGE_SERVER;
+
+const ignoreAltMedia = Util.isOptionTrue('IGNORE_ALT_MEDIA');
+const ignoreImgSequence = Util.isOptionTrue('IGNORE_IMG_SEQUENCE');
 
 async function saveLens(lens) {
     if (!lens) {
@@ -26,16 +30,22 @@ async function saveLens(lens) {
     if (lens.thumbnail_media_poster_url) {
         await savePreviews(lens.thumbnail_media_poster_url);
     }
-    if (lens.standard_media_url) {
-        await savePreviews(lens.standard_media_url);
-    }
-    if (lens.standard_media_poster_url) {
-        await savePreviews(lens.standard_media_poster_url);
-    }
-    if (lens.image_sequence && lens.image_sequence?.size) {
-        let { url_pattern, size } = lens.image_sequence;
-        for (let i = 0; i < size; i++) {
-            await savePreviews(url_pattern.replace('%d', i));
+
+    if (!ignoreAltMedia) {
+        if (lens.standard_media_url) {
+            await savePreviews(lens.standard_media_url);
+        }
+        if (lens.standard_media_poster_url) {
+            await savePreviews(lens.standard_media_poster_url);
+        }
+
+        if (!ignoreImgSequence) {
+            if (lens.image_sequence && lens.image_sequence?.size) {
+                let { url_pattern, size } = lens.image_sequence;
+                for (let i = 0; i < size; i++) {
+                    await savePreviews(url_pattern.replace('%d', i));
+                }
+            }
         }
     }
 

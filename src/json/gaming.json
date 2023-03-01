@@ -11,12 +11,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/427ee279-3371-45d9-813a-47aeda95cec5.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/427ee279-3371-45d9-813a-47aeda95cec5.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/427ee279-3371-45d9-813a-47aeda95cec5.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/427ee279-3371-45d9-813a-47aeda95cec5/image_%d.jpg",
-				"size": 8,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/427ee279-3371-45d9-813a-47aeda95cec5.jpg"
 		},
 		{
 			"unlockable_id": "60314060891",
@@ -29,12 +25,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/00f77edc-93eb-44de-b15a-3edde6bb7765.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/00f77edc-93eb-44de-b15a-3edde6bb7765.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/00f77edc-93eb-44de-b15a-3edde6bb7765.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/00f77edc-93eb-44de-b15a-3edde6bb7765/image_%d.jpg",
-				"size": 14,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "RLkWKrwq3JXCppOD8O3y0Q"
+			"obfuscated_user_slug": "RLkWKrwq3JXCppOD8O3y0Q",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/00f77edc-93eb-44de-b15a-3edde6bb7765.jpg"
 		},
 		{
 			"unlockable_id": "56816930878",
@@ -47,12 +39,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/712a658f-3bb3-489e-b446-fd123b62be99.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/712a658f-3bb3-489e-b446-fd123b62be99.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/712a658f-3bb3-489e-b446-fd123b62be99.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/712a658f-3bb3-489e-b446-fd123b62be99/image_%d.jpg",
-				"size": 18,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/712a658f-3bb3-489e-b446-fd123b62be99.jpg"
 		},
 		{
 			"unlockable_id": "56770700884",
@@ -65,12 +53,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/7d532f18-8b22-49ff-b062-24cb745aeaea.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/7d532f18-8b22-49ff-b062-24cb745aeaea.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/7d532f18-8b22-49ff-b062-24cb745aeaea.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/7d532f18-8b22-49ff-b062-24cb745aeaea/image_%d.jpg",
-				"size": 6,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/7d532f18-8b22-49ff-b062-24cb745aeaea.jpg"
 		},
 		{
 			"unlockable_id": "56950560876",
@@ -83,12 +67,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/04e61f4e-83fd-45f6-8331-bf5e5ed71e30.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/04e61f4e-83fd-45f6-8331-bf5e5ed71e30.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/04e61f4e-83fd-45f6-8331-bf5e5ed71e30.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/04e61f4e-83fd-45f6-8331-bf5e5ed71e30/image_%d.jpg",
-				"size": 12,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/04e61f4e-83fd-45f6-8331-bf5e5ed71e30.jpg"
 		},
 		{
 			"unlockable_id": "56937240883",
@@ -101,12 +81,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/290332ff-ac78-4690-a4d8-84b4a5068220.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/290332ff-ac78-4690-a4d8-84b4a5068220.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/290332ff-ac78-4690-a4d8-84b4a5068220.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/290332ff-ac78-4690-a4d8-84b4a5068220/image_%d.jpg",
-				"size": 12,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/290332ff-ac78-4690-a4d8-84b4a5068220.jpg"
 		},
 		{
 			"unlockable_id": "56903820894",
@@ -119,12 +95,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/a2fd5fe4-7572-4e2a-bfed-6521b6b9f438.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/a2fd5fe4-7572-4e2a-bfed-6521b6b9f438.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/a2fd5fe4-7572-4e2a-bfed-6521b6b9f438.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/a2fd5fe4-7572-4e2a-bfed-6521b6b9f438/image_%d.jpg",
-				"size": 11,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/a2fd5fe4-7572-4e2a-bfed-6521b6b9f438.jpg"
 		},
 		{
 			"unlockable_id": "56948120886",
@@ -137,12 +109,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/0bf6d3ec-d082-4834-ab34-b08244ec96fa.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/0bf6d3ec-d082-4834-ab34-b08244ec96fa.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/0bf6d3ec-d082-4834-ab34-b08244ec96fa.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/0bf6d3ec-d082-4834-ab34-b08244ec96fa/image_%d.jpg",
-				"size": 13,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/0bf6d3ec-d082-4834-ab34-b08244ec96fa.jpg"
 		},
 		{
 			"unlockable_id": "58075620905",
@@ -155,12 +123,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/bb1e44c7-215f-41a0-9771-b203fa19573f.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/bb1e44c7-215f-41a0-9771-b203fa19573f.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/bb1e44c7-215f-41a0-9771-b203fa19573f.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/bb1e44c7-215f-41a0-9771-b203fa19573f/image_%d.jpg",
-				"size": 12,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/bb1e44c7-215f-41a0-9771-b203fa19573f.jpg"
 		},
 		{
 			"unlockable_id": "56709380876",
@@ -173,12 +137,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/2bb10e9d-e56a-4a38-aee1-4cdb1d183715.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/2bb10e9d-e56a-4a38-aee1-4cdb1d183715.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/2bb10e9d-e56a-4a38-aee1-4cdb1d183715.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/2bb10e9d-e56a-4a38-aee1-4cdb1d183715/image_%d.jpg",
-				"size": 9,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/2bb10e9d-e56a-4a38-aee1-4cdb1d183715.jpg"
 		},
 		{
 			"unlockable_id": "56948070905",
@@ -191,12 +151,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/3c8c9eb6-ce6c-414f-b706-6eed2183174f.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/3c8c9eb6-ce6c-414f-b706-6eed2183174f.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/3c8c9eb6-ce6c-414f-b706-6eed2183174f.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/3c8c9eb6-ce6c-414f-b706-6eed2183174f/image_%d.jpg",
-				"size": 10,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/3c8c9eb6-ce6c-414f-b706-6eed2183174f.jpg"
 		},
 		{
 			"unlockable_id": "58003410875",
@@ -209,12 +165,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/e604a475-8266-41a2-a7f7-cf5fa5743bbc.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/e604a475-8266-41a2-a7f7-cf5fa5743bbc.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/e604a475-8266-41a2-a7f7-cf5fa5743bbc.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/e604a475-8266-41a2-a7f7-cf5fa5743bbc/image_%d.jpg",
-				"size": 8,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/e604a475-8266-41a2-a7f7-cf5fa5743bbc.jpg"
 		},
 		{
 			"unlockable_id": "56786920885",
@@ -227,12 +179,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/2bb51163-f126-4181-9829-d6620fcc59e8.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/2bb51163-f126-4181-9829-d6620fcc59e8.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/2bb51163-f126-4181-9829-d6620fcc59e8.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/2bb51163-f126-4181-9829-d6620fcc59e8/image_%d.jpg",
-				"size": 11,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/2bb51163-f126-4181-9829-d6620fcc59e8.jpg"
 		},
 		{
 			"unlockable_id": "56890840878",
@@ -245,12 +193,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/169a7820-d5ae-4b79-acdb-a229760e9192.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/169a7820-d5ae-4b79-acdb-a229760e9192.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/169a7820-d5ae-4b79-acdb-a229760e9192.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/169a7820-d5ae-4b79-acdb-a229760e9192/image_%d.jpg",
-				"size": 11,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/169a7820-d5ae-4b79-acdb-a229760e9192.jpg"
 		},
 		{
 			"unlockable_id": "57996690881",
@@ -263,12 +207,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/49fdab01-db6f-4491-ad4f-76beb821f418.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/49fdab01-db6f-4491-ad4f-76beb821f418.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/49fdab01-db6f-4491-ad4f-76beb821f418.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/49fdab01-db6f-4491-ad4f-76beb821f418/image_%d.jpg",
-				"size": 20,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/49fdab01-db6f-4491-ad4f-76beb821f418.jpg"
 		},
 		{
 			"unlockable_id": "56969920910",
@@ -281,12 +221,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/3859ffba-c136-422b-a5e8-6fd1687c760b.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/3859ffba-c136-422b-a5e8-6fd1687c760b.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/3859ffba-c136-422b-a5e8-6fd1687c760b.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/3859ffba-c136-422b-a5e8-6fd1687c760b/image_%d.jpg",
-				"size": 15,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/3859ffba-c136-422b-a5e8-6fd1687c760b.jpg"
 		},
 		{
 			"unlockable_id": "57577080891",
@@ -299,12 +235,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/0e692732-fb45-4814-bdb0-d065b7d08101.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/0e692732-fb45-4814-bdb0-d065b7d08101.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/0e692732-fb45-4814-bdb0-d065b7d08101.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/0e692732-fb45-4814-bdb0-d065b7d08101/image_%d.jpg",
-				"size": 6,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "UAaBpehQUCtNoZ_zeYHG8A"
+			"obfuscated_user_slug": "UAaBpehQUCtNoZ_zeYHG8A",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/0e692732-fb45-4814-bdb0-d065b7d08101.jpg"
 		},
 		{
 			"unlockable_id": "57393760878",
@@ -317,12 +249,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/efaa843e-f494-4748-8ea0-28a49d169120.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/efaa843e-f494-4748-8ea0-28a49d169120.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/efaa843e-f494-4748-8ea0-28a49d169120.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/efaa843e-f494-4748-8ea0-28a49d169120/image_%d.jpg",
-				"size": 6,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "7tPOwg6qpMrM3BzLUKYDAQ"
+			"obfuscated_user_slug": "7tPOwg6qpMrM3BzLUKYDAQ",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/efaa843e-f494-4748-8ea0-28a49d169120.jpg"
 		},
 		{
 			"unlockable_id": "57681520875",
@@ -347,12 +275,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/d8bfd48b-be7e-4f78-a76e-50282ba8a74a.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/d8bfd48b-be7e-4f78-a76e-50282ba8a74a.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/d8bfd48b-be7e-4f78-a76e-50282ba8a74a.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/d8bfd48b-be7e-4f78-a76e-50282ba8a74a/image_%d.jpg",
-				"size": 6,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "DnJzjhdXGRl9ygofG1EpTQ"
+			"obfuscated_user_slug": "DnJzjhdXGRl9ygofG1EpTQ",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/d8bfd48b-be7e-4f78-a76e-50282ba8a74a.jpg"
 		},
 		{
 			"unlockable_id": "60030550902",
@@ -365,12 +289,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/3574ffb0-4fa6-4244-8ca8-1bb476563a46.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/3574ffb0-4fa6-4244-8ca8-1bb476563a46.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/3574ffb0-4fa6-4244-8ca8-1bb476563a46.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/3574ffb0-4fa6-4244-8ca8-1bb476563a46/image_%d.jpg",
-				"size": 15,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "6dldaUDkFogb-V-fEeTCWw"
+			"obfuscated_user_slug": "6dldaUDkFogb-V-fEeTCWw",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/3574ffb0-4fa6-4244-8ca8-1bb476563a46.jpg"
 		},
 		{
 			"unlockable_id": "57565420886",
@@ -393,12 +313,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/47e4ed5c-cdc5-462c-8e63-262e908f63ce.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/47e4ed5c-cdc5-462c-8e63-262e908f63ce.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/47e4ed5c-cdc5-462c-8e63-262e908f63ce.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/47e4ed5c-cdc5-462c-8e63-262e908f63ce/image_%d.jpg",
-				"size": 2,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "fWd83qqZXsMkdgOzPlyRBg"
+			"obfuscated_user_slug": "fWd83qqZXsMkdgOzPlyRBg",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/47e4ed5c-cdc5-462c-8e63-262e908f63ce.jpg"
 		},
 		{
 			"unlockable_id": "57215050879",
@@ -411,12 +327,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/77434a27-f4ad-449d-b2cd-aa384d6534df.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/77434a27-f4ad-449d-b2cd-aa384d6534df.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/77434a27-f4ad-449d-b2cd-aa384d6534df.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/77434a27-f4ad-449d-b2cd-aa384d6534df/image_%d.jpg",
-				"size": 6,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "06HmsfvgmQwDgQ_ryQ1ckg"
+			"obfuscated_user_slug": "06HmsfvgmQwDgQ_ryQ1ckg",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/77434a27-f4ad-449d-b2cd-aa384d6534df.jpg"
 		},
 		{
 			"unlockable_id": "56823160881",
@@ -429,12 +341,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/361da79c-774e-4d51-b7f1-15ae763df2f2.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/361da79c-774e-4d51-b7f1-15ae763df2f2.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/361da79c-774e-4d51-b7f1-15ae763df2f2.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/361da79c-774e-4d51-b7f1-15ae763df2f2/image_%d.jpg",
-				"size": 20,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/361da79c-774e-4d51-b7f1-15ae763df2f2.jpg"
 		},
 		{
 			"unlockable_id": "56950160903",
@@ -447,12 +355,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/ed550182-5c49-4e3d-b350-851812b86c02.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/ed550182-5c49-4e3d-b350-851812b86c02.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/ed550182-5c49-4e3d-b350-851812b86c02.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/ed550182-5c49-4e3d-b350-851812b86c02/image_%d.jpg",
-				"size": 18,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/ed550182-5c49-4e3d-b350-851812b86c02.jpg"
 		},
 		{
 			"unlockable_id": "57360220875",
@@ -465,12 +369,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/242eca56-90be-4005-872f-5b0ed2e5c7fb.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/242eca56-90be-4005-872f-5b0ed2e5c7fb.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/242eca56-90be-4005-872f-5b0ed2e5c7fb.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/242eca56-90be-4005-872f-5b0ed2e5c7fb/image_%d.jpg",
-				"size": 6,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "7t4m9hgxEP0Ao-eD8g7e0g"
+			"obfuscated_user_slug": "7t4m9hgxEP0Ao-eD8g7e0g",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/242eca56-90be-4005-872f-5b0ed2e5c7fb.jpg"
 		},
 		{
 			"unlockable_id": "59368350883",
@@ -495,12 +395,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/f682f06a-69a9-4198-9a14-41b9d48f60eb.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/f682f06a-69a9-4198-9a14-41b9d48f60eb.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/f682f06a-69a9-4198-9a14-41b9d48f60eb.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/f682f06a-69a9-4198-9a14-41b9d48f60eb/image_%d.jpg",
-				"size": 10,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA"
+			"obfuscated_user_slug": "s-zTMkHA6zggtdWx8Z6eFA",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/f682f06a-69a9-4198-9a14-41b9d48f60eb.jpg"
 		},
 		{
 			"unlockable_id": "57543400882",
@@ -513,12 +409,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/8c74546c-793d-4501-9ea1-403c9dbb09e6.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/8c74546c-793d-4501-9ea1-403c9dbb09e6.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/8c74546c-793d-4501-9ea1-403c9dbb09e6.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/8c74546c-793d-4501-9ea1-403c9dbb09e6/image_%d.jpg",
-				"size": 7,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "6B4QwckvtchOE9uveLfhqQ"
+			"obfuscated_user_slug": "6B4QwckvtchOE9uveLfhqQ",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/8c74546c-793d-4501-9ea1-403c9dbb09e6.jpg"
 		},
 		{
 			"unlockable_id": "57800070884",
@@ -531,12 +423,8 @@
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/eb0eb720-67b7-47e4-b1b1-d22341f3d001.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/eb0eb720-67b7-47e4-b1b1-d22341f3d001.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/eb0eb720-67b7-47e4-b1b1-d22341f3d001.jpg",
-			"image_sequence": {
-				"url_pattern": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_seq/eb0eb720-67b7-47e4-b1b1-d22341f3d001/image_%d.jpg",
-				"size": 6,
-				"frame_interval_ms": 300
-			},
-			"obfuscated_user_slug": "T1vsw2vF1U9qprLg3AkbFw"
+			"obfuscated_user_slug": "T1vsw2vF1U9qprLg3AkbFw",
+			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/eb0eb720-67b7-47e4-b1b1-d22341f3d001.jpg"
 		}
 	]
 }
