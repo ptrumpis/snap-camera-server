@@ -32,7 +32,7 @@ Watch the [Re-Import Cache Video Guide](https://www.youtube.com/watch?v=alo49et3
 ### 🌐 Web Lens Download
 All Snap Lenses are still available for download at **https://lens.snapchat.com** (hidden from view).
 
-You need to apply a special [Snap Camera Signature Patch](https://github.com/ptrumpis/snap-camera-signature-patch) to your `Snap Camera.exe` to get access to these web lenses. 
+You need to apply a special [Snap Camera Signature Patch](https://ptrumpis.github.io/snap-camera-signature-patch/) to your `Snap Camera.exe` to get access to these web lenses. 
 
  *This patch is only available for Windows as of now (because I don't own a Mac 🙄).*
 
