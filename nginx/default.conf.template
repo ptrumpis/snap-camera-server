@@ -28,6 +28,12 @@ server {
         root /etc/nginx;
     }
 
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+        return 204;
+    }
+
     # redirect all API calls
     location /vc/ {
         add_header 'Access-Control-Allow-Origin' '*' always;
