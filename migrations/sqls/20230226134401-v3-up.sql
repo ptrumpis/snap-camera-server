@@ -10,6 +10,9 @@ ALTER TABLE `unlocks` ADD COLUMN `web_import` tinyint(1) unsigned NOT NULL DEFAU
 
 ALTER TABLE `lenses` MODIFY COLUMN `lens_name` varchar(64) COLLATE 'utf8mb4_bin' NOT NULL;
 
+ALTER TABLE `lenses` MODIFY COLUMN `unlockable_id` varchar(16) NOT NULL;
+ALTER TABLE `unlocks` MODIFY COLUMN `lens_id` bigint(16) NOT NULL;
+
 CREATE TABLE IF NOT EXISTS `users` (
    `obfuscated_user_slug` varchar(32) NOT NULL,
    `user_display_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
