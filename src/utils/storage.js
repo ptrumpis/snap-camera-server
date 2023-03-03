@@ -69,15 +69,23 @@ async function savePreviews(url) {
 
         // actually valid files don't need to have an extension in their URL
         // TODO: check mime-type instead
-        if (!validExtensions.includes(ext)) {
+        if (!validExtensions.includes(ext) && !fileName.endsWith('360_640')) {
             console.error("Unsupported Preview file extension", ext, "in URL", url);
             return false;
         }
 
+        // TODO: whitelist all static urls
+
         if (filePath.includes('/preview-media/thumbnail_seq')) {
             // community-lens.storage.googleapis.com
             await downloadFile(previewUrl.toString(), filePath, fileName);
-        } else if (filePath.startsWith('/previewmedia/')) {
+        } else if (filePath.startsWith('/previewimage')) {
+            // lens-storage.storage.googleapis.com
+            const file = await downloadFile(previewUrl.toString(), filePath, fileName);
+        } else if (filePath.startsWith('/previewvideo')) {
+            // lens-storage.storage.googleapis.com
+            const file = await downloadFile(previewUrl.toString(), filePath, fileName);
+        } else if (filePath.startsWith('/previewmedia')) {
             // lens-preview-storage.storage.googleapis.com
             const file = await downloadFile(previewUrl.toString(), filePath, fileName);
             await convertWebpToPng(file);
@@ -117,6 +125,8 @@ async function savePNG(url) {
         // preserve original filepath
         let filePath = path.normalize(path.dirname(pngUrl.pathname));
         let fileName = path.basename(pngUrl.pathname);
+
+        // TODO: whitelist all static urls
 
         if (filePath.endsWith("/png")) {
             // snapcodes.storage.googleapis.com
