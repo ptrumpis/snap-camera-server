@@ -53,17 +53,22 @@ async function advancedSearch(searchTerm) {
 
 async function relayGetRequest(path) {
     if (relayServer) {
-        const response = await fetch(`${relayServer}${path}`, { method: 'GET', headers });
-        if (response.status === 200) {
-            try {
-                // avoid json parse errors on empty data
-                const data = await response.text();
-                if (data) {
-                    return JSON.parse(data);
+        try {
+            const response = await fetch(`${relayServer}${path}`, { method: 'GET', headers });
+            if (response.status === 200) {
+                try {
+                    // avoid json parse errors on empty data
+                    const data = await response.text();
+                    if (data) {
+                        return JSON.parse(data);
+                    }
+                } catch (e) {
+                    console.error(e);
                 }
-            } catch (e) {
-                console.error(e);
             }
+        } catch (e) {
+            // catch rare fetch errors
+            console.error(e);
         }
     }
     return {};
@@ -71,17 +76,22 @@ async function relayGetRequest(path) {
 
 async function relayPostRequest(path, body) {
     if (relayServer) {
-        const response = await fetch(`${relayServer}${path}`, { method: 'POST', body: JSON.stringify(body), headers });
-        if (response.status === 200) {
-            try {
-                // avoid json parse errors on empty data
-                const data = await response.text();
-                if (data) {
-                    return JSON.parse(data);
+        try {
+            const response = await fetch(`${relayServer}${path}`, { method: 'POST', body: JSON.stringify(body), headers });
+            if (response.status === 200) {
+                try {
+                    // avoid json parse errors on empty data
+                    const data = await response.text();
+                    if (data) {
+                        return JSON.parse(data);
+                    }
+                } catch (e) {
+                    console.error(e);
                 }
-            } catch (e) {
-                console.error(e);
             }
+        } catch (e) {
+            // catch rare fetch errors
+            console.error(e);
         }
     }
     return {};
