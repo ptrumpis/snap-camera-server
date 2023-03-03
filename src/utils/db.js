@@ -223,6 +223,9 @@ async function insertLens(lenses, forceDownload = false) {
 			thumbnail_media_poster_url, standard_media_url, standard_media_poster_url, obfuscated_user_slug, image_sequence, web_import } = lens;
 
 		if (!image_sequence) image_sequence = {};
+		if (!obfuscated_user_slug && user_display_name && web_import) {
+			obfuscated_user_slug = getObfuscatedSlugByDisplayName(user_display_name);
+		}
 
 		await new Promise(resolve => {
 			// rebuild the passed object manually
