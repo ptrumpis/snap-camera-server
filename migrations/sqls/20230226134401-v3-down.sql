@@ -8,4 +8,6 @@ ALTER TABLE `unlocks` MODIFY COLUMN `mirrored` tinyint(1) unsigned NOT NULL DEFA
 ALTER TABLE `lenses` DROP COLUMN `web_import`;
 ALTER TABLE `unlocks` DROP COLUMN `web_import`;
 
+ALTER TABLE `lenses` MODIFY COLUMN `lens_name` varchar(64) COLLATE 'utf8_unicode_ci' NOT NULL;
+
 DROP TABLE `users`;
