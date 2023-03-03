@@ -54,8 +54,10 @@ Help to build a community
 ![GitHub Contributors Image](https://contrib.rocks/image?repo=ptrumpis/snap-camera-server)
 
 ## ❤️ Support
-If you like my work and would like to support me, you are welcome to invite me for a virtual coffee ☕
+If you like my work and want to support me, feel free to invite me for a virtual coffee ☕
 
 - [☕ Ko-fi](https://ko-fi.com/ptrumpis)
 - [☕ Buy me a Coffee](https://www.buymeacoffee.com/ptrumpis)
 - [☕ Liberapay](https://liberapay.com/ptrumpis/)
+
+You can also become my GitHub Sponsor
