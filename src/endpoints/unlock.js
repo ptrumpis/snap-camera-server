@@ -30,21 +30,21 @@ router.get('/', async function (req, res, next) {
     }
 
     if (useWebSource) {
-        const uuid = Web.Cache.get(lensId);
-        if (uuid) {
-            unlock = await Web.getUnlockByHash(uuid);
-            if (unlock) {
-                DB.insertUnlock(unlock);
-                return res.json(unlock);
+        // try to retrive unlock information by UUID
+        let lens = Web.Cache.get(lensId);
+        if (!lens || !lens.uuid) {
+            lens = await DB.getSingleLens(lensId);
+            if (lens && lens[0]) {
+                lens = lens[0];
             }
         }
 
-        const lens = await DB.getSingleLens(lensId);
-        if (lens && lens[0] && lens[0].uuid) {
-            unlock = await Web.getUnlockByHash(lens[0].uuid);
-            if (unlock) {
-                DB.insertUnlock(unlock);
-                return res.json(unlock);
+        if (lens && lens.uuid) {
+            const unlockLensCombined = await Web.getUnlockByHash(lens.uuid);
+            if (unlockLensCombined) {
+                DB.insertLens(unlockLensCombined);
+                DB.insertUnlock(unlockLensCombined);
+                return res.json(unlockLensCombined);
             }
         }
     }
