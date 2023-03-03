@@ -14,7 +14,7 @@ router.post('/', async function (req, res, next) {
     }
 
     const searchTerm = req.body['query'].trim();
-    if (searchTerm.length < 3) {
+    if (searchTerm.length < 3 || (searchTerm.startsWith('(by') && !searchTerm.endsWith(')'))) {
         return res.json({ "lenses": [] });
     }
 
