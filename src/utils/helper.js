@@ -33,8 +33,8 @@ async function advancedSearch(searchTerm) {
         return await DB.searchLensByUuid(uuid);
     }
 
-    // lens ID's have 11 digits but we support +/- 1
-    const regLensId = /^[0-9]{10,12}$/gi;
+    // lens ID's have 11 to 16 digits
+    const regLensId = /^[0-9]{11,16}$/gi;
     if (regLensId.test(searchTerm)) {
         return await DB.getSingleLens(searchTerm);
     }
