@@ -3,14 +3,14 @@ This article will cover how to upgrade your current Snap Camera Server to the la
 
 ## Getting started
 * Upgrading works by downloading the [Latest v3.x Release](https://github.com/ptrumpis/snap-camera-server/releases/latest)
-* Copy your current `ssl/` folder and `.env` file over to the new Server directory
+* Copy your current `ssl/` folder over to the new Server directory and create a new `.env` file by copying `example.env`
 * Removing/Uninstalling your current version inside Docker
 * Start the new Server with Docker
 
 ## Copy files
-This is a no brainer.
-
-Just copy the `ssl/` folder and `.env` file from your old Server directory to the new one.
+* Just copy the `ssl/` folder from your old Server directory to the new Server directory.
+* If you imported any lenses you will also need to copy your `import/` folder over to your new server directory.
+* Create a new `.env` configuration file like the first time by making a copy of the template `example.env` file.
 
 ## Docker Desktop
 Start your local Docker Dekstop application and complete these 3 steps one after the other.
