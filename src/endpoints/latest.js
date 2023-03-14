@@ -8,7 +8,7 @@ const customResponse = require('../json/latest.json');
 var router = express.Router();
 
 router.get('/', async function (req, res, next) {
-	return res.json(customResponse);
+    return res.json(customResponse);
 });
 
 export default router;

@@ -9,7 +9,7 @@ const originalResponse = require('../json/categories.json');
 var router = express.Router();
 
 router.get('/', function (req, res, next) {
-	return res.json(Util.modifyResponseURLs(originalResponse));
+    return res.json(Util.modifyResponseURLs(originalResponse));
 });
 
 export default router;
