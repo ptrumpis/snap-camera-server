@@ -14,10 +14,14 @@ Windows users can now use the [Auto Configuration Tool](https://github.com/ptrum
 
 If you are not a Windows user or prefer to do the steps manually then you can watch the video guide below which covers all the steps in detail.
 
-## 🎓 How To Video Guide
-You can watch this step by step video guide on YouTube if you need help with the configuration on your local Windows machine.
+## 🎓 How To Video Guides
+You can watch these step by step video guides on YouTube if you need help with the configuration on your local machine.
 
-[![Snap Camera Installation Guide](https://img.youtube.com/vi/bcsjvWHUr7c/0.jpg)](https://www.youtube.com/watch?v=bcsjvWHUr7c)
+### Windows Installation Guide
+[![Snap Camera Server Windows Installation Guide](https://img.youtube.com/vi/bcsjvWHUr7c/0.jpg)](https://www.youtube.com/watch?v=bcsjvWHUr7c)
+
+### Mac OS Installation Guide
+[![Snap Camera Server Mac OS Installation Guide](https://img.youtube.com/vi/b2ILHJaD1T4/0.jpg)](https://www.youtube.com/watch?v=b2ILHJaD1T4)
 
 ## 💪 Manual Configuration Steps
 In addition to the full video guide each step is also covered by a short video tutorial
