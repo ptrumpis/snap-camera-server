@@ -22,7 +22,7 @@ This server requires Docker and OpenSSL and maybe 5 to 10 minutes of your time �
 2. [🛠️ Complete the configuration](docs/CONFIGURATION.md)
 3. [📖 Read the Server Wiki](https://github.com/ptrumpis/snap-camera-server/wiki)
 
-There is also a step by step [📺 Video Guide](https://www.youtube.com/watch?v=bcsjvWHUr7c) available.
+There are also step by step video guides for [📺 Windows](https://www.youtube.com/watch?v=bcsjvWHUr7c) and [📺 Mac OS](https://www.youtube.com/watch?v=b2ILHJaD1T4) available.
 
 ## 💯 Advanced Features
 ### 📤 Snap Camera Cache Import 
@@ -33,7 +33,7 @@ Watch the [📺 Re-Import Cache Video Guide](https://www.youtube.com/watch?v=alo
 ### 🌐 Web Lens Download
 All Snap Lenses are still available for download at **https://lens.snapchat.com** (hidden from view).
 
-You need to apply a special [Snap Camera Signature Patch](https://ptrumpis.github.io/snap-camera-signature-patch/) to your `Snap Camera.exe` to get access to these web lenses. 
+You need to apply a special [Snap Camera Signature Patch](https://ptrumpis.github.io/snap-camera-signature-patch/) to your `Snap Camera.exe` to get access to these web lenses.
 
 ## 💬 Community
 This is a non profit open source project for the greater good and you can help to make it better.
