@@ -53,7 +53,7 @@ services:
       - DB_NAME=${MYSQL_DATABASE}
       - DB_PORT=${MYSQL_DOCKER_PORT}
       - PORT=${APP_DOCKER_PORT}
-      - STORAGE_SERVER=http://127.0.0.1:${NGINX_LOCAL_PORT}
+      - STORAGE_SERVER=http://studio-app.snapchat.com:${NGINX_LOCAL_PORT}
       - STORAGE_PATH=/var/lib/snapcamera
       - IMPORT_DIR=import
       - MEDIA_DIR=snap-camera-media
