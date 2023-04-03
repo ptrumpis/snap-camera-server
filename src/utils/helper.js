@@ -18,6 +18,7 @@ const modifyServer = [
     'https://app.snapchat.com',
     'https://bolt-gcdn.sc-cdn.net',
     'https://s3.amazonaws.com',
+    'https://snap-storage.jaku.tv',
 ];
 
 const headers = new Headers({
