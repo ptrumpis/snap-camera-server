@@ -1,1 +1,13 @@
 # config.yml
+storage:
+  # urls to be served from local storage
+  urls:
+    - https://app.snapchat.com
+    - https://bolt-gcdn.sc-cdn.net
+    - https://community-lens.storage.googleapis.com
+    - https://lens-preview-storage.storage.googleapis.com
+    - https://lens-storage.storage.googleapis.com
+    - https://snapcodes.storage.googleapis.com
+    - https://storage.googleapis.com
+    - https://s3.amazonaws.com
+    - https://snap-storage.jaku.tv

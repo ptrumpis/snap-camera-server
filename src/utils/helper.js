@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import { Headers } from 'node-fetch';
+import { Config } from "./config.js";
 import * as dotenv from 'dotenv';
 import * as DB from './db.js';
 import * as Storage from './storage.js';
@@ -9,16 +10,14 @@ dotenv.config();
 const relayServer = process.env.RELAY_SERVER;
 const storageServer = process.env.STORAGE_SERVER;
 
-const modifyServer = [
-    'https://snapcodes.storage.googleapis.com',
-    'https://lens-storage.storage.googleapis.com',
-    'https://lens-preview-storage.storage.googleapis.com',
-    'https://community-lens.storage.googleapis.com',
-    'https://storage.googleapis.com',
+const modifyServer = Config?.storage?.urls || [
     'https://app.snapchat.com',
     'https://bolt-gcdn.sc-cdn.net',
-    'https://s3.amazonaws.com',
-    'https://snap-storage.jaku.tv',
+    'https://community-lens.storage.googleapis.com',
+    'https://lens-preview-storage.storage.googleapis.com',
+    'https://lens-storage.storage.googleapis.com',
+    'https://snapcodes.storage.googleapis.com',
+    'https://storage.googleapis.com',
 ];
 
 const headers = new Headers({
