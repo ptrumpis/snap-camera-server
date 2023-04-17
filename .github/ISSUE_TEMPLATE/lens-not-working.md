@@ -1,11 +1,12 @@
 ---
 name: Lens not working
 about: Lens not working or displaying correctly
-title: "[LENS] "
+title: ''
 labels: lens not working
 assignees: ptrumpis
 
 ---
+
 **System Information (please complete the following information):**
  - OS: [e.g. Windows, Mac OS]
  - Snap Camera Version: [e.g. 1.19, 1.20, 1.21]
