@@ -15,6 +15,8 @@ assignees: ptrumpis
 **Please follow these steps to provide detailed information**
 1. Open Snap Camera
 2. Select all Lenses that are not working in your app
-3. Copy and attach the file %USERPROFILE%\AppData\Local\Snap\Snap Camera\Log.txt to this ticket
+3. Copy and attach the Snap Camera log file to this ticket
+   - (Windows): %USERPROFILE%\AppData\Local\Snap\Snap Camera\Log.txt 
+   - (Mac OS): /Users/{YOUR_USER_NAME}/Library/Preferences/Snap/Snap Camera/Log.txt
 
 **Please also provide the lens share link**
