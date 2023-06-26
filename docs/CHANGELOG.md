@@ -1,6 +1,12 @@
 # 📋 Changelog - Snap Camera Server
 Release version history and feature overview
 
+## v3.1.0 - Maintenance Release
+- New configuration file `config.yml` for relay url's
+- Relay Timeout handling and better search result experience
+- Fix wrong IP address if server was hosted on remote computer
+- Updated npm packages
+
 ## v3.0.0 - Lens Web Crawler Release
 - New web crawler to download Lenses from `lens.snapchat.com`
 - Search by creator URL's e.g. => https​:​//​lensstudio​.​snapchat​.​com​/creator/wmF-q3w45OG4x4ZRmLGLoA
