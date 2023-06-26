@@ -7,6 +7,7 @@ import * as Storage from './storage.js';
 
 dotenv.config();
 
+const relayTimeout = process.env.RELAY_TIMEOUT || 6000;
 const relayServer = process.env.RELAY_SERVER;
 const storageServer = process.env.STORAGE_SERVER;
 
@@ -53,8 +54,13 @@ async function advancedSearch(searchTerm) {
 
 async function relayGetRequest(path) {
     if (relayServer) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => {
+            controller.abort();
+        }, relayTimeout);
+
         try {
-            const response = await fetch(`${relayServer}${path}`, { method: 'GET', headers });
+            const response = await fetch(`${relayServer}${path}`, { method: 'GET', headers, signal: controller.signal });
             if (response.status === 200) {
                 try {
                     // avoid json parse errors on empty data
@@ -69,6 +75,8 @@ async function relayGetRequest(path) {
         } catch (e) {
             // catch rare fetch errors
             console.error(e);
+        } finally {
+            clearTimeout(timeout);
         }
     }
     return {};
@@ -76,8 +84,13 @@ async function relayGetRequest(path) {
 
 async function relayPostRequest(path, body) {
     if (relayServer) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => {
+            controller.abort();
+        }, relayTimeout);
+
         try {
-            const response = await fetch(`${relayServer}${path}`, { method: 'POST', body: JSON.stringify(body), headers });
+            const response = await fetch(`${relayServer}${path}`, { method: 'POST', body: JSON.stringify(body), headers, signal: controller.signal });
             if (response.status === 200) {
                 try {
                     // avoid json parse errors on empty data
@@ -92,6 +105,8 @@ async function relayPostRequest(path, body) {
         } catch (e) {
             // catch rare fetch errors
             console.error(e);
+        } finally {
+            clearTimeout(timeout);
         }
     }
     return {};
@@ -115,6 +130,7 @@ async function mirrorSearchResults(relayResults) {
             }
         }
     }
+    relayResults = null;
 }
 
 async function downloadLens(lens) {

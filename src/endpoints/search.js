@@ -37,6 +37,7 @@ router.post('/', async function (req, res, next) {
                 Util.mirrorSearchResults(relayResults['lenses']);
             }
         }
+        relayResults = null;
     }
 
     if (useWebSource) {
@@ -55,6 +56,7 @@ router.post('/', async function (req, res, next) {
                 }
             }
         }
+        webResults = null;
     }
 
     return res.json({ "lenses": searchResults });

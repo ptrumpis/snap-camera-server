@@ -271,6 +271,7 @@ async function insertLens(lenses, forceDownload = false) {
             }
         });
     }
+    lenses = null;
 }
 
 async function insertUnlock(unlocks, forceDownload = false) {
@@ -320,6 +321,7 @@ async function insertUnlock(unlocks, forceDownload = false) {
             }
         });
     }
+    unlocks = null;
 }
 
 async function insertUser(user) {
@@ -353,6 +355,7 @@ async function insertUser(user) {
             resolve(false);
         }
     });
+    user = null;
 }
 
 function markLensAsMirrored(id) {

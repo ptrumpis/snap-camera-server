@@ -24,8 +24,7 @@ router.post('/', async function (req, res, next) {
     let lenses = [];
 
     const removeFoundId = function (lensId) {
-        lensId = parseInt(lensId);
-        const idx = lensIds.indexOf(lensId);
+        const idx = lensIds.indexOf(parseInt(lensId));
         if (idx !== -1) {
             lensIds.splice(idx, 1);
         }
@@ -63,6 +62,7 @@ router.post('/', async function (req, res, next) {
                 lenses = data['lenses'];
             }
         }
+        data = null;
     }
 
     if (useWebSource && lensIds.length) {
@@ -81,6 +81,7 @@ router.post('/', async function (req, res, next) {
         }
     }
 
+    lensIds = null;
     return res.json({
         "lenses": lenses
     });

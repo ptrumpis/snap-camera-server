@@ -95,6 +95,7 @@ async function mirrorSearchResults(webResults) {
             }
         }
     }
+    webResults = null;
 }
 
 export { Cache, search, searchByUserName, searchByCreatorSlug, getLensByHash, getUnlockByHash, mirrorSearchResults }
