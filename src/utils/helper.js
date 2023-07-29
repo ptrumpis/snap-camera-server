@@ -178,21 +178,30 @@ function parseLensUuid(str) {
     if (typeof str === "string") {
         let uuid = '';
         try {
+            // try to extract from known urls
+            // otherwise use global extraction attempt below
             if (str.startsWith("https://lens.snapchat.com/")) {
                 let webUrl = new URL(str);
                 uuid = webUrl.pathname.replace(/^\/+/, '');
             } else if (str.startsWith("https://www.snapchat.com/unlock/?")) {
-                let deeplinkURL = new URL(str);
-                uuid = deeplinkURL.searchParams.get('uuid')
+                let deeplinkURL = new URL(str.replaceAll('\u0026', '&')); // json encoding fix
+                if (deeplinkURL.searchParams.has('uuid')) {
+                    uuid = deeplinkURL.searchParams.get('uuid')
+                }
+            }
+
+            if (uuid) {
+                return parseLensUuid(uuid);
             }
         } catch (e) {
             console.error(e, str);
         }
 
-        // UUID's have 32 characters
-        const regUuid = /^[a-f0-9]{32}$/gi;
-        if (regUuid.test(uuid)) {
-            return uuid;
+        // global extraction attempt
+        // UUID's have 32 hexadecimal characters
+        uuid = str.match(/[a-f0-9]{32}/gi)
+        if (uuid && uuid[0]) {
+            return uuid[0];
         }
     }
 

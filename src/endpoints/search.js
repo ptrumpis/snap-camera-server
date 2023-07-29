@@ -23,7 +23,7 @@ router.post('/', async function (req, res, next) {
         searchResults = Util.modifyResponseURLs(searchResults);
 
         // hashtag search (not supported by relay or web)
-        if (searchTerm.startsWith('#') && searchResults.length) {
+        if (searchTerm.startsWith('#')) {
             return res.json({ "lenses": searchResults });
         }
     }
