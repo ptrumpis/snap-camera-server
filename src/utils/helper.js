@@ -1,6 +1,6 @@
-import fetch from "node-fetch";
+import fetch from 'node-fetch';
 import { Headers } from 'node-fetch';
-import { Config } from "./config.js";
+import { Config } from './config.js';
 import * as dotenv from 'dotenv';
 import * as DB from './db.js';
 import * as Storage from './storage.js';

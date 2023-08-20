@@ -1,5 +1,5 @@
 import YAML from 'yaml';
-import * as fs from "fs/promises";
+import * as fs from 'fs/promises';
 
 const Config = await loadConfig();
 

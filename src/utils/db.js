@@ -1,4 +1,4 @@
-import mysql from "mysql2";
+import mysql from 'mysql2';
 import * as dotenv from 'dotenv';
 import * as Util from './helper.js';
 

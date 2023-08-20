@@ -1,8 +1,8 @@
-import JSZip from "jszip";
-import LensFileParser from "../lib/parser.js";
-import * as fs from "fs/promises";
-import * as zstd from 'fzstd';
+import JSZip from 'jszip';
+import LensFileParser from '../lib/parser.js';
 import * as dotenv from 'dotenv';
+import * as fs from 'fs/promises';
+import * as zstd from 'fzstd';
 import * as Storage from './storage.js';
 
 dotenv.config();

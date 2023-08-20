@@ -1,4 +1,4 @@
-import express from "express";
+import express from 'express';
 import lenses from './src/endpoints/lenses.js';
 import categorylenses from './src/endpoints/category/lenses.js';
 import top from './src/endpoints/top.js';
@@ -15,11 +15,11 @@ import v1 from './src/endpoints/v1.js';
 import wildcard from './src/endpoints/wildcard.js';
 import * as init from './src/init.js';
 import * as dotenv from 'dotenv';
+import { isOptionTrue } from './src/utils/helper.js';
 
 dotenv.config();
 
 const serverPort = process.env.PORT;
-const enableCacheImport = process.env.ENABLE_CACHE_IMPORT;
 const app = express();
 
 app.use(express.json());
@@ -34,13 +34,13 @@ app.use('/vc/v1/explorer/deeplink_search', deeplink);
 app.use('/vc/v1/reporting/lens', reporting);
 app.use('/vc/v1/update/latest', latest);
 app.use('/vc/v1/update/download', download);
-if (enableCacheImport.toLowerCase() == 'true' || enableCacheImport == 1) {
-	app.use('/vc/v1/import/cache', importCache);
+if (isOptionTrue('ENABLE_CACHE_IMPORT')) {
+    app.use('/vc/v1/import/cache', importCache);
 }
 app.use('/vc/v1', v1);
 app.use('*', wildcard);
 
 app.listen(serverPort, () => {
-	console.log(`Snap Camera Server is running on port ${serverPort}`);
-	init.bootstrap();
+    console.log(`Snap Camera Server is running on port ${serverPort}`);
+    init.bootstrap();
 });

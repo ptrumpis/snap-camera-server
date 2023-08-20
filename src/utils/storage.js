@@ -1,8 +1,8 @@
-import fetch from "node-fetch";
-import path from "path";
-import sharp from "sharp";
+import fetch from 'node-fetch';
+import path from 'path';
+import sharp from 'sharp';
 import * as dotenv from 'dotenv';
-import * as fs from "fs/promises";
+import * as fs from 'fs/promises';
 import * as Util from './helper.js';
 
 dotenv.config();

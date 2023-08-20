@@ -1,5 +1,5 @@
-import LensWebCrawler from "../lib/crawler.js";
-import NodeCache from "node-cache";
+import LensWebCrawler from '../lib/crawler.js';
+import NodeCache from 'node-cache';
 import * as DB from './db.js';
 import * as Util from './helper.js';
 
