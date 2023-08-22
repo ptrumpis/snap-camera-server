@@ -17,6 +17,8 @@ This server requires Docker and OpenSSL and maybe 5 to 10 minutes of your time �
 - [🐋 Docker](https://www.docker.com/)
 - [🔐 OpenSSL](https://www.openssl.org/) (Download from [slproweb.com](https://slproweb.com/products/Win32OpenSSL.html) as Windows user)
 
+*The client application is required to apply the filters to your webcam ([Download Snap Camera](https://github.com/ptrumpis/snap-camera-server/discussions/6))*
+
 ## 🚀 Getting Started
 1. [📥 Download the latest release](https://github.com/ptrumpis/snap-camera-server/releases/latest)
 2. [🛠️ Complete the configuration](docs/CONFIGURATION.md)
