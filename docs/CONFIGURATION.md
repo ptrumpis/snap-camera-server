@@ -91,4 +91,8 @@ You need to tell/force your Snap Camera application to use your server instead t
    ```
 
 ## 🎉 Congratulations
-After completing the 5 steps you may now start Snap Camera! 
+After completing the 5 steps you may now start Snap Camera!
+
+Download the latest [Snap Camera v1.21.0](https://github.com/ptrumpis/snap-camera-server/discussions/6) if the client application is not already installed on your system.
+
+And remember to apply the [signature patch](https://github.com/ptrumpis/snap-camera-signature-patch) if you want to access lenses from [lens.snapchat.com](https://lens.snapchat.com).
