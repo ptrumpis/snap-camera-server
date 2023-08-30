@@ -52,7 +52,7 @@ You need to tell your operating system to trust the newly generated certificate.
 
 On Windows you can import the certificate in three different ways:
 1. By double-clicking the file and going through the pop up dialog
-2. By running the Widnows management console application `certlm.msc`
+2. By running the Windows management console application `certlm.msc`
 3. By simply executing a command called *certutil* (what I recommend)
 
 ```bash
