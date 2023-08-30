@@ -1,11 +1,16 @@
 # 📋 Changelog - Snap Camera Server
 Release version history and feature overview
 
+## v3.1.1 - Patch Release
+- Fixed an issue where UUID's and some share URL's would not return a search result
+
 ## v3.1.0 - Maintenance Release
 - New configuration file `config.yml` for relay url's
 - Relay Timeout handling and better search result experience
-- Fix wrong IP address if server was hosted on remote computer
 - Updated npm packages
+
+## v3.0.1 - Patch Release
+- Storage server would point to wrong IP if server was hosted on remote computer
 
 ## v3.0.0 - Lens Web Crawler Release
 - New web crawler to download Lenses from `lens.snapchat.com`
