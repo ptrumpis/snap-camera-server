@@ -208,12 +208,14 @@ function parseLensUuid(str) {
     return '';
 }
 
+// convert URL array to regular expression string and escape dots
+const modifyServerRegEx = new RegExp(modifyServer.join('|').replaceAll('.', '\\.'), 'gi');
+
 function modifyResponseURLs(orgResponse) {
     if (storageServer) {
-        // point all known hosting domains to our local storage server
-        const regEx = new RegExp(modifyServer.join('|'), 'gi');
+        // point all orignal URL's to our local storage server
         const response = JSON.stringify(orgResponse);
-        return JSON.parse(response.replaceAll(regEx, storageServer));
+        return JSON.parse(response.replaceAll(modifyServerRegEx, storageServer));
     }
     return orgResponse;
 }
