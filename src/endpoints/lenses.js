@@ -5,6 +5,7 @@ import * as Web from '../utils/web.js';
 
 const useRelay = Util.relay();
 const useWebSource = Util.isOptionTrue('ENABLE_WEB_SOURCE');
+const MAX_LENSES = 250;
 
 var router = express.Router();
 
@@ -15,13 +16,17 @@ router.get('/', async function (req, res, next) {
 });
 
 router.post('/', async function (req, res, next) {
-    if (!req.body || !req.body['lenses']) {
+    if (!req.body || !req.body['lenses'] || !(req.body['lenses'] instanceof Array)) {
         return res.json({});
     }
 
     // initialize ID array
     let lensIds = req.body['lenses'];
     let lenses = [];
+
+    if (lensIds.length > MAX_LENSES) {
+        return res.json({});
+    }
 
     const removeFoundId = function (lensId) {
         const idx = lensIds.indexOf(parseInt(lensId));
@@ -52,19 +57,23 @@ router.post('/', async function (req, res, next) {
         }
 
         let data = await Util.relayPostRequest(req.originalUrl, { "lenses": lensIds });
-        if (data && data['lenses']) {
-            DB.insertLens(data['lenses']);
+        if (data && data['lenses'] && (data['lenses'] instanceof Array)) {
+            // relay should return lenses but not more than requested
+            if (data['lenses'].length <= lensIds.length) {
+                DB.insertLens(data['lenses']);
 
-            // merge with local results
-            if (lenses && lenses.length) {
-                lenses = lenses.concat(data['lenses']);
-            } else {
-                lenses = data['lenses'];
+                // merge with local results
+                if (lenses && lenses.length) {
+                    lenses = lenses.concat(data['lenses']);
+                } else {
+                    lenses = data['lenses'];
+                }
             }
         }
         data = null;
     }
 
+    // use web cache for missing lens ID's
     if (useWebSource && lensIds.length) {
         for (let i = 0; i < lenses.length; i++) {
             removeFoundId(lenses[i].unlockable_id);
