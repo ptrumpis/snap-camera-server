@@ -33,7 +33,7 @@
     "formidable": "^3.5.1",
     "fzstd": "^0.1.0",
     "jszip": "^3.10.1",
-    "mysql2": "^2.3.3",
+    "mysql2": "^3.6.0",
     "node-cache": "^5.1.2",
     "node-fetch": "^3.3.0",
     "sharp": "^0.32.1",
