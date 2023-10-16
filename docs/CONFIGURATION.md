@@ -9,10 +9,16 @@ In order to get the server running you need to complete the following 5 steps:
 
 This can be done manually or automatically (Windows).
 
-## 🤖 Automatic Configuration on Windows
+## 🤖 Automatic Configuration
+### Windows
 Windows users can now use the [Auto Configuration Tool](https://github.com/ptrumpis/snap-camera-server-auto-config), which will handle all of these tasks for you.
 
-If you are not a Windows user or prefer to do the steps manually then you can watch the video guide below which covers all the steps in detail.
+If you prefer to do the steps manually then you can watch the video guide below which covers all the steps in detail.
+
+### Mac OS
+The Windows [Auto Configuration Tool](https://github.com/ptrumpis/snap-camera-server-auto-config) now includes an `AutoConfig.applescript` file for Mac OS users.
+
+It is still experimental but you can try to run it with your Script Editor on your macOS computer.
 
 ## 🎓 How To Video Guides
 You can watch these step by step video guides on YouTube if you need help with the configuration on your local machine.
