@@ -184,7 +184,7 @@ function parseLensUuid(str) {
                 let webUrl = new URL(str);
                 uuid = webUrl.pathname.replace(/^\/+/, '');
             } else if (str.startsWith("https://www.snapchat.com/unlock/?")) {
-                let deeplinkURL = new URL(str.replaceAll('\u0026', '&')); // json encoding fix
+                let deeplinkURL = new URL(str.replace(/\u0026/g, '&')); // json encoding fix
                 if (deeplinkURL.searchParams.has('uuid')) {
                     uuid = deeplinkURL.searchParams.get('uuid')
                 }
@@ -209,13 +209,13 @@ function parseLensUuid(str) {
 }
 
 // convert URL array to regular expression string and escape dots
-const modifyServerRegEx = new RegExp(modifyServer.join('|').replaceAll('.', '\\.'), 'gi');
+const modifyServerRegEx = new RegExp(modifyServer.join('|').replace(/\./g, '\\.'), 'gi');
 
 function modifyResponseURLs(orgResponse) {
     if (storageServer) {
         // point all orignal URL's to our local storage server
         const response = JSON.stringify(orgResponse);
-        return JSON.parse(response.replaceAll(modifyServerRegEx, storageServer));
+        return JSON.parse(response.replace(modifyServerRegEx, storageServer));
     }
     return orgResponse;
 }
