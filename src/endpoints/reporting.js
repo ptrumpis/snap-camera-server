@@ -1,10 +1,11 @@
 import express from 'express';
+import { Config } from '../utils/config.js';
 import * as DB from '../utils/db.js';
 import * as Util from '../utils/helper.js';
 import * as Web from '../utils/web.js';
 
-const useRelay = Util.relay();
-const useWebSource = Util.isOptionTrue('ENABLE_WEB_SOURCE');
+const useRelay = Config.app.relay.server;
+const useWebSource = Config.app.flag.enable_web_source;
 
 var router = express.Router();
 

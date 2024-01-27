@@ -7,19 +7,10 @@ import * as Storage from './storage.js';
 
 dotenv.config();
 
-const relayTimeout = process.env.RELAY_TIMEOUT || 6000;
-const relayServer = process.env.RELAY_SERVER;
+const relayTimeout = Config.app.relay.timeout;
+const relayServer = Config.app.relay.server;
+const modifyServer = Config.storage.urls;
 const storageServer = process.env.STORAGE_SERVER;
-
-const modifyServer = Config?.storage?.urls || [
-    'https://app.snapchat.com',
-    'https://bolt-gcdn.sc-cdn.net',
-    'https://community-lens.storage.googleapis.com',
-    'https://lens-preview-storage.storage.googleapis.com',
-    'https://lens-storage.storage.googleapis.com',
-    'https://snapcodes.storage.googleapis.com',
-    'https://storage.googleapis.com',
-];
 
 const headers = new Headers({
     'User-Agent': 'SnapCamera/1.21.0.0 (Windows 10 Version 2009)',
@@ -220,25 +211,10 @@ function modifyResponseURLs(orgResponse) {
     return orgResponse;
 }
 
-function relay() {
-    if (relayServer && relayServer.toUpperCase() !== 'FALSE') {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 function sleep(ms) {
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
     });
 }
 
-function isOptionTrue(envOptionName) {
-    if (process.env[envOptionName] && (process.env[envOptionName].toUpperCase() === 'TRUE' || process.env[envOptionName] == '1')) {
-        return true;
-    }
-    return false;
-}
-
-export { advancedSearch, relayGetRequest, relayPostRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, parseLensUuid, modifyResponseURLs, relay, sleep, isOptionTrue };
+export { advancedSearch, relayGetRequest, relayPostRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, parseLensUuid, modifyResponseURLs, sleep };

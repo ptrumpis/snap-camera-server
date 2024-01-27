@@ -1,17 +1,16 @@
 import fetch from 'node-fetch';
 import path from 'path';
 import sharp from 'sharp';
+import { Config } from './config.js';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs/promises';
-import * as Util from './helper.js';
 
 dotenv.config();
 
 const storagePath = process.env.STORAGE_PATH;
 const storageServer = process.env.STORAGE_SERVER;
-
-const ignoreAltMedia = Util.isOptionTrue('IGNORE_ALT_MEDIA');
-const ignoreImgSequence = Util.isOptionTrue('IGNORE_IMG_SEQUENCE');
+const ignoreAltMedia = Config.app.flag.ignore_alt_media;
+const ignoreImgSequence = Config.app.flag.ignore_img_sequence;
 
 async function saveLens(lens) {
     if (!lens) {

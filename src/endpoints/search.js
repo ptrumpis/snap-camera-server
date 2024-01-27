@@ -1,10 +1,11 @@
 import express from 'express';
+import { Config } from '../utils/config.js';
 import * as Util from '../utils/helper.js';
 import * as Web from '../utils/web.js';
 
-const useRelay = Util.relay();
-const useWebSource = Util.isOptionTrue('ENABLE_WEB_SOURCE');
-const mirrorSearchResults = Util.isOptionTrue('MIRROR_SEARCH_RESULTS');
+const useRelay = Config.app.relay.server;
+const useWebSource = Config.app.flag.enable_web_source;
+const mirrorSearchResults = Config.app.flag.mirror_search_results;
 
 var router = express.Router();
 

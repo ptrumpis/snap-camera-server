@@ -1,4 +1,5 @@
 import mysql from 'mysql2';
+import { Config } from './config.js';
 import * as dotenv from 'dotenv';
 import * as Util from './helper.js';
 
@@ -15,9 +16,13 @@ const connection = mysql.createPool({
     queueLimit: 0
 });
 
-const enableWebSource = Util.isOptionTrue('ENABLE_WEB_SOURCE');
-const ignoreAltMedia = Util.isOptionTrue('IGNORE_ALT_MEDIA');
-const ignoreImgSequence = Util.isOptionTrue('IGNORE_IMG_SEQUENCE');
+const storageServer = process.env.STORAGE_SERVER;
+const mediaDir = process.env.MEDIA_DIR.replace(/^\/+/, '');
+const defaultMediaPath = storageServer.concat('/', mediaDir, '/');
+
+const enableWebSource = Config.app.flag.enable_web_source;
+const ignoreAltMedia = Config.app.flag.ignore_alt_media;
+const ignoreImgSequence = Config.app.flag.ignore_img_sequence;
 
 function webImportFilter(arr) {
     if (!enableWebSource) {
@@ -233,14 +238,14 @@ async function insertLens(lenses, forceDownload = false) {
             let args = {
                 unlockable_id: unlockable_id,
                 uuid: uuid || Util.parseLensUuid(deeplink),
-                snapcode_url: snapcode_url,
+                snapcode_url: snapcode_url || defaultMediaPath.concat('snapcode.png'),
                 user_display_name: user_display_name,
                 lens_name: lens_name,
                 lens_tags: lens_tags || "",
                 lens_status: lens_status || "Live",
                 deeplink: deeplink || "",
-                icon_url: icon_url || "",
-                thumbnail_media_url: thumbnail_media_url || "",
+                icon_url: icon_url || defaultMediaPath.concat('icon.png'),
+                thumbnail_media_url: thumbnail_media_url || defaultMediaPath.concat('thumbnail.jpg'),
                 thumbnail_media_poster_url: thumbnail_media_poster_url || "",
                 standard_media_url: standard_media_url || "",
                 standard_media_poster_url: standard_media_poster_url || "",

@@ -13,13 +13,15 @@ import download from './src/endpoints/download.js';
 import importCache from './src/endpoints/import.js';
 import v1 from './src/endpoints/v1.js';
 import wildcard from './src/endpoints/wildcard.js';
+import { Config } from './src/utils/config.js';
 import * as init from './src/init.js';
 import * as dotenv from 'dotenv';
-import { isOptionTrue } from './src/utils/helper.js';
 
 dotenv.config();
 
+const useCacheImport = Config.app.flag.enable_cache_import;
 const serverPort = process.env.PORT;
+
 const app = express();
 
 app.use(express.json());
@@ -34,7 +36,7 @@ app.use('/vc/v1/explorer/deeplink_search', deeplink);
 app.use('/vc/v1/reporting/lens', reporting);
 app.use('/vc/v1/update/latest', latest);
 app.use('/vc/v1/update/download', download);
-if (isOptionTrue('ENABLE_CACHE_IMPORT')) {
+if (useCacheImport) {
     app.use('/vc/v1/import/cache', importCache);
 }
 app.use('/vc/v1', v1);
