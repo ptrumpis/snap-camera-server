@@ -18,11 +18,13 @@ async function loadConfig() {
                     server: false,
                     timeout: 6000,
                 },
-                enable_web_source: true,
-                enable_cache_import: true,
-                mirror_search_results: false,
-                ignore_alt_media: true,
-                ignore_img_sequence: true,
+                flag: {
+                    enable_web_source: true,
+                    enable_cache_import: true,
+                    mirror_search_results: false,
+                    ignore_alt_media: true,
+                    ignore_img_sequence: true,
+                }
             },
             storage: {
                 urls: [
@@ -56,10 +58,14 @@ async function loadConfig() {
             const lowercaseKey = envKey.toLowerCase();
 
             if (process.env[envKey] !== undefined) {
-                if (lowercaseKey === 'relay_server' && !yamlConfig.app.relay.server) {
-                    yamlConfig.app.relay.server = process.env[envKey];
-                } else if (lowercaseKey === 'relay_timeout' && !yamlConfig.app.relay.timeout) {
-                    yamlConfig.app.relay.timeout = parseInt(process.env[envKey], 10);
+                if (lowercaseKey === 'relay_server') {
+                    if (!yamlConfig.app.relay.server) {
+                        yamlConfig.app.relay.server = process.env[envKey];
+                    }
+                } else if (lowercaseKey === 'relay_timeout') {
+                    if (!yamlConfig.app.relay.timeout) {
+                        yamlConfig.app.relay.timeout = parseInt(process.env[envKey], 10);
+                    }
                 } else {
                     if (!yamlConfig.app.flag.hasOwnProperty(lowercaseKey)) {
                         yamlConfig.app.flag[lowercaseKey] = parseBoolean(process.env[envKey]);
@@ -91,19 +97,24 @@ function parseBoolean(value) {
 function deepMerge(obj1, obj2) {
     const merged = { ...obj1 };
 
-    for (const key in obj2) {
-        if (obj2.hasOwnProperty(key)) {
-            if (obj1.hasOwnProperty(key) && typeof obj1[key] === 'object' && obj2[key] && typeof obj2[key] === 'object') {
-                merged[key] = deepMerge(obj1[key], obj2[key]);
+    for (const [key, value] of Object.entries(obj2)) {
+        if (obj1[key] && typeof obj1[key] === 'object' && value && typeof value === 'object') {
+            if (Array.isArray(obj1[key]) && Array.isArray(value)) {
+                merged[key] = mergeArraysUnique(obj1[key], value);
             } else {
-                if (obj2[key] !== null && obj2[key] !== undefined) {
-                    merged[key] = obj2[key];
-                }
+                merged[key] = deepMerge(obj1[key], value);
             }
+        } else if (value !== null && value !== undefined) {
+            merged[key] = value;
         }
     }
 
     return merged;
+}
+
+function mergeArraysUnique(arr1, arr2) {
+    const set = new Set([...arr1, ...arr2]);
+    return Array.from(set);
 }
 
 export { Config };
