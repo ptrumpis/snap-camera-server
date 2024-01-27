@@ -27,15 +27,7 @@ async function loadConfig() {
                 }
             },
             storage: {
-                urls: [
-                    'https://app.snapchat.com',
-                    'https://bolt-gcdn.sc-cdn.net',
-                    'https://community-lens.storage.googleapis.com',
-                    'https://lens-preview-storage.storage.googleapis.com',
-                    'https://lens-storage.storage.googleapis.com',
-                    'https://snapcodes.storage.googleapis.com',
-                    'https://storage.googleapis.com',
-                ]
+                urls: []
             }
         };
 

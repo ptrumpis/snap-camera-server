@@ -52,3 +52,4 @@ storage:
     - https://storage.googleapis.com
     - https://s3.amazonaws.com
     - https://snap-storage.jaku.tv
+    - https://snapchatreverse.jaku.tv
