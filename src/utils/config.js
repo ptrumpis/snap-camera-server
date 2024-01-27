@@ -57,12 +57,12 @@ async function loadConfig() {
 
             if (process.env[envKey] !== undefined) {
                 if (lowercaseKey === 'relay_server' && !yamlConfig.app.relay.server) {
-                    yamlConfig.app.relay.server = process.env[key];
+                    yamlConfig.app.relay.server = process.env[envKey];
                 } else if (lowercaseKey === 'relay_timeout' && !yamlConfig.app.relay.timeout) {
-                    yamlConfig.app.relay.timeout = parseInt(process.env[key], 10);
+                    yamlConfig.app.relay.timeout = parseInt(process.env[envKey], 10);
                 } else {
                     if (!yamlConfig.app.flag.hasOwnProperty(lowercaseKey)) {
-                        yamlConfig.app.flag[lowercaseKey] = parseBoolean(process.env[key]);
+                        yamlConfig.app.flag[lowercaseKey] = parseBoolean(process.env[envKey]);
                     }
                 }
             }
