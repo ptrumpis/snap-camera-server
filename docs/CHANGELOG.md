@@ -1,6 +1,13 @@
 # 📋 Changelog - Snap Camera Server
 Release version history and feature overview
 
+## v3.2.0 - Support Release
+- Upgrade to MySQL 8.0.x for out of the box macOS ARM support
+- Node 14 code compatibility (Node 16 is still the default)
+- Migration of .env application settings to config.yml
+- Fixed small bug with .webp to .png image conversion
+- Updated npm packages
+
 ## v3.1.1 - Patch Release
 - Fixed an issue where UUID's and some share URL's would not return a search result
 
