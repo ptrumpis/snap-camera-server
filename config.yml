@@ -1,6 +1,47 @@
-# config.yml
+# config.yml v3.2
+# some options moved from .env to config.yml
+# you can now backup or share this file with your friends without revealing credentials
+#
+# notes:
+# config.yml settings will take precedence over .env settings
+# application settings in .env will be deprecated in v4
+
+# application configuration
+app:
+  relay:
+    # relay server url and connection timeout in milliseconds
+    # comment server line out to disable relay
+    server: https://snapchatreverse.jaku.tv
+    timeout: 6000
+
+  flag:
+    # https://github.com/ptrumpis/snap-camera-signature-patch
+    # web source unlocks all lenses even those created after January 25, 2023
+    # it requires a patched binary with disabled signature checks
+    enable_web_source: true
+
+    # https://github.com/ptrumpis/snap-lens-cache-import
+    # enable import of cached application lenses through special api
+    # if you run a public server, you should set this to FALSE
+    # otherwise anyone can upload files to your server
+    enable_cache_import: true
+
+    # mirrors and downloads all your search results
+    # comes with increased disk space usage
+    # but helps to back up lenses in case they disappear
+    mirror_search_results: false
+
+    # ignore alternative media download
+    # turning it on has no downside and saves alot of disk space
+    # IGNORE_ALT_MEDIA takes precedence over IGNORE_IMG_SEQUENCE
+    ignore_alt_media: true
+    ignore_img_sequence: true
+
+# storage configuration
 storage:
   # urls to be served from local storage
+  # you can add or remove urls
+  # update is required if relay server changes
   urls:
     - https://app.snapchat.com
     - https://bolt-gcdn.sc-cdn.net
