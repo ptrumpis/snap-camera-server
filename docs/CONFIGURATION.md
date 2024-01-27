@@ -102,3 +102,6 @@ After completing the 5 steps you may now start Snap Camera!
 Download the latest [Snap Camera v1.21.0](https://github.com/ptrumpis/snap-camera-server/discussions/6) if the client application is not already installed on your system.
 
 And remember to apply the [signature patch](https://github.com/ptrumpis/snap-camera-signature-patch) if you want to access lenses from [lens.snapchat.com](https://lens.snapchat.com).
+
+Please like and share this project with others  
+[![X (formerly Twitter) URL](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server)](https://twitter.com/intent/tweet?text=Snap%20Camera%20Server%20is%20an%20alternative%20self%20hosted%20solution%20for%20Snapcamera.%20It%20will%20let%20you%20continue%20to%20use%20Snapcamera%20with%20all%20Snapchat%20filters%20after%20the%20shutdown.&url=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server&hashtags=snapcamera,snapchat)
