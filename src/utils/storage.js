@@ -216,7 +216,7 @@ async function downloadFile(targetUrl, subDirectory, fileName) {
 async function convertWebpToPng(file) {
     try {
         if (typeof file === 'string' && file.endsWith('.webp')) {
-            const fileAsPng = file.substring(0, fileName.lastIndexOf('.')).concat('.png');
+            const fileAsPng = file.substring(0, file.lastIndexOf('.')).concat('.png');
 
             console.log("Converting WEBP to PNG", file);
 
