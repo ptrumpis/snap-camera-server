@@ -245,7 +245,7 @@ async function insertLens(lenses, forceDownload = false) {
                 lens_status: lens_status || "Live",
                 deeplink: deeplink || "",
                 icon_url: icon_url || defaultMediaPath.concat('icon.png'),
-                thumbnail_media_url: thumbnail_media_url || defaultMediaPath.concat('thumbnail.jpg'),
+                thumbnail_media_url: thumbnail_media_url || thumbnail_media_poster_url || standard_media_poster_url || standard_media_url || defaultMediaPath.concat('thumbnail.jpg'),
                 thumbnail_media_poster_url: thumbnail_media_poster_url || "",
                 standard_media_url: standard_media_url || "",
                 standard_media_poster_url: standard_media_poster_url || "",
