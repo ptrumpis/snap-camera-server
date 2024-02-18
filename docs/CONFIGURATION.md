@@ -7,7 +7,7 @@ In order to get the server running you need to complete the following 5 steps:
 4. [Start Docker](#4-starting-docker-video-tutorial)
 5. [Edit the /etc/hosts file](#5-edit-the-etchosts-file-video-tutorial)
 
-This can be done manually or automatically (Windows).
+This can be done manually or automatically (Windows and Mac OS).
 
 ## 🤖 Automatic Configuration
 ### Windows
@@ -103,5 +103,16 @@ Download the latest [Snap Camera v1.21.0](https://github.com/ptrumpis/snap-camer
 
 And remember to apply the [signature patch](https://github.com/ptrumpis/snap-camera-signature-patch) if you want to access lenses from [lens.snapchat.com](https://lens.snapchat.com).
 
-Please like and share this project with others  
-[![X (formerly Twitter) URL](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server)](https://twitter.com/intent/tweet?text=Snap%20Camera%20Server%20is%20an%20alternative%20self%20hosted%20solution%20for%20Snapcamera.%20It%20will%20let%20you%20continue%20to%20use%20Snapcamera%20with%20all%20Snapchat%20filters%20after%20the%20shutdown.&url=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server&hashtags=snapcamera,snapchat)
+#### 🔗 Please like and share this project with others:  
+[![Facebook](https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server)
+[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server&text=Snap%20Camera%20Server%20is%20a%20self%20hosted%20solution%20to%20use%20Snapchat%20webcam%20filters&hashtags=snapcamera,snapchat)
+[![Pinterest](https://img.shields.io/badge/Pinterest-E60023?style=for-the-badge&logo=pinterest&logoColor=white)](https://pinterest.com/pin/create/button/?url=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server&media=&description=Snap%20Camera%20Server%20is%20a%20self%20hosted%20solution%20to%20use%20Snapchat%20webcam%20filters)
+[![Reddit](https://img.shields.io/badge/Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white)](https://reddit.com/submit?url=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server&title=Snap%20Camera%20Server%20is%20a%20self%20hosted%20solution%20to%20use%20Snapchat%20webcam%20filters)  
+[![VK](https://img.shields.io/badge/VKontakte-4C75A3?style=for-the-badge&logo=vk&logoColor=white)](http://vk.com/share.php?url=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server&title=Snap%20Camera%20Server%20is%20a%20self%20hosted%20solution%20to%20use%20Snapchat%20webcam%20filters)
+[![Tumblr](https://img.shields.io/badge/Tumblr-35465C?style=for-the-badge&logo=tumblr&logoColor=white)](http://www.tumblr.com/share?v=3&u=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server&t=)
+[![LinkedIn](https://img.shields.io/badge/LinkedIN-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server)
+[![Xing](https://img.shields.io/badge/Xing-006567?style=for-the-badge&logo=xing&logoColor=white)](https://www.xing.com/app/user?op=share;url=url=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server)  
+[![Telegram](https://img.shields.io/badge/Telegram-0088CC?style=for-the-badge&logo=telegram&logoColor=white)](https://telegram.me/share/url?url=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server&text=Snap%20Camera%20Server%20is%20a%20self%20hosted%20solution%20to%20use%20Snapchat%20webcam%20filters)
+[![Skype](https://img.shields.io/badge/Skype-00AFF0?style=for-the-badge&logo=skype&logoColor=white)](https://web.skype.com/share?url=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server)
+[![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://api.whatsapp.com/send?text=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server)
+[![Sina Weibo](https://img.shields.io/badge/新浪微博-DF2029?style=for-the-badge&logo=sina-weibo&logoColor=white)](https://service.weibo.com/share/share.php?url=https%3A%2F%2Fgithub.com%2Fptrumpis%2Fsnap-camera-server&title=Snap%20Camera%20Server%20is%20a%20self%20hosted%20solution%20to%20use%20Snapchat%20webcam%20filters)
