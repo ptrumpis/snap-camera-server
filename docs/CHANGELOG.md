@@ -1,6 +1,11 @@
 # 📋 Changelog - Snap Camera Server
 Release version history and feature overview
 
+## v3.2.1 - Patch Release
+- Fixed lens placeholder image bug
+- New config option to enable placeholder images (default: disabled)
+- Updated sharp library
+
 ## v3.2.0 - Support Release
 - Upgrade to MySQL 8.0.x for out of the box macOS ARM support
 - Node 14 code compatibility (Node 16 is still the default)
