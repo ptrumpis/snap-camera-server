@@ -24,6 +24,10 @@ const enableWebSource = Config.app.flag.enable_web_source;
 const ignoreAltMedia = Config.app.flag.ignore_alt_media;
 const ignoreImgSequence = Config.app.flag.ignore_img_sequence;
 
+const placeholderThumbnail = Config.media.placeholder.thumbnail;
+const placeholderSnapcode = Config.media.placeholder.snapcode;
+const placeholderIcon = Config.media.placeholder.icon;
+
 function webImportFilter(arr) {
     if (!enableWebSource) {
         return arr.filter(element => (!element.web_import));
@@ -32,21 +36,34 @@ function webImportFilter(arr) {
 }
 
 function lensesMediaFilter(lenses) {
-    if (ignoreAltMedia || ignoreImgSequence) {
-        return lenses.map(lens => {
-            // other media can be ignored if thumbnail_media is present
-            if (!lens.thumbnail_media_url) lens.thumbnail_media_url = lens.thumbnail_media_poster_url || "";
-            if (ignoreAltMedia) {
-                lens.standard_media_url = '';
-                lens.standard_media_poster_url = '';
-                lens.image_sequence = {};
-            } else {
-                lens.image_sequence = {};
-            }
-            return lens;
-        });
-    }
-    return lenses;
+    return lenses.map(lens => {
+        // filter out ignored media files according to config.yml
+        if (ignoreAltMedia) {
+            lens.standard_media_url = '';
+            lens.standard_media_poster_url = '';
+            lens.image_sequence = {};
+        } else if (ignoreImgSequence) {
+            lens.image_sequence = {};
+        }
+
+        // generic thumbnail fix
+        if (!lens.thumbnail_media_url) {
+            lens.thumbnail_media_url = lens.thumbnail_media_poster_url || lens.standard_media_poster_url;
+        }
+
+        // show placeholder media files for missing images
+        if (placeholderThumbnail && !lens.thumbnail_media_url) {
+            lens.thumbnail_media_url = defaultMediaPath.concat('thumbnail.jpg');
+        }
+        if (placeholderSnapcode && !lens.snapcode_url) {
+            lens.snapcode_url = defaultMediaPath.concat('snapcode.png')
+        }
+        if (placeholderIcon && !lens.icon_url) {
+            lens.icon_url = defaultMediaPath.concat('icon.png')
+        }
+
+        return lens;
+    });
 }
 
 function searchLensByName(term) {
@@ -238,14 +255,14 @@ async function insertLens(lenses, forceDownload = false) {
             let args = {
                 unlockable_id: unlockable_id,
                 uuid: uuid || Util.parseLensUuid(deeplink),
-                snapcode_url: snapcode_url || defaultMediaPath.concat('snapcode.png'),
+                snapcode_url: snapcode_url || "",
                 user_display_name: user_display_name,
                 lens_name: lens_name,
                 lens_tags: lens_tags || "",
                 lens_status: lens_status || "Live",
                 deeplink: deeplink || "",
-                icon_url: icon_url || defaultMediaPath.concat('icon.png'),
-                thumbnail_media_url: thumbnail_media_url || thumbnail_media_poster_url || standard_media_poster_url || standard_media_url || defaultMediaPath.concat('thumbnail.jpg'),
+                icon_url: icon_url || "",
+                thumbnail_media_url: thumbnail_media_url || "",
                 thumbnail_media_poster_url: thumbnail_media_poster_url || "",
                 standard_media_url: standard_media_url || "",
                 standard_media_poster_url: standard_media_poster_url || "",

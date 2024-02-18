@@ -37,6 +37,14 @@ app:
     ignore_alt_media: true
     ignore_img_sequence: true
 
+# media configuration
+media:
+  # show placeholder images to distinguish missing media files from broken links
+  placeholder:
+    thumbnail: false
+    snapcode: false
+    icon: false
+
 # storage configuration
 storage:
   # urls to be served from local storage

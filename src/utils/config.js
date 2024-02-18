@@ -24,7 +24,14 @@ async function loadConfig() {
                     mirror_search_results: false,
                     ignore_alt_media: true,
                     ignore_img_sequence: true,
-                }
+                },
+            },
+            media: {
+                placeholder: {
+                    thumbnail: false,
+                    snapcode: false,
+                    icon: false,
+                },
             },
             storage: {
                 urls: []
