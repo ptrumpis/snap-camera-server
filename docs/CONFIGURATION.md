@@ -1,24 +1,28 @@
 # 🛠️ Configuration - Snap Camera Server
-In order to get the server running you need to complete the following 5 steps:
 
-1. [Create Configuration file](#1-create-configuration-file-video-tutorial)
-2. [Generate SSL certificate](#2-generate-ssl-certificate-video-tutorial)
-3. [Import Root certificate](#3-import-root-certificate-video-tutorial)
-4. [Start Docker](#4-starting-docker-video-tutorial)
-5. [Edit the /etc/hosts file](#5-edit-the-etchosts-file-video-tutorial)
+In order to get the server running you can use the  
+[Automatic Configuration](#-automatic-configuration)
+
+Or complete the following 5 steps manually:
+
+1. [Create Configuration file](#1-create-configuration-file-video-clip)
+2. [Generate SSL certificate](#2-generate-ssl-certificate-video-clip)
+3. [Import Root certificate](#3-import-root-certificate-video-clip)
+4. [Start Docker](#4-starting-docker-video-clip)
+5. [Edit the /etc/hosts file](#5-edit-the-etchosts-file-video-clip)
 
 This can be done manually or automatically (Windows and Mac OS).
 
 ## 🤖 Automatic Configuration
 ### Windows
-Windows users can now use the [Auto Configuration Tool](https://github.com/ptrumpis/snap-camera-server-auto-config), which will handle all of these tasks for you.
+Windows users can use the [Auto Configuration Tool](https://github.com/ptrumpis/snap-camera-server-auto-config), which will handle all configuration steps for you.
 
 If you prefer to do the steps manually then you can watch the video guide below which covers all the steps in detail.
 
 ### Mac OS
-The Windows [Auto Configuration Tool](https://github.com/ptrumpis/snap-camera-server-auto-config) now includes an `AutoConfig.applescript` file for Mac OS users.
+The [Auto Configuration Tool](https://github.com/ptrumpis/snap-camera-server-auto-config) now includes an `AutoConfig.applescript` file for Mac OS users.
 
-It is still experimental but you can try to run it with your Script Editor on your macOS computer.
+You can open and run the file with your *Script Editor* on your macOS computer.
 
 ## 🎓 How To Video Guides
 You can watch these step by step video guides on YouTube if you need help with the configuration on your local machine.
@@ -32,7 +36,7 @@ You can watch these step by step video guides on YouTube if you need help with t
 ## 💪 Manual Configuration Steps
 In addition to the full video guide each step is also covered by a short video tutorial
 
-### 1. Create Configuration file ([Video Tutorial](https://youtu.be/wZIPBPVs-70))
+### 1. Create Configuration file ([Video Clip](https://youtu.be/wZIPBPVs-70))
 You need to create a `.env` configuration file.
 
 Create a copy of the file `example.env` and name the copy `.env` (without filename).
@@ -41,7 +45,7 @@ You can go with all default values and don't need to change anything unless your
 
 Read the [Server Settings (.env)](https://github.com/ptrumpis/snap-camera-server/wiki/Server-Settings-(.env)) page for configuration details.
 
-### 2. Generate SSL certificate ([Video Tutorial](https://youtu.be/4QJP8MLvSdA))
+### 2. Generate SSL certificate ([Video Clip](https://youtu.be/4QJP8MLvSdA))
 Snap Camera will refuse to connect to your local server if you don't have a trusted SSL certificate.
 You need to generate a .crt and .key file and have the .crt file installed as trusted root certificate on your operating system.
 
@@ -53,7 +57,7 @@ The required files can be generated with the included script `./gencert.bat` or 
 
 Docker compose expects these two files by default, otherwise the containers will not start.
 
-### 3. Import Root certificate ([Video Tutorial](https://youtu.be/mJFmvTg1yfE))
+### 3. Import Root certificate ([Video Clip](https://youtu.be/mJFmvTg1yfE))
 You need to tell your operating system to trust the newly generated certificate.
 
 On Windows you can import the certificate in three different ways:
@@ -67,7 +71,7 @@ certutil -addstore -enterprise Root ./ssl/studio-app.snapchat.com.crt
 
 You need to run this command as Administrator on a Windows Powershell.
 
-### 4. Starting Docker ([Video Tutorial](https://youtu.be/2siSkWdZLbo))
+### 4. Starting Docker ([Video Clip](https://youtu.be/2siSkWdZLbo))
 You may start the docker containers now by executing the command
 ```bash
 docker compose up
@@ -77,7 +81,7 @@ The command can be executed with a terminal like Windows Powershell.
 
 *Docker must be installed to execute this command*
 
-### 5. Edit the /etc/hosts file ([Video Tutorial](https://youtu.be/o9gAo5VH2cw))
+### 5. Edit the /etc/hosts file ([Video Clip](https://youtu.be/o9gAo5VH2cw))
 #### Connecting your Snap Camera application to your local server
 You need to tell/force your Snap Camera application to use your server instead the one that has been shutdown on January 25, 2023.
 
