@@ -17,7 +17,7 @@ app:
 
     # https://github.com/ptrumpis/snap-lens-cache-import
     # enable import of cached application lenses through special api
-    # if you run a public server, you should set this to FALSE
+    # if you run a public server, you should set this to 'false'
     # otherwise anyone can upload files to your server
     enable_cache_import: true
 
@@ -40,9 +40,9 @@ media:
     snapcode: false
     icon: false
 
-# import/upload configuration
+# import configuration
 import:
-  # allow cache import tool to overwrite existing lenses
+  # allow cache import tool overwriting of existing files to re-import modified lenses
   # requires 'app.flag.enable_cache_import' to be 'true'
   allow_overwrite: true
 
