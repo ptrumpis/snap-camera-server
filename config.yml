@@ -57,6 +57,15 @@ search:
   # this feature requires 'app.flag.enable_web_source' to be 'true'
   creator_url: https://lensstudio.snapchat.com/creator/
 
+  # supported lens share urls
+  # this feature requires 'app.flag.enable_web_source' to be 'true'
+  # paste an url and strip/remove any other non static http parameters
+  # - mark/replace the 32 character lens identifier with {UUID}
+  share_urls:
+    - https://lens.snapchat.com/{UUID}
+    - https://www.snapchat.com/lens/{UUID}
+    - https://www.snapchat.com/unlock/?uuid={UUID}
+
 # storage configuration
 storage:
   # urls to be served from local storage

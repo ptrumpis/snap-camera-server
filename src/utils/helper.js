@@ -13,6 +13,9 @@ const relayServer = Config.app.relay.server;
 const storageServer = process.env.STORAGE_SERVER;
 const modifyServerRegEx = new RegExp(Config.storage.urls.map(escapeRegExp).join('|'), 'gi');
 
+const shareUrlUuid = escapeRegExp('{UUID}');
+const shareUrls = Config.search.share_urls.map(escapeRegExp);
+
 const headers = new Headers({
     'User-Agent': 'SnapCamera/1.21.0.0 (Windows 10 Version 2009)',
     'Content-Type': 'application/json',
@@ -170,38 +173,41 @@ function mergeLensesUnique(lenses, newLenses) {
     return lenses;
 }
 
-function parseLensUuid(str) {
+function parseLensUuid(str, urlExtraction = true) {
     if (typeof str === "string") {
-        let uuid = '';
-        try {
-            // try to extract from known urls
-            // otherwise use global extraction attempt below
-            if (str.startsWith("https://lens.snapchat.com/")) {
-                let webUrl = new URL(str);
-                uuid = webUrl.pathname.replace(/^\/+/, '');
-            } else if (str.startsWith("https://www.snapchat.com/unlock/?")) {
-                let deeplinkURL = new URL(str);
-                if (deeplinkURL.searchParams.has('uuid')) {
-                    uuid = deeplinkURL.searchParams.get('uuid')
+        if (urlExtraction && isUrl(str)) {
+            // try to extract from known share URL's
+            // otherwise use global extraction attempt
+            for (const url of shareUrls) {
+                try {
+                    const match = str.match(new RegExp(url.replace(shareUrlUuid, '([a-f0-9]{32})'), 'i'));
+                    if (match && match[1]) {
+                        return parseLensUuid(match[1], false);
+                    }
+                } catch (e) {
+                    console.error(e, str, url);
                 }
             }
-
-            if (uuid) {
-                return parseLensUuid(uuid);
-            }
-        } catch (e) {
-            console.error(e, str);
         }
 
         // global extraction attempt
-        // UUID's have 32 hexadecimal characters
-        uuid = str.match(/[a-f0-9]{32}/gi)
+        // valid lens UUID's have 32 hexadecimal characters
+        const uuid = str.match(/[a-f0-9]{32}/gi)
         if (uuid && uuid[0]) {
             return uuid[0];
         }
     }
 
     return '';
+}
+
+function isUrl(url) {
+    try {
+        new URL(url);
+    } catch (e) {
+        return false;
+    }
+    return true;
 }
 
 function modifyResponseURLs(orgResponse) {

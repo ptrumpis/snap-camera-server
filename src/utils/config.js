@@ -38,11 +38,12 @@ async function loadConfig() {
                     ttl: 1800,
                     check: 600,
                 },
-                creator_url: 'https://lensstudio.snapchat.com/creator/'
+                creator_url: 'https://lensstudio.snapchat.com/creator/',
+                share_urls: [],
             },
             storage: {
-                urls: []
-            }
+                urls: [],
+            },
         };
 
         return deepMerge(defaultConfig, yamlConfig);
