@@ -9,14 +9,19 @@ dotenv.config();
 
 const relayTimeout = Config.app.relay.timeout;
 const relayServer = Config.app.relay.server;
-const modifyServer = Config.storage.urls;
+
 const storageServer = process.env.STORAGE_SERVER;
+const modifyServerRegEx = new RegExp(Config.storage.urls.map(escapeRegExp).join('|'), 'gi');
 
 const headers = new Headers({
     'User-Agent': 'SnapCamera/1.21.0.0 (Windows 10 Version 2009)',
     'Content-Type': 'application/json',
     'X-Installation-Id': 'default'
 });
+
+function escapeRegExp(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 async function advancedSearch(searchTerm) {
     // search lens by 32 character UUID
@@ -199,12 +204,9 @@ function parseLensUuid(str) {
     return '';
 }
 
-// convert URL array to regular expression string and escape dots
-const modifyServerRegEx = new RegExp(modifyServer.join('|').replace(/\./g, '\\.'), 'gi');
-
 function modifyResponseURLs(orgResponse) {
     if (storageServer) {
-        // point all orignal URL's to our local storage server
+        // point orignal URL's to our local storage server
         const response = JSON.stringify(orgResponse);
         return JSON.parse(response.replace(modifyServerRegEx, storageServer));
     }
