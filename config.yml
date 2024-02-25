@@ -1,10 +1,5 @@
-# config.yml v3.2
-# some options moved from .env to config.yml
+# config.yml v4.0.0-alpha
 # you can now backup or share this file with your friends without revealing credentials
-#
-# notes:
-# config.yml settings will take precedence over .env settings
-# application settings in .env will be deprecated in v4
 
 # application configuration
 app:
@@ -44,6 +39,23 @@ media:
     thumbnail: false
     snapcode: false
     icon: false
+
+# search configuration
+search:
+  # caching is required to activate web lenses within search results
+  # web caching requires 'app.flag.enable_web_source' to be 'true'
+  web_cache:
+    # standard time to live in seconds
+    # web search results will expire after this time
+    # 0 = infinity (memory usage will grow)
+    ttl: 1800
+
+    # time in seconds to check all data and delete expired search results
+    check: 600
+
+  # creator base url for displaying all lenses of a single creator
+  # this feature requires 'app.flag.enable_web_source' to be 'true'
+  creator_url: https://lensstudio.snapchat.com/creator/
 
 # storage configuration
 storage:

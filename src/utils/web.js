@@ -1,15 +1,21 @@
 import LensWebCrawler from '../lib/crawler.js';
 import NodeCache from 'node-cache';
+import { Config } from './config.js';
 import * as DB from './db.js';
 import * as Util from './helper.js';
 
 const crawler = new LensWebCrawler();
-const Cache = new NodeCache({ stdTTL: 1800, checkperiod: 600 });
+const Cache = new NodeCache({ 
+    stdTTL: Config.search.web_cache.ttl,
+    checkperiod: Config.search.web_cache.check,
+});
+
+const creatorUrl = Config.search.creator_url;
 
 async function search(searchTerm) {
     let result = [];
     try {
-        if (searchTerm.startsWith('https://lensstudio.snapchat.com/creator/')) {
+        if (searchTerm.startsWith(creatorUrl)) {
             const slug = searchTerm.substr(searchTerm.lastIndexOf('/') + 1);
             return await searchByCreatorSlug(slug);
         }

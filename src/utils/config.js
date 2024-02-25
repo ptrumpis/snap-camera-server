@@ -33,6 +33,13 @@ async function loadConfig() {
                     icon: false,
                 },
             },
+            search: {
+                web_cache: {
+                    ttl: 1800,
+                    check: 600,
+                },
+                creator_url: 'https://lensstudio.snapchat.com/creator/'
+            },
             storage: {
                 urls: []
             }
