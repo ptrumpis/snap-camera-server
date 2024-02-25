@@ -40,6 +40,12 @@ media:
     snapcode: false
     icon: false
 
+# import/upload configuration
+import:
+  # allow cache import tool to overwrite existing lenses
+  # requires 'app.flag.enable_cache_import' to be 'true'
+  allow_overwrite: true
+
 # search configuration
 search:
   # caching is required to activate web lenses within search results

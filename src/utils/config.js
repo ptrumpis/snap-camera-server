@@ -33,6 +33,9 @@ async function loadConfig() {
                     icon: false,
                 },
             },
+            import: {
+                allow_overwrite: true,
+            },
             search: {
                 web_cache: {
                     ttl: 1800,
