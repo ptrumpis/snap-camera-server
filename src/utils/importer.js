@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import LensFileParser from '../lib/parser.js';
+import { Config } from './config.js';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs/promises';
 import * as zstd from 'fzstd';
@@ -12,6 +13,8 @@ const storagePath = process.env.STORAGE_PATH;
 const mediaDir = process.env.MEDIA_DIR.replace(/^\/+/, '');
 const mediaDirAlt = process.env.MEDIA_DIR_ALT.replace(/^\/+/, '');
 const importDir = process.env.IMPORT_DIR.replace(/^\/+/, '');
+
+const allowOverwrite = Config.import.allow_overwrite;
 
 const lensFileParser = new LensFileParser();
 
@@ -35,9 +38,9 @@ async function importFromAppCache(lensFile, lensId, skipMediaFiles = false) {
         }
 
         const destFile = destDirectory.concat('/lens.zip');
-        if (!(await Storage.isFile(destFile))) {
+        if (allowOverwrite || !(await Storage.isFile(destFile))) {
             const lensZip = await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE", platform: "UNIX" });
-            await fs.writeFile(destFile, lensZip);
+            await fs.writeFile(destFile, lensZip, { flag: 'w' });
 
             if (!skipMediaFiles) {
                 await copyMediaFiles(lensId);
