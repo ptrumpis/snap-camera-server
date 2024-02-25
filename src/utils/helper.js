@@ -175,7 +175,7 @@ function parseLensUuid(str) {
                 let webUrl = new URL(str);
                 uuid = webUrl.pathname.replace(/^\/+/, '');
             } else if (str.startsWith("https://www.snapchat.com/unlock/?")) {
-                let deeplinkURL = new URL(str.replace(/\u0026/g, '&')); // json encoding fix
+                let deeplinkURL = new URL(str);
                 if (deeplinkURL.searchParams.has('uuid')) {
                     uuid = deeplinkURL.searchParams.get('uuid')
                 }
