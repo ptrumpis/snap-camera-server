@@ -15,7 +15,7 @@ const importDir = process.env.IMPORT_DIR.replace(/^\/+/, '');
 
 const lensFileParser = new LensFileParser();
 
-async function importFromAppCache(lensFile, lensId) {
+async function importFromAppCache(lensFile, lensId, skipMediaFiles = false) {
     try {
         let data = await fs.readFile(lensFile);
 
@@ -38,7 +38,10 @@ async function importFromAppCache(lensFile, lensId) {
         if (!(await Storage.isFile(destFile))) {
             const lensZip = await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE", platform: "UNIX" });
             await fs.writeFile(destFile, lensZip);
-            await copyMediaFiles(lensId);
+
+            if (!skipMediaFiles) {
+                await copyMediaFiles(lensId);
+            }
 
             return true;
         }

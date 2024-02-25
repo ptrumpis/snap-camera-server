@@ -346,13 +346,64 @@ async function insertUnlock(unlocks, forceDownload = false) {
     unlocks = null;
 }
 
+async function updateUnlock(unlocks) {
+    if (!Array.isArray(unlocks)) {
+        unlocks = [unlocks];
+    }
+
+    for (const unlock of unlocks) {
+        // check required fields
+        if (!unlock || !unlock.lens_id || !unlock.lens_url) {
+            console.error("Invalid argument, expected unlock object", unlock);
+            return;
+        }
+
+        let { lens_id, lens_url, signature, hint_id, additional_hint_ids, web_import } = unlock;
+
+        if (!additional_hint_ids) additional_hint_ids = {};
+
+        await new Promise(resolve => {
+            // rebuild the passed object manually
+            // so we know exactly what will be inserted
+            let updateArgs = {
+                lens_url: lens_url,
+                signature: signature || "",
+                hint_id: hint_id || "",
+                additional_hint_ids: JSON.stringify(additional_hint_ids),
+                web_import: web_import || 0
+            };
+
+            try {
+                connection.query(`UPDATE unlocks SET ? WHERE lens_id = ?`, [updateArgs, lens_id], async function (err, results) {
+                    if (!err) {
+                        if (results.affectedRows > 0) {
+                            await Util.downloadUnlock(lens_id, lens_url);
+                            console.log('Updated Lens:', lens_id);
+                        } else {
+                            console.warn('No rows updated for Lens:', lens_id);
+                        }
+                    } else {
+                        console.log(err, lens_id);
+                        return resolve(false);
+                    }
+                    return resolve(true);
+                });
+            } catch (e) {
+                console.error(e);
+                resolve(false);
+            }
+        });
+    }
+    unlocks = null;
+}
+
 async function insertUser(user) {
     if (!user || !user.obfuscated_user_slug || !user.user_display_name) {
         console.error("Invalid argument, expected user object", user);
         return;
     }
 
-    let { obfuscated_user_slug, user_display_name } = user;
+    const { obfuscated_user_slug, user_display_name } = user;
 
     await new Promise(resolve => {
         // rebuild the passed object manually
@@ -396,4 +447,4 @@ function markUnlockAsMirrored(id) {
     }
 }
 
-export { searchLensByName, searchLensByTags, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, getObfuscatedSlugByDisplayName, insertLens, insertUnlock, insertUser, markLensAsMirrored, markUnlockAsMirrored };
+export { searchLensByName, searchLensByTags, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, getObfuscatedSlugByDisplayName, insertLens, insertUnlock, updateUnlock, insertUser, markLensAsMirrored, markUnlockAsMirrored };
