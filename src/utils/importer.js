@@ -77,7 +77,7 @@ async function copyMediaFiles(lensId) {
     }
 }
 
-function exportFromAppSettings(settingsJson, lensIds = []) {
+function exportFromAppSettings(settingsJson, lensIds = [], updateExisting = false) {
     let lenses = [];
     let unlocks = [];
 
@@ -104,7 +104,10 @@ function exportFromAppSettings(settingsJson, lensIds = []) {
                 // other (unused?) media files will point to default alt media placeholders
                 const defaultMediaPath = storageServer.concat('/', mediaDirAlt, '/');
 
-                let lens = {
+                let lens = updateExisting ? {
+                    unlockable_id: lensId,
+                    web_import: 0,
+                } : {
                     unlockable_id: lensId,
                     snapcode_url: basePath.concat('snapcode.png'),
                     user_display_name: "Import",
@@ -119,16 +122,23 @@ function exportFromAppSettings(settingsJson, lensIds = []) {
                     standard_media_url: defaultMediaPath.concat('standard.jpg'),
                     standard_media_poster_url: defaultMediaPath.concat('standard_poster.jpg'),
                     obfuscated_user_slug: "",
-                    image_sequence: {}
+                    image_sequence: {},
+                    web_import: 0,
                 };
                 lenses.push(lens);
 
-                let unlock = {
+                let unlock = updateExisting ? {
+                    lens_id: lensId,
+                    lens_url: basePath.concat('lens.zip'),
+                    signature: info[i].signature,
+                    web_import: 0,
+                } : {
                     lens_id: lensId,
                     lens_url: basePath.concat('lens.zip'),
                     signature: info[i].signature,
                     hint_id: "",
-                    additional_hint_ids: {}
+                    additional_hint_ids: {},
+                    web_import: 0,
                 };
                 unlocks.push(unlock);
             }

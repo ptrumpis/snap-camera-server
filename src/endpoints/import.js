@@ -110,8 +110,9 @@ router.post('/', formMiddleWare, async function (req, res, next) {
 
                 // update unlocks table for existing lenses if config option is set
                 if (allowOverwrite) {
-                    const updateData = Importer.exportFromAppSettings(settingsJson, existingLensIds);
+                    const updateData = Importer.exportFromAppSettings(settingsJson, existingLensIds, true);
                     if (updateData) {
+                        await DB.updateLens(updateData['lenses']);
                         await DB.updateUnlock(updateData['unlocks']);
                     }
                 }
