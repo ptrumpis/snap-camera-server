@@ -234,6 +234,11 @@ async function insertLens(lenses, forceDownload = false) {
         lenses = [lenses];
     }
 
+    const whitelist = [
+        'unlockable_id', 'uuid', 'snapcode_url', 'user_display_name', 'lens_name', 'lens_tags', 'lens_status', 'deeplink', 'icon_url',
+        'thumbnail_media_url', 'thumbnail_media_poster_url', 'standard_media_url', 'standard_media_poster_url', 'obfuscated_user_slug', 'image_sequence', 'web_import'
+    ];
+
     for (const lens of lenses) {
         // check required fields
         if (!lens || !lens.unlockable_id || !lens.lens_name || !lens.user_display_name) {
@@ -241,35 +246,24 @@ async function insertLens(lenses, forceDownload = false) {
             return;
         }
 
-        let { unlockable_id, uuid, snapcode_url, user_display_name, lens_name, lens_tags, lens_status, deeplink, icon_url, thumbnail_media_url,
-            thumbnail_media_poster_url, standard_media_url, standard_media_poster_url, obfuscated_user_slug, image_sequence, web_import } = lens;
-
-        if (!image_sequence) image_sequence = {};
-        if (!obfuscated_user_slug && user_display_name && web_import) {
-            obfuscated_user_slug = getObfuscatedSlugByDisplayName(user_display_name);
-        }
+        let { unlockable_id, lens_name, user_display_name, obfuscated_user_slug } = lens;
 
         await new Promise(resolve => {
-            // rebuild the passed object manually
-            // so we know exactly what will be inserted
-            let args = {
-                unlockable_id: unlockable_id,
-                uuid: uuid || Util.parseLensUuid(deeplink),
-                snapcode_url: snapcode_url || "",
-                user_display_name: user_display_name,
-                lens_name: lens_name,
-                lens_tags: lens_tags || "",
-                lens_status: lens_status || "Live",
-                deeplink: deeplink || "",
-                icon_url: icon_url || "",
-                thumbnail_media_url: thumbnail_media_url || "",
-                thumbnail_media_poster_url: thumbnail_media_poster_url || "",
-                standard_media_url: standard_media_url || "",
-                standard_media_poster_url: standard_media_poster_url || "",
-                obfuscated_user_slug: obfuscated_user_slug || "",
-                image_sequence: JSON.stringify(image_sequence),
-                web_import: web_import || 0
-            };
+            let args = buildArgs(lens, whitelist, {
+                uuid: (!lens.uuid && lens.deeplink) ? Util.parseLensUuid(lens.deeplink) : '',
+                snapcode_url: "",
+                lens_tags: "",
+                lens_status: "Live",
+                deeplink: "",
+                icon_url: "",
+                thumbnail_media_url: "",
+                thumbnail_media_poster_url: "",
+                standard_media_url: "",
+                standard_media_poster_url: "",
+                obfuscated_user_slug: (!obfuscated_user_slug && user_display_name && lens.web_import) ? getObfuscatedSlugByDisplayName(user_display_name) : '',
+                image_sequence: "{}",
+                web_import: 0,
+            });
 
             try {
                 connection.query(`INSERT INTO lenses SET ?`, args, async function (err, results) {
@@ -277,6 +271,7 @@ async function insertLens(lenses, forceDownload = false) {
                         if (obfuscated_user_slug) {
                             insertUser(lens);
                         }
+
                         await Util.downloadLens(lens);
                         console.log("Saved Lens:", unlockable_id);
                     } else if (err.code !== "ER_DUP_ENTRY") {
@@ -296,10 +291,62 @@ async function insertLens(lenses, forceDownload = false) {
     lenses = null;
 }
 
+async function updateLens(lenses) {
+    if (!Array.isArray(lenses)) {
+        lenses = [lenses];
+    }
+
+    const whitelist = [
+        'uuid', 'snapcode_url', 'user_display_name', 'lens_name', 'lens_tags', 'lens_status', 'deeplink', 'icon_url',
+        'thumbnail_media_url', 'thumbnail_media_poster_url', 'standard_media_url', 'standard_media_poster_url', 'obfuscated_user_slug', 'image_sequence', 'web_import'
+    ];
+
+    for (const lens of lenses) {
+        // check required fields
+        if (!lens || !lens.unlockable_id) {
+            console.error("Invalid argument, expected lens object", lens);
+            return;
+        }
+
+        let { unlockable_id } = lens;
+
+        await new Promise(resolve => {
+            let updateArgs = buildArgs(lens, whitelist);
+
+            try {
+                connection.query(`UPDATE lenses SET ? WHERE unlockable_id = ?`, [updateArgs, unlockable_id], async function (err, results) {
+                    if (!err) {
+                        if (results.affectedRows > 0) {
+                            if (lens.obfuscated_user_slug && lens.user_display_name) {
+                                insertUser(lens);
+                            }
+
+                            await Util.downloadLens(lens);
+                            console.log('Updated Lens:', unlockable_id);
+                        } else {
+                            console.warn('No rows updated for Lens:', unlockable_id);
+                        }
+                    } else {
+                        console.log(err, unlockable_id);
+                        return resolve(false);
+                    }
+                    return resolve(true);
+                });
+            } catch (e) {
+                console.error(e);
+                resolve(false);
+            }
+        });
+    }
+    lenses = null;
+}
+
 async function insertUnlock(unlocks, forceDownload = false) {
     if (!Array.isArray(unlocks)) {
         unlocks = [unlocks];
     }
+
+    const whitelist = ['lens_id', 'lens_url', 'signature', 'hint_id', 'additional_hint_ids', 'web_import'];
 
     for (const unlock of unlocks) {
         // check required fields
@@ -308,21 +355,15 @@ async function insertUnlock(unlocks, forceDownload = false) {
             return;
         }
 
-        let { lens_id, lens_url, signature, hint_id, additional_hint_ids, web_import } = unlock;
-
-        if (!additional_hint_ids) additional_hint_ids = {};
+        let { lens_id, lens_url } = unlock;
 
         await new Promise(resolve => {
-            // rebuild the passed object manually
-            // so we know exactly what will be inserted
-            let args = {
-                lens_id: lens_id,
-                lens_url: lens_url,
-                signature: signature || "",
-                hint_id: hint_id || "",
-                additional_hint_ids: JSON.stringify(additional_hint_ids),
-                web_import: web_import || 0
-            };
+            let args = buildArgs(unlock, whitelist, {
+                signature: "",
+                hint_id: "",
+                additional_hint_ids: "{}",
+                web_import: 0,
+            });
 
             try {
                 connection.query(`INSERT INTO unlocks SET ?`, args, async function (err, results) {
@@ -351,36 +392,31 @@ async function updateUnlock(unlocks) {
         unlocks = [unlocks];
     }
 
+    const whitelist = ['lens_url', 'signature', 'hint_id', 'additional_hint_ids', 'web_import'];
+
     for (const unlock of unlocks) {
         // check required fields
-        if (!unlock || !unlock.lens_id || !unlock.lens_url) {
+        if (!unlock || !unlock.lens_id) {
             console.error("Invalid argument, expected unlock object", unlock);
             return;
         }
 
-        let { lens_id, lens_url, signature, hint_id, additional_hint_ids, web_import } = unlock;
-
-        if (!additional_hint_ids) additional_hint_ids = {};
+        let { lens_id } = unlock;
 
         await new Promise(resolve => {
-            // rebuild the passed object manually
-            // so we know exactly what will be inserted
-            let updateArgs = {
-                lens_url: lens_url,
-                signature: signature || "",
-                hint_id: hint_id || "",
-                additional_hint_ids: JSON.stringify(additional_hint_ids),
-                web_import: web_import || 0
-            };
+            let updateArgs = buildArgs(unlock, whitelist);
 
             try {
                 connection.query(`UPDATE unlocks SET ? WHERE lens_id = ?`, [updateArgs, lens_id], async function (err, results) {
                     if (!err) {
                         if (results.affectedRows > 0) {
-                            await Util.downloadUnlock(lens_id, lens_url);
-                            console.log('Updated Lens:', lens_id);
+                            if (unlock.lens_url) {
+                                await Util.downloadUnlock(lens_id, unlock.lens_url);
+                            }
+
+                            console.log('Updated Unlock:', lens_id);
                         } else {
-                            console.warn('No rows updated for Lens:', lens_id);
+                            console.warn('No rows updated for Unlock:', lens_id);
                         }
                     } else {
                         console.log(err, lens_id);
@@ -403,20 +439,15 @@ async function insertUser(user) {
         return;
     }
 
-    const { obfuscated_user_slug, user_display_name } = user;
+    const whitelist = ['obfuscated_user_slug', 'user_display_name'];
 
     await new Promise(resolve => {
-        // rebuild the passed object manually
-        // so we know exactly what will be inserted
-        let args = {
-            obfuscated_user_slug: obfuscated_user_slug,
-            user_display_name: user_display_name,
-        };
+        let args = buildArgs(user, whitelist);
 
         try {
             connection.query(`INSERT INTO users SET ?`, args, async function (err, results) {
                 if (!err) {
-                    console.log('New User:', user_display_name);
+                    console.log('New User:', user.user_display_name);
                 } else if (err.code !== "ER_DUP_ENTRY") {
                     console.log(err, user);
                     return resolve(false);
@@ -447,4 +478,19 @@ function markUnlockAsMirrored(id) {
     }
 }
 
-export { searchLensByName, searchLensByTags, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, getObfuscatedSlugByDisplayName, insertLens, insertUnlock, updateUnlock, insertUser, markLensAsMirrored, markUnlockAsMirrored };
+function buildArgs(obj, whitelist, defaults = {}) {
+    return whitelist.reduce((acc, key) => {
+        if (obj.hasOwnProperty(key) && obj[key] !== undefined) {
+            if ((key === 'additional_hint_ids' || key === 'image_sequence') && typeof obj[key] !== 'string') {
+                acc[key] = JSON.stringify(obj[key]);
+            } else {
+                acc[key] = obj[key];
+            }
+        } else if (defaults && defaults.hasOwnProperty(key)) {
+            acc[key] = defaults[key];
+        }
+        return acc;
+    }, {});
+}
+
+export { searchLensByName, searchLensByTags, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, getObfuscatedSlugByDisplayName, insertLens, updateLens, insertUnlock, updateUnlock, insertUser, markLensAsMirrored, markUnlockAsMirrored };
