@@ -86,7 +86,7 @@ function exportFromAppSettings(settingsJson, lensIds = [], updateExisting = fals
             // extract lens ID and signature
             const info = settingsJson.lenses.cache.cachedInfo;
             for (let i = 0; i < info.length; i++) {
-                if (!info[i].lensId || !info[i].signature) {
+                if (!info[i].lensId || typeof info[i].signature !== 'string') {
                     console.error("Unexpected JSON structure at index", i, info[i]);
                     return false;
                 }
