@@ -90,11 +90,11 @@ router.post('/', formMiddleWare, async function (req, res, next) {
 
                         if (allowOverwrite) {
                             console.log("Re-importing existing Lens", lensFiles[j].id);
-                            await Importer.importFromAppCache(lensFiles[j].path, lensFiles[j].id, true);
+                            await Importer.importLens(lensFiles[j].path, lensFiles[j].id, false);
                         }
                     } else {
                         console.log("Importing new Lens", lensFiles[j].id);
-                        await Importer.importFromAppCache(lensFiles[j].path, lensFiles[j].id);
+                        await Importer.importLens(lensFiles[j].path, lensFiles[j].id);
                     }
 
                     // file import is complete, remove temporary file
@@ -110,7 +110,7 @@ router.post('/', formMiddleWare, async function (req, res, next) {
 
                 // update unlocks table for existing lenses if config option is set
                 if (allowOverwrite) {
-                    const updateData = Importer.exportFromAppSettings(settingsJson, existingLensIds, true);
+                    const updateData = Importer.exportFromAppSettings(settingsJson, existingLensIds, false);
                     if (updateData) {
                         await DB.updateLens(updateData['lenses']);
                         await DB.updateUnlock(updateData['unlocks']);

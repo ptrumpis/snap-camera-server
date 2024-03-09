@@ -18,7 +18,7 @@ const allowOverwrite = Config.import.allow_overwrite;
 
 const lensFileParser = new LensFileParser();
 
-async function importFromAppCache(lensFile, lensId, skipMediaFiles = false) {
+async function importLens(lensFile, lensId, createMediaFiles = true) {
     try {
         let data = await fs.readFile(lensFile);
 
@@ -42,8 +42,8 @@ async function importFromAppCache(lensFile, lensId, skipMediaFiles = false) {
             const lensZip = await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE", platform: "UNIX" });
             await fs.writeFile(destFile, lensZip, { flag: 'w' });
 
-            if (!skipMediaFiles) {
-                await copyMediaFiles(lensId);
+            if (createMediaFiles) {
+                await copyDefaultMediaFiles(lensId);
             }
 
             return true;
@@ -55,7 +55,7 @@ async function importFromAppCache(lensFile, lensId, skipMediaFiles = false) {
     return false;
 }
 
-async function copyMediaFiles(lensId) {
+async function copyDefaultMediaFiles(lensId) {
     const srcDirectory = storagePath.concat('/', mediaDir);
     const destDirectory = storagePath.concat('/', importDir, '/', lensId);
 
@@ -98,7 +98,7 @@ function exportFromAppSettings(settingsJson, lensIds = [], updateExisting = fals
                 }
 
                 // icon, snapcode and thumbnail will point to a private copy of the default media
-                // the copy is created for each lens with copyMediaFiles during import
+                // the copy is created for each lens with copyDefaultMediaFiles during import
                 const basePath = storageServer.concat('/', importDir, '/', lensId, '/');
 
                 // other (unused?) media files will point to default alt media placeholders
@@ -155,4 +155,4 @@ function exportFromAppSettings(settingsJson, lensIds = [], updateExisting = fals
     return { lenses, unlocks };
 }
 
-export { importFromAppCache, exportFromAppSettings };
+export { importLens, exportFromAppSettings };
