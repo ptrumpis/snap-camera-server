@@ -2,10 +2,10 @@ import express from 'express';
 import formidable from 'formidable';
 import os from 'os';
 import path from 'path';
-import { Config } from '../utils/config.js';
+import { Config } from '../../utils/config.js';
 import * as fs from 'fs/promises';
-import * as DB from '../utils/db.js';
-import * as Importer from '../utils/importer.js';
+import * as DB from '../../utils/db.js';
+import * as Importer from '../../utils/importer.js';
 
 var router = express.Router();
 

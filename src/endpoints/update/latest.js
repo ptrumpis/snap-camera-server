@@ -3,7 +3,7 @@ import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
 
-const customResponse = require('../json/latest.json');
+const customResponse = require('../../json/latest.json');
 
 var router = express.Router();
 

@@ -1,15 +1,15 @@
 import express from 'express';
-import * as Util from '../../utils/helper.js';
+import * as Util from '../../../utils/helper.js';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
 
-const wfh = require('../../json/wfh.json');
-const color_effect = require('../../json/color_effect.json');
-const funny = require('../../json/funny.json');
-const gaming = require('../../json/gaming.json');
-const cute = require('../../json/cute.json');
-const character = require('../../json/character.json');
+const wfh = require('../../../json/wfh.json');
+const color_effect = require('../../../json/color_effect.json');
+const funny = require('../../../json/funny.json');
+const gaming = require('../../../json/gaming.json');
+const cute = require('../../../json/cute.json');
+const character = require('../../../json/character.json');
 
 const originalResponses = {
     wfh,
