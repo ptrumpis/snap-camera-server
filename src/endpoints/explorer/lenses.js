@@ -57,7 +57,7 @@ router.post('/', async function (req, res, next) {
             removeFoundId(lenses[i].unlockable_id);
         }
 
-        let data = await Util.relayPostRequest(req.originalUrl, { "lenses": lensIds });
+        let data = await Util.relayRequest(req.originalUrl, 'POST', { "lenses": lensIds });
         if (data && data['lenses'] && (data['lenses'] instanceof Array)) {
             // relay should return lenses but not more than requested
             if (data['lenses'].length <= lensIds.length) {

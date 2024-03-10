@@ -22,7 +22,7 @@ router.post('/', async function (req, res, next) {
     }
 
     if (useRelay) {
-        let relayResults = await Util.relayPostRequest(req.originalUrl, { "deeplink": searchUrl });
+        let relayResults = await Util.relayRequest(req.originalUrl, 'POST', { "deeplink": searchUrl });
         if (relayResults && relayResults['lenses'] && relayResults['lenses'].length) {
             DB.insertLens(relayResults['lenses']);
             return res.json(relayResults);

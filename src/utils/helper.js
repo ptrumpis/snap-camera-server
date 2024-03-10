@@ -51,7 +51,7 @@ async function advancedSearch(searchTerm) {
     return await DB.searchLensByName(searchTerm);
 }
 
-async function relayGetRequest(path) {
+async function relayRequest(path, method = 'GET', body = null) {
     if (relayServer) {
         const controller = new AbortController();
         const timeout = setTimeout(() => {
@@ -59,37 +59,12 @@ async function relayGetRequest(path) {
         }, relayTimeout);
 
         try {
-            const response = await fetch(`${relayServer}${path}`, { method: 'GET', headers, signal: controller.signal });
-            if (response.status === 200) {
-                try {
-                    // avoid json parse errors on empty data
-                    const data = await response.text();
-                    if (data) {
-                        return JSON.parse(data);
-                    }
-                } catch (e) {
-                    console.error(e);
-                }
+            let requestInit = { method: method, headers, signal: controller.signal };
+            if (body) {
+                requestInit.body = body;
             }
-        } catch (e) {
-            // catch rare fetch errors
-            console.error(e);
-        } finally {
-            clearTimeout(timeout);
-        }
-    }
-    return {};
-}
 
-async function relayPostRequest(path, body) {
-    if (relayServer) {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => {
-            controller.abort();
-        }, relayTimeout);
-
-        try {
-            const response = await fetch(`${relayServer}${path}`, { method: 'POST', body: JSON.stringify(body), headers, signal: controller.signal });
+            const response = await fetch(`${relayServer}${path}`, requestInit);
             if (response.status === 200) {
                 try {
                     // avoid json parse errors on empty data
@@ -112,7 +87,7 @@ async function relayPostRequest(path, body) {
 }
 
 async function getUnlockFromRelay(lensId) {
-    const unlock = await relayGetRequest(`/vc/v1/explorer/unlock?uid=${lensId}`);
+    const unlock = await relayRequest(`/vc/v1/explorer/unlock?uid=${lensId}`);
     if (unlock && unlock.lens_id && unlock.lens_url) {
         return unlock;
     }
@@ -225,4 +200,4 @@ function sleep(ms) {
     });
 }
 
-export { advancedSearch, relayGetRequest, relayPostRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, parseLensUuid, modifyResponseURLs, sleep };
+export { advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, parseLensUuid, modifyResponseURLs, sleep };

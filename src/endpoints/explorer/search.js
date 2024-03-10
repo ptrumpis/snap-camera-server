@@ -30,7 +30,7 @@ router.post('/', async function (req, res, next) {
     }
 
     if (useRelay) {
-        let relayResults = await Util.relayPostRequest(req.originalUrl, { "query": searchTerm });
+        let relayResults = await Util.relayRequest(req.originalUrl, 'POST', { "query": searchTerm });
         if (relayResults && relayResults['lenses'] && relayResults['lenses'].length) {
             searchResults = Util.mergeLensesUnique(searchResults, relayResults['lenses']);
 
