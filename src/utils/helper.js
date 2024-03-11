@@ -33,9 +33,8 @@ async function advancedSearch(searchTerm) {
         return await DB.searchLensByUuid(uuid);
     }
 
-    // lens ID's have 11 to 16 digits
-    const regLensId = /^[0-9]{11,16}$/gi;
-    if (regLensId.test(searchTerm)) {
+    // search lens by ID
+    if (isLensId(searchTerm)) {
         return await DB.getSingleLens(searchTerm);
     }
 
@@ -176,6 +175,12 @@ function parseLensUuid(str, urlExtraction = true) {
     return '';
 }
 
+function isLensId(str) {
+    // valid lens ID's have 11 to 16 digits
+    const id = /^[0-9]{11,16}$/gi;
+    return id.test(str);
+}
+
 function isUrl(url) {
     try {
         new URL(url);
@@ -200,4 +205,4 @@ function sleep(ms) {
     });
 }
 
-export { advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, parseLensUuid, modifyResponseURLs, sleep };
+export { advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, parseLensUuid, isLensId, isUrl, modifyResponseURLs, sleep };
