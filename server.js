@@ -1,6 +1,6 @@
 import express from 'express';
 import lenses from './src/endpoints/explorer/lenses.js';
-import categorylenses from './src/endpoints/category/lenses.js';
+import categorylenses from './src/endpoints/explorer/category/lenses.js';
 import top from './src/endpoints/explorer/top.js';
 import unlock from './src/endpoints/explorer/unlock.js';
 import categories from './src/endpoints/explorer/categories.js';
@@ -19,7 +19,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const useCacheImport = Config.app.flag.enable_cache_import;
+const enableCacheImport = Config.app.flag.enable_cache_import;
 const serverPort = process.env.PORT;
 
 const app = express();
@@ -36,7 +36,7 @@ app.use('/vc/v1/explorer/deeplink_search', deeplink);
 app.use('/vc/v1/reporting/lens', reporting);
 app.use('/vc/v1/update/latest', latest);
 app.use('/vc/v1/update/download', download);
-if (useCacheImport) {
+if (enableCacheImport) {
     app.use('/vc/v1/import/cache', importCache);
 }
 app.use('/vc/v1', v1);
