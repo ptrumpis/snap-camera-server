@@ -100,14 +100,14 @@ router.post('/', formMiddleWare, async function (req, res, next) {
                     if (allowOverwrite) {
                         console.log("Re-importing existing Lens", lenses[j].id);
 
-                        updated.push(lenses[i].id);
+                        updated.push(lenses[j].id);
 
                         await Importer.importLens(lenses[j].path, lenses[j].id, false);
                     }
                 } else {
                     console.log("Importing new Lens", lenses[j].id);
 
-                    imported.push(lenses[i].id);
+                    imported.push(lenses[j].id);
 
                     await Importer.importLens(lenses[j].path, lenses[j].id, true);
                 }
