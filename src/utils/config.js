@@ -37,6 +37,7 @@ async function loadConfig() {
             },
             import: {
                 allow_overwrite: true,
+                zip_archive: true,
             },
             search: {
                 web_cache: {

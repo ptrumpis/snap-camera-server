@@ -58,6 +58,9 @@ import:
   # allow cache import and custom import to overwrite existing lenses
   allow_overwrite: true
 
+  # store imported lenses as .zip archive or use original .lns format
+  zip_archive: true
+
 # search configuration
 search:
   # caching is required to activate web lenses within search results

@@ -15,8 +15,9 @@ const mediaDirAlt = process.env.MEDIA_DIR_ALT.replace(/^\/+/, '');
 const importDir = process.env.IMPORT_DIR.replace(/^\/+/, '');
 
 const allowOverwrite = Config.import.allow_overwrite;
+const zipArchive = Config.import.zip_archive;
 
-async function importLens(lensFile, lensId, createMediaFiles = true, createZipArchive = true) {
+async function importLens(lensFile, lensId, createMediaFiles = true) {
     let result = false;
 
     try {
@@ -25,7 +26,7 @@ async function importLens(lensFile, lensId, createMediaFiles = true, createZipAr
             await fs.mkdir(destDirectory, { recursive: true });
         }
 
-        if (createZipArchive) {
+        if (zipArchive) {
             const destFile = destDirectory.concat('/lens.zip');
             result = await storeLensAsZip(lensFile, destFile);
         } else {
@@ -131,7 +132,7 @@ function exportFromAppSettings(settingsJson, lensIds = [], updateExisting = fals
                 const basePath = storageServer.concat('/', importDir, '/', lensId, '/');
 
                 // zip or lns archive
-                const lensFile = basePath.concat('lens.zip');
+                const lensFile = zipArchive ? basePath.concat('lens.zip') : basePath.concat('lens.lns');
 
                 // other (unused?) media files will point to default alt media placeholders
                 const defaultMediaPath = storageServer.concat('/', mediaDirAlt, '/');
