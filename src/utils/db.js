@@ -22,6 +22,7 @@ const defaultMediaPath = storageServer.concat('/', mediaDir, '/');
 
 const enableWebSource = Config.app.flag.enable_web_source;
 const enableCustomSource = Config.app.flag.enable_custom_source;
+
 const ignoreAltMedia = Config.app.flag.ignore_alt_media;
 const ignoreImgSequence = Config.app.flag.ignore_img_sequence;
 
@@ -240,7 +241,8 @@ async function insertLens(lenses, forceDownload = false) {
 
     const whitelist = [
         'unlockable_id', 'uuid', 'snapcode_url', 'user_display_name', 'lens_name', 'lens_tags', 'lens_status', 'deeplink', 'icon_url',
-        'thumbnail_media_url', 'thumbnail_media_poster_url', 'standard_media_url', 'standard_media_poster_url', 'obfuscated_user_slug', 'image_sequence', 'web_import'
+        'thumbnail_media_url', 'thumbnail_media_poster_url', 'standard_media_url', 'standard_media_poster_url', 'obfuscated_user_slug', 'image_sequence',
+        'web_import', 'custom_import'
     ];
 
     for (const lens of lenses) {
@@ -267,6 +269,7 @@ async function insertLens(lenses, forceDownload = false) {
                 obfuscated_user_slug: (!obfuscated_user_slug && user_display_name && lens.web_import) ? getObfuscatedSlugByDisplayName(user_display_name) : '',
                 image_sequence: "{}",
                 web_import: 0,
+                custom_import: 0,
             });
 
             try {
@@ -302,7 +305,8 @@ async function updateLens(lenses) {
 
     const whitelist = [
         'uuid', 'snapcode_url', 'user_display_name', 'lens_name', 'lens_tags', 'lens_status', 'deeplink', 'icon_url',
-        'thumbnail_media_url', 'thumbnail_media_poster_url', 'standard_media_url', 'standard_media_poster_url', 'obfuscated_user_slug', 'image_sequence', 'web_import'
+        'thumbnail_media_url', 'thumbnail_media_poster_url', 'standard_media_url', 'standard_media_poster_url', 'obfuscated_user_slug', 'image_sequence',
+        'web_import', 'custom_import'
     ];
 
     for (const lens of lenses) {
@@ -350,7 +354,7 @@ async function insertUnlock(unlocks, forceDownload = false) {
         unlocks = [unlocks];
     }
 
-    const whitelist = ['lens_id', 'lens_url', 'signature', 'hint_id', 'additional_hint_ids', 'web_import'];
+    const whitelist = ['lens_id', 'lens_url', 'signature', 'hint_id', 'additional_hint_ids', 'web_import', 'custom_import'];
 
     for (const unlock of unlocks) {
         // check required fields
@@ -367,6 +371,7 @@ async function insertUnlock(unlocks, forceDownload = false) {
                 hint_id: "",
                 additional_hint_ids: "{}",
                 web_import: 0,
+                custom_import: 0,
             });
 
             try {
@@ -396,7 +401,7 @@ async function updateUnlock(unlocks) {
         unlocks = [unlocks];
     }
 
-    const whitelist = ['lens_url', 'signature', 'hint_id', 'additional_hint_ids', 'web_import'];
+    const whitelist = ['lens_url', 'signature', 'hint_id', 'additional_hint_ids', 'web_import', 'custom_import'];
 
     for (const unlock of unlocks) {
         // check required fields
