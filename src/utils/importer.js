@@ -16,12 +16,51 @@ const importDir = process.env.IMPORT_DIR.replace(/^\/+/, '');
 
 const allowOverwrite = Config.import.allow_overwrite;
 
-const lensFileParser = new LensFileParser();
+async function importLens(lensFile, lensId, createMediaFiles = true, createZipArchive = true) {
+    let result = false;
 
-async function importLens(lensFile, lensId, createMediaFiles = true) {
     try {
-        let data = await fs.readFile(lensFile);
+        const destDirectory = storagePath.concat('/', importDir, '/', lensId);
+        if (!(await Storage.isDirectory(destDirectory))) {
+            await fs.mkdir(destDirectory, { recursive: true });
+        }
 
+        if (createZipArchive) {
+            const destFile = destDirectory.concat('/lens.zip');
+            result = await storeLensAsZip(lensFile, destFile);
+        } else {
+            const destFile = destDirectory.concat('/lens.lns');
+            result = await copyFile(lensFile, destFile);
+        }
+
+        if (result && createMediaFiles) {
+            await copyDefaultMediaFiles(lensId);
+        }
+    } catch (e) {
+        console.error(e);
+    }
+
+    return result;
+}
+
+async function copyFile(srcFile, destFile) {
+    try {
+        if (allowOverwrite || !(await Storage.isFile(destFile))) {
+            await fs.copyFile(srcFile, destFile);
+            return true;
+        }
+    } catch (e) {
+        console.error(e);
+    }
+
+    return false;
+}
+
+async function storeLensAsZip(lensFile, destFile) {
+    try {
+        const lensFileParser = new LensFileParser();
+
+        let data = await fs.readFile(lensFile);
         const compressedBuffer = data.buffer.slice(data.byteOffset, data.byteLength + data.byteOffset);
         lensFileParser.parseArrayBuffer(compressedBuffer, zstd);
 
@@ -32,19 +71,9 @@ async function importLens(lensFile, lensId, createMediaFiles = true) {
             }
         });
 
-        const destDirectory = storagePath.concat('/', importDir, '/', lensId);
-        if (!(await Storage.isDirectory(destDirectory))) {
-            await fs.mkdir(destDirectory, { recursive: true });
-        }
-
-        const destFile = destDirectory.concat('/lens.zip');
         if (allowOverwrite || !(await Storage.isFile(destFile))) {
             const lensZip = await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE", platform: "UNIX" });
             await fs.writeFile(destFile, lensZip, { flag: 'w' });
-
-            if (createMediaFiles) {
-                await copyDefaultMediaFiles(lensId);
-            }
 
             return true;
         }
@@ -82,7 +111,7 @@ function exportFromAppSettings(settingsJson, lensIds = [], updateExisting = fals
     let unlocks = [];
 
     try {
-        if (settingsJson.lenses.cache.cachedInfo.length) {
+        if (settingsJson?.lenses?.cache?.cachedInfo?.length) {
             // extract lens ID and signature
             const info = settingsJson.lenses.cache.cachedInfo;
             for (let i = 0; i < info.length; i++) {
@@ -101,12 +130,16 @@ function exportFromAppSettings(settingsJson, lensIds = [], updateExisting = fals
                 // the copy is created for each lens with copyDefaultMediaFiles during import
                 const basePath = storageServer.concat('/', importDir, '/', lensId, '/');
 
+                // zip or lns archive
+                const lensFile = basePath.concat('lens.zip');
+
                 // other (unused?) media files will point to default alt media placeholders
                 const defaultMediaPath = storageServer.concat('/', mediaDirAlt, '/');
 
                 let lens = updateExisting ? {
                     unlockable_id: lensId,
                     web_import: 0,
+                    custom_import: 0,
                 } : {
                     unlockable_id: lensId,
                     snapcode_url: basePath.concat('snapcode.png'),
@@ -124,21 +157,24 @@ function exportFromAppSettings(settingsJson, lensIds = [], updateExisting = fals
                     obfuscated_user_slug: "",
                     image_sequence: {},
                     web_import: 0,
+                    custom_import: 0,
                 };
                 lenses.push(lens);
 
                 let unlock = updateExisting ? {
                     lens_id: lensId,
-                    lens_url: basePath.concat('lens.zip'),
+                    lens_url: lensFile,
                     signature: info[i].signature,
                     web_import: 0,
+                    custom_import: 0,
                 } : {
                     lens_id: lensId,
-                    lens_url: basePath.concat('lens.zip'),
+                    lens_url: lensFile,
                     signature: info[i].signature,
                     hint_id: "",
                     additional_hint_ids: {},
                     web_import: 0,
+                    custom_import: 0,
                 };
                 unlocks.push(unlock);
             }

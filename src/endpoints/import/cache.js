@@ -6,6 +6,7 @@ import { Config } from '../../utils/config.js';
 import * as fs from 'fs/promises';
 import * as DB from '../../utils/db.js';
 import * as Importer from '../../utils/importer.js';
+import * as Util from '../../utils/helper.js';
 
 var router = express.Router();
 
@@ -14,7 +15,7 @@ const tempDir = os.tmpdir();
 const configAllowOverwrite = Config.import.allow_overwrite;
 
 router.get('/', async function (req, res, next) {
-    return res.json("import enabled");
+    return res.json("cache import enabled");
 });
 
 const formMiddleWare = (req, res, next) => {
@@ -24,116 +25,124 @@ const formMiddleWare = (req, res, next) => {
             next(err);
             return;
         }
-        req.fields = fields || [];
-        req.files = files || [];
-        req.allowOverwrite = fields.allow_overwrite === 'true' ? true : false;
+
+        if (!files || Object.keys(files).length === 0) {
+            res.json({ error: "No files uploaded." });
+            return;
+        }
+
+        const allFiles = [];
+        for (const fieldName in files) {
+            if (files.hasOwnProperty(fieldName)) {
+                const fileArray = [].concat(files[fieldName] || []);
+                allFiles.push(...fileArray);
+            }
+        }
+
+        req.files = allFiles;
+        req.allowOverwrite = fields.allow_overwrite === 'true';
+
         next();
     });
 };
 
 router.post('/', formMiddleWare, async function (req, res, next) {
-    console.log("Import API call from", req.ip);
+    console.log("Import Cache API call from", req.ip);
 
-    let newLensIds = [];
-    let existingLensIds = [];
-    let lensFiles = [];
-    let settingsJson = false;
+    let imported = [];
+    let updated = [];
     let error = false;
 
     try {
         // both server and user must allow overwriting of existing lenses
         const allowOverwrite = req.allowOverwrite && configAllowOverwrite;
 
+        let lensIds = [];
+        let lenses = [];
+        let settingsJson = false;
+
         // process and filter upload data
-        const files = Object.values(req.files)[0];
-        if (Array.isArray(files)) {
-            for (let i = 0; i < files.length; i++) {
-                let parentDir = path.basename(path.dirname(files[i].originalFilename));
-                let fileName = path.basename(files[i].originalFilename);
+        for (let i = 0; i < req.files.length; i++) {
+            let parentDir = path.basename(path.dirname(req.files[i].originalFilename));
+            let fileName = path.basename(req.files[i].originalFilename);
 
-                // collect and verify required import data
-                if (files[i].size > 0) {
-                    if (fileName === "lens.lns") {
-                        const lensId = parseInt(parentDir);
-                        if (lensId) {
-                            newLensIds.push(lensId);
-                            lensFiles.push({ id: lensId, path: files[i].filepath });
+            // collect and verify required import data
+            if (req.files[i].size > 0) {
+                if (fileName === "lens.lns") {
+                    const lensId = parseInt(parentDir);
+                    if (Util.isLensId(lensId)) {
+                        lensIds.push(lensId);
+                        lenses.push({ id: lensId, path: req.files[i].filepath });
 
-                            // skip file removal of lenses until import is complete
-                            continue;
-                        }
-                    } else if (fileName === "settings.json") {
-                        settingsJson = JSON.parse(await fs.readFile(files[i].filepath));
+                        // skip file removal of lenses until import is complete
+                        continue;
                     }
+                } else if (fileName === "settings.json") {
+                    settingsJson = JSON.parse(await fs.readFile(req.files[i].filepath));
                 }
-
-                // remove unknown files & settings.json
-                await fs.unlink(files[i].filepath);
             }
 
-            if (!settingsJson) {
-                error = 'missing settings.json';
-            } else if (!lensFiles.length) {
-                error = 'missing lens.lns files';
-            } else {
-                // query existing Lens IDs to exclude them from import and optionally update them
-                existingLensIds = await DB.getDuplicatedLensIds(newLensIds);
+            // remove unknown files & settings.json
+            await fs.unlink(req.files[i].filepath);
+        }
 
-                // start file import
-                for (let j = 0; j < lensFiles.length; j++) {
-                    const isDuplicated = existingLensIds.includes(lensFiles[j].id);
-                    if (isDuplicated) {
-                        let index = newLensIds.indexOf(lensFiles[j].id);
-                        if (index !== -1) {
-                            newLensIds.splice(index, 1);
-                        }
+        if (!settingsJson) {
+            error = 'Missing settings.json file.';
+        } else if (!lenses.length) {
+            error = 'Missing lens.lns files.';
+        } else {
+            // query existing Lens IDs to exclude them from import and optionally update them
+            const duplicatedLensIds = await DB.getDuplicatedLensIds(lensIds);
 
-                        if (allowOverwrite) {
-                            console.log("Re-importing existing Lens", lensFiles[j].id);
-                            await Importer.importLens(lensFiles[j].path, lensFiles[j].id, false);
-                        }
-                    } else {
-                        console.log("Importing new Lens", lensFiles[j].id);
-                        await Importer.importLens(lensFiles[j].path, lensFiles[j].id);
+            // start file import
+            for (let j = 0; j < lenses.length; j++) {
+                if (duplicatedLensIds.includes(lenses[j].id)) {
+                    if (allowOverwrite) {
+                        console.log("Re-importing existing Lens", lenses[j].id);
+
+                        updated.push(lenses[i].id);
+
+                        await Importer.importLens(lenses[j].path, lenses[j].id, false);
                     }
+                } else {
+                    console.log("Importing new Lens", lenses[j].id);
 
-                    // file import is complete, remove temporary file
-                    await fs.unlink(lensFiles[j].path);
+                    imported.push(lenses[i].id);
+
+                    await Importer.importLens(lenses[j].path, lenses[j].id, true);
                 }
 
-                // create matching database records for new imported files
-                const insertData = Importer.exportFromAppSettings(settingsJson, newLensIds);
+                // file import is complete, remove temporary file
+                await fs.unlink(lenses[j].path);
+            }
+
+            // create matching database records for new imported files
+            if (imported.length) {
+                const insertData = Importer.exportFromAppSettings(settingsJson, imported);
                 if (insertData) {
                     await DB.insertLens(insertData['lenses']);
                     await DB.insertUnlock(insertData['unlocks']);
                 }
+            }
 
-                // update unlocks table for existing lenses if config option is set
-                if (allowOverwrite) {
-                    const updateData = Importer.exportFromAppSettings(settingsJson, existingLensIds, false);
-                    if (updateData) {
-                        await DB.updateLens(updateData['lenses']);
-                        await DB.updateUnlock(updateData['unlocks']);
-                    }
+            // update unlocks table for existing lenses if config option is set
+            if (updated.length) {
+                const updateData = Importer.exportFromAppSettings(settingsJson, updated, false);
+                if (updateData) {
+                    await DB.updateLens(updateData['lenses']);
+                    await DB.updateUnlock(updateData['unlocks']);
                 }
             }
-        } else {
-            error = 'array of files expected';
         }
     } catch (e) {
         console.error(e);
-        error = 'server side error';
-    }
-
-    if (error) {
-        return res.json({
-            error: error
-        });
+        error = 'A server side error occured.';
     }
 
     return res.json({
-        import: newLensIds,
-        update: allowOverwrite ? existingLensIds : [],
+        error: error,
+        import: imported,
+        update: updated
     });
 });
 
