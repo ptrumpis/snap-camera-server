@@ -21,6 +21,7 @@ const mediaDir = process.env.MEDIA_DIR.replace(/^\/+/, '');
 const defaultMediaPath = storageServer.concat('/', mediaDir, '/');
 
 const enableWebSource = Config.app.flag.enable_web_source;
+const enableCustomSource = Config.app.flag.enable_custom_source;
 const ignoreAltMedia = Config.app.flag.ignore_alt_media;
 const ignoreImgSequence = Config.app.flag.ignore_img_sequence;
 
@@ -28,10 +29,13 @@ const placeholderThumbnail = Config.media.placeholder.thumbnail;
 const placeholderSnapcode = Config.media.placeholder.snapcode;
 const placeholderIcon = Config.media.placeholder.icon;
 
-function webImportFilter(arr) {
-    if (!enableWebSource) {
-        return arr.filter(element => (!element.web_import));
+function importFilter(arr) {
+    if (!enableWebSource || !enableCustomSource) {
+        return arr.filter(element => (
+            (enableWebSource || !element.web_import) && (enableCustomSource || !element.custom_import)
+        ));
     }
+
     return arr;
 }
 
@@ -76,7 +80,7 @@ function searchLensByName(term) {
             if (results && results[0]) {
                 resolve(
                     lensesMediaFilter(
-                        webImportFilter(results)
+                        importFilter(results)
                     )
                 );
             } else {
@@ -98,7 +102,7 @@ function searchLensByTags(hashtags) {
             if (results && results[0]) {
                 resolve(
                     lensesMediaFilter(
-                        webImportFilter(results)
+                        importFilter(results)
                     )
                 );
             } else {
@@ -119,7 +123,7 @@ function searchLensByUuid(uuid) {
             if (results && results[0]) {
                 resolve(
                     lensesMediaFilter(
-                        webImportFilter(results)
+                        importFilter(results)
                     )
                 );
             } else {
@@ -139,7 +143,7 @@ function getDuplicatedLensIds(lensIds) {
         ], async function (err, results) {
             if (results && results[0]) {
                 resolve(
-                    webImportFilter(results).map(obj => {
+                    importFilter(results).map(obj => {
                         return parseInt(obj.id);
                     })
                 );
@@ -161,7 +165,7 @@ function getMultipleLenses(lenses) {
             if (results && results[0]) {
                 resolve(
                     lensesMediaFilter(
-                        webImportFilter(results)
+                        importFilter(results)
                     )
                 );
             } else {
@@ -182,7 +186,7 @@ function getSingleLens(lensId) {
             if (results && results[0]) {
                 resolve(
                     lensesMediaFilter(
-                        webImportFilter(results)
+                        importFilter(results)
                     )
                 );
             } else {
@@ -201,7 +205,7 @@ function getLensUnlock(lensId) {
             lensId
         ], async function (err, results) {
             if (results && results[0]) {
-                resolve(webImportFilter(results));
+                resolve(importFilter(results));
             } else {
                 if (err) {
                     console.error(err, lensId);

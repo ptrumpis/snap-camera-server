@@ -20,7 +20,9 @@ async function loadConfig() {
                 },
                 flag: {
                     enable_web_source: true,
+                    enable_custom_source: true,
                     enable_cache_import: true,
+                    enable_custom_import: true,
                     mirror_search_results: false,
                     ignore_alt_media: true,
                     ignore_img_sequence: true,

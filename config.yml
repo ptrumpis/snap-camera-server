@@ -11,15 +11,28 @@ app:
 
   flag:
     # https://github.com/ptrumpis/snap-camera-signature-patch
-    # web source unlocks all lenses even those created after January 25, 2023
-    # it requires a patched binary with disabled signature checks
+    # web lens toggle
+    # unlocks all lenses even those created after January 25, 2023
+    # requires a patched binary with disabled signature checks
     enable_web_source: true
+
+    # https://github.com/ptrumpis/snap-camera-signature-patch
+    # custom lens toggle
+    # unlocks access to customized lenses
+    # requires a patched binary with disabled signature checks
+    enable_custom_source: true
 
     # https://github.com/ptrumpis/snap-lens-cache-import
     # enable import of cached application lenses through special api
     # if you run a public server, you should set this to 'false'
     # otherwise anyone can upload files to your server
     enable_cache_import: true
+
+    # https://github.com/ptrumpis/snap-lens-cache-import
+    # enable import of customized/modiefed lenses through special api
+    # if you run a public server, you should set this to 'false'
+    # otherwise anyone can upload files to your server
+    enable_custom_import: true
 
     # mirrors and downloads all your search results
     # comes with increased disk space usage
@@ -42,8 +55,7 @@ media:
 
 # import configuration
 import:
-  # allow cache import tool overwriting of existing files to re-import modified lenses
-  # requires 'app.flag.enable_cache_import' to be 'true'
+  # allow cache import and custom import to overwrite existing lenses
   allow_overwrite: true
 
 # search configuration
