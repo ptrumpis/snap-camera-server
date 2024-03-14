@@ -11,6 +11,7 @@ import reporting from './src/endpoints/reporting/lens.js';
 import latest from './src/endpoints/update/latest.js';
 import download from './src/endpoints/update/download.js';
 import importCache from './src/endpoints/import/cache.js';
+import importLens from './src/endpoints/import/lens.js';
 import v1 from './src/endpoints/v1.js';
 import wildcard from './src/endpoints/wildcard.js';
 import { Config } from './src/utils/config.js';
@@ -20,6 +21,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const enableCacheImport = Config.app.flag.enable_cache_import;
+const enableCustomImport = Config.app.flag.enable_custom_import;
 const serverPort = process.env.PORT;
 
 const app = express();
@@ -38,6 +40,9 @@ app.use('/vc/v1/update/latest', latest);
 app.use('/vc/v1/update/download', download);
 if (enableCacheImport) {
     app.use('/vc/v1/import/cache', importCache);
+}
+if (enableCustomImport) {
+    app.use('/vc/v1/import/lens', importLens);
 }
 app.use('/vc/v1', v1);
 app.use('*', wildcard);
