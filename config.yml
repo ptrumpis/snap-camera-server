@@ -59,6 +59,8 @@ import:
   allow_overwrite: true
 
   # store imported lenses as .zip archive or use original .lns format
+  # if you run a public server, you should set this to 'true'
+  # otherwise uploaded files will not be validated
   zip_archive: true
 
 # search configuration
