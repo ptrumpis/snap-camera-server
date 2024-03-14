@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv';
 import * as fs from 'fs/promises';
 import * as zstd from 'fzstd';
 import * as Storage from './storage.js';
+import * as Util from './helper.js';
 
 dotenv.config();
 
@@ -14,13 +15,21 @@ const mediaDir = process.env.MEDIA_DIR.replace(/^\/+/, '');
 const mediaDirAlt = process.env.MEDIA_DIR_ALT.replace(/^\/+/, '');
 const importDir = process.env.IMPORT_DIR.replace(/^\/+/, '');
 
+const baseUrl = storageServer.concat('/', importDir, '/');
+const defaultMediaBaseUrl = storageServer.concat('/', mediaDirAlt, '/');
+
 const allowOverwrite = Config.import.allow_overwrite;
 const zipArchive = Config.import.zip_archive;
 
 async function importLens(lensFile, lensId, createMediaFiles = true) {
-    let result = false;
+    if (!Util.isLensId(lensId)) {
+        console.warn("Can't import lens with invalid lens ID", lensId);
+        return false;
+    }
 
     try {
+        let result = false;
+
         const destDirectory = storagePath.concat('/', importDir, '/', lensId);
         if (!(await Storage.isDirectory(destDirectory))) {
             await fs.mkdir(destDirectory, { recursive: true });
@@ -37,11 +46,13 @@ async function importLens(lensFile, lensId, createMediaFiles = true) {
         if (result && createMediaFiles) {
             await copyDefaultMediaFiles(lensId);
         }
+
+        return result;
     } catch (e) {
         console.error(e);
     }
 
-    return result;
+    return false;
 }
 
 async function copyFile(srcFile, destFile) {
@@ -107,7 +118,7 @@ async function copyDefaultMediaFiles(lensId) {
     }
 }
 
-function exportFromAppSettings(settingsJson, lensIds = [], updateExisting = false) {
+function exportCacheLensesFromSettings(settingsJson, lensIds = [], updateExisting = false) {
     let lenses = [];
     let unlocks = [];
 
@@ -127,15 +138,8 @@ function exportFromAppSettings(settingsJson, lensIds = [], updateExisting = fals
                     continue;
                 }
 
-                // icon, snapcode and thumbnail will point to a private copy of the default media
-                // the copy is created for each lens with copyDefaultMediaFiles during import
-                const basePath = storageServer.concat('/', importDir, '/', lensId, '/');
-
                 // zip or lns archive
-                const lensFile = zipArchive ? basePath.concat('lens.zip') : basePath.concat('lens.lns');
-
-                // other (unused?) media files will point to default alt media placeholders
-                const defaultMediaPath = storageServer.concat('/', mediaDirAlt, '/');
+                const lensFile = zipArchive ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
 
                 let lens = updateExisting ? {
                     unlockable_id: lensId,
@@ -143,18 +147,18 @@ function exportFromAppSettings(settingsJson, lensIds = [], updateExisting = fals
                     custom_import: 0,
                 } : {
                     unlockable_id: lensId,
-                    snapcode_url: basePath.concat('snapcode.png'),
+                    snapcode_url: baseUrl.concat(lensId, '/snapcode.png'),
                     user_display_name: "Import",
                     lens_name: lensId,
                     lens_tags: "",
                     lens_status: "Live",
                     deeplink: "",
-                    icon_url: basePath.concat('icon.png'),
-                    thumbnail_media_url: basePath.concat('thumbnail.jpg'),
-                    // other media files
-                    thumbnail_media_poster_url: defaultMediaPath.concat('thumbnail_poster.jpg'),
-                    standard_media_url: defaultMediaPath.concat('standard.jpg'),
-                    standard_media_poster_url: defaultMediaPath.concat('standard_poster.jpg'),
+                    icon_url: baseUrl.concat(lensId, '/icon.png'),
+                    thumbnail_media_url: baseUrl.concat(lensId, '/thumbnail.jpg'),
+                    // other (unused?) media files will point to default alt media placeholders
+                    thumbnail_media_poster_url: defaultMediaBaseUrl.concat('thumbnail_poster.jpg'),
+                    standard_media_url: defaultMediaBaseUrl.concat('standard.jpg'),
+                    standard_media_poster_url: defaultMediaBaseUrl.concat('standard_poster.jpg'),
                     obfuscated_user_slug: "",
                     image_sequence: {},
                     web_import: 0,
@@ -192,4 +196,113 @@ function exportFromAppSettings(settingsJson, lensIds = [], updateExisting = fals
     return { lenses, unlocks };
 }
 
-export { importLens, exportFromAppSettings };
+function exportCustomLensFromWebLens(webLens, updateExisting = false) {
+    if (!webLens || !webLens.unlockable_id || !webLens.lens_id) {
+        return false;
+    }
+
+    if (!Util.isLensId(webLens.lens_id)) {
+        return false;
+    }
+
+    const lensId = webLens.lens_id;
+
+    // zip or lns archive
+    const lensFile = zipArchive ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
+
+    try {
+        // return database compatible object
+        return updateExisting ? {
+            // lens
+            unlockable_id: lensId,
+            // unlock
+            lens_id: lensId,
+            lens_url: lensFile,
+            // lens & unlock flags
+            web_import: 0,
+            custom_import: 1,
+        } : {
+            // lens
+            unlockable_id: lensId,
+            snapcode_url: webLens.snapcode_url,
+            user_display_name: webLens.user_display_name,
+            lens_name: webLens.lens_name,
+            lens_tags: webLens.lens_tags,
+            lens_status: webLens.lens_status,
+            deeplink: webLens.deeplink,
+            icon_url: webLens.icon_url,
+            thumbnail_media_url: webLens.thumbnail_media_url,
+            thumbnail_media_poster_url: webLens.thumbnail_media_poster_url,
+            standard_media_url: webLens.standard_media_url,
+            standard_media_poster_url: webLens.standard_media_poster_url,
+            obfuscated_user_slug: webLens.obfuscated_user_slug,
+            image_sequence: webLens.image_sequence,
+            // unlock
+            lens_id: lensId,
+            lens_url: lensFile,
+            signature: webLens.signature,
+            hint_id: webLens.hint_id,
+            additional_hint_ids: webLens.additional_hint_ids,
+            // lens & unlock flags
+            web_import: 0,
+            custom_import: 1,
+        };
+    } catch (e) {
+        console.error(e);
+    }
+
+    return false;
+}
+
+function exportCustomLens(lensId, updateExisting = false) {
+    if (!Util.isLensId(lensId)) {
+        return false;
+    }
+
+    // zip or lns archive
+    const lensFile = zipArchive ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
+
+    try {
+        // return database compatible object
+        return updateExisting ? {
+            // lens
+            unlockable_id: lensId,
+            // unlock
+            lens_id: lensId,
+            lens_url: lensFile,
+            // lens & unlock flags
+            web_import: 0,
+            custom_import: 1,
+        } : {
+            // lens
+            unlockable_id: lensId,
+            snapcode_url: baseUrl.concat(lensId, '/snapcode.png'),
+            user_display_name: "Import",
+            lens_name: lensId,
+            lens_tags: "",
+            lens_status: "Live",
+            deeplink: "",
+            icon_url: baseUrl.concat(lensId, '/icon.png'),
+            thumbnail_media_url: baseUrl.concat(lensId, '/thumbnail.jpg'),
+            thumbnail_media_poster_url: defaultMediaBaseUrl.concat('thumbnail_poster.jpg'),
+            standard_media_url: defaultMediaBaseUrl.concat('standard.jpg'),
+            standard_media_poster_url: defaultMediaBaseUrl.concat('standard_poster.jpg'),
+            obfuscated_user_slug: "",
+            image_sequence: {},
+            image_sequence: webLens.image_sequence,
+            // unlock
+            lens_id: lensId,
+            lens_url: lensFile,
+            signature: "",
+            hint_id: "",
+            additional_hint_ids: {},
+            // lens & unlock flags
+            web_import: 0,
+            custom_import: 1,
+        };
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+export { importLens, exportCacheLensesFromSettings, exportCustomLensFromWebLens, exportCustomLens };

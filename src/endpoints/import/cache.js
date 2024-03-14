@@ -118,7 +118,7 @@ router.post('/', formMiddleWare, async function (req, res, next) {
 
             // create matching database records for new imported files
             if (imported.length) {
-                const insertData = Importer.exportFromAppSettings(settingsJson, imported);
+                const insertData = Importer.exportCacheLensesFromSettings(settingsJson, imported);
                 if (insertData) {
                     await DB.insertLens(insertData['lenses']);
                     await DB.insertUnlock(insertData['unlocks']);
@@ -127,7 +127,7 @@ router.post('/', formMiddleWare, async function (req, res, next) {
 
             // update unlocks table for existing lenses if config option is set
             if (updated.length) {
-                const updateData = Importer.exportFromAppSettings(settingsJson, updated, false);
+                const updateData = Importer.exportCacheLensesFromSettings(settingsJson, updated, false);
                 if (updateData) {
                     await DB.updateLens(updateData['lenses']);
                     await DB.updateUnlock(updateData['unlocks']);
