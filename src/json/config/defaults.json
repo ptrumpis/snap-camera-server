@@ -1,0 +1,51 @@
+{
+    "app": {
+        "relay": {
+            "server": false,
+            "timeout": 9000
+        },
+        "flag": {
+            "enable_web_source": true,
+            "enable_custom_source": true,
+            "enable_cache_import": true,
+            "enable_custom_import": true,
+            "mirror_search_results": false,
+            "ignore_alt_media": true,
+            "ignore_img_sequence": true,
+            "fetch_top_lenses": false
+        }
+    },
+    "media": {
+        "placeholder": {
+            "thumbnail": false,
+            "snapcode": false,
+            "icon": false
+        }
+    },
+    "import": {
+        "allow_overwrite": true,
+        "zip_archive": true
+    },
+    "auto_repair": {
+        "enable": true,
+        "lens_mode": {
+            "disable_fallback": true
+        },
+        "blend_mode": {
+            "replace_unknown": true,
+            "values": []
+        }
+    },
+    "search": {
+        "timeout": 9000,
+        "web_cache": {
+            "ttl": 1800,
+            "check": 600
+        },
+        "creator_url": "https://lensstudio.snapchat.com/creator/",
+        "share_urls": []
+    },
+    "storage": {
+        "urls": []
+    }
+}

@@ -7,7 +7,7 @@ app:
     # relay server url and connection timeout in milliseconds
     # comment server line out to disable relay
     server: https://snapchatreverse.jaku.tv
-    timeout: 6000
+    timeout: 9000
 
   flag:
     # https://github.com/ptrumpis/snap-camera-signature-patch
@@ -29,7 +29,7 @@ app:
     enable_cache_import: true
 
     # https://github.com/ptrumpis/snap-lens-cache-import
-    # enable import of customized/modiefed lenses through special api
+    # enable import of customized/modified lenses through special api
     # if you run a public server, you should set this to 'false'
     # otherwise anyone can upload files to your server
     enable_custom_import: true
@@ -44,6 +44,10 @@ app:
     # IGNORE_ALT_MEDIA takes precedence over IGNORE_IMG_SEQUENCE
     ignore_alt_media: true
     ignore_img_sequence: true
+
+    # displays the latest top lenses at app startup
+    # requires 'app.flag.enable_web_source' to be 'true'
+    fetch_top_lenses: false
 
 # media configuration
 media:
@@ -63,8 +67,31 @@ import:
   # otherwise uploaded files will not be validated
   zip_archive: true
 
+# automatic repair configuration
+auto_repair:
+  # you can deactivate the automatic repair mode to reverse any automatic changes and serve the original files
+  enable: true
+
+  lens_mode:
+    # repair web lenses and automatically disable incompatible fallback mode
+    # disabling this option will stop future repairs but will not restore any previous repairs
+    disable_fallback: true
+
+  blend_mode:
+    # repair web lenses and automatically fix unknown blend mode values
+    # disabling this option will stop future repairs but will not restore any previous repairs
+    replace_unknown: true
+
+    # list of unknown values and a new replacement value
+    values:
+      - unknown: 16
+        replacement: 13
+
 # search configuration
 search:
+  # web search connection timeout in milliseconds
+  timeout: 9000
+
   # caching is required to activate web lenses within search results
   # web caching requires 'app.flag.enable_web_source' to be 'true'
   web_cache:

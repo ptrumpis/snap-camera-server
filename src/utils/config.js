@@ -1,8 +1,14 @@
 import YAML from 'yaml';
 import * as fs from 'fs/promises';
 import dotenv from 'dotenv';
+import { createRequire } from 'module';
 
 dotenv.config();
+
+const require = createRequire(import.meta.url);
+
+// load default values from json file
+const defaultConfig = require('../json/config/defaults.json');
 
 const Config = await loadConfig();
 
@@ -10,47 +16,6 @@ async function loadConfig() {
     try {
         const configFile = await fs.readFile("config.yml", { encoding: 'utf8' });
         const yamlConfig = YAML.parse(configFile);
-
-        // default values
-        const defaultConfig = {
-            app: {
-                relay: {
-                    server: false,
-                    timeout: 6000,
-                },
-                flag: {
-                    enable_web_source: true,
-                    enable_custom_source: true,
-                    enable_cache_import: true,
-                    enable_custom_import: true,
-                    mirror_search_results: false,
-                    ignore_alt_media: true,
-                    ignore_img_sequence: true,
-                },
-            },
-            media: {
-                placeholder: {
-                    thumbnail: false,
-                    snapcode: false,
-                    icon: false,
-                },
-            },
-            import: {
-                allow_overwrite: true,
-                zip_archive: true,
-            },
-            search: {
-                web_cache: {
-                    ttl: 1800,
-                    check: 600,
-                },
-                creator_url: 'https://lensstudio.snapchat.com/creator/',
-                share_urls: [],
-            },
-            storage: {
-                urls: [],
-            },
-        };
 
         return deepMerge(defaultConfig, yamlConfig);
     } catch (e) {
