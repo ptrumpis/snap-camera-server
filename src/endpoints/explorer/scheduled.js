@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 
 //these are actually the featured filters,
 //for now we'll stick with the main ones they have featured before the servers went offline.
-const originalResponse = require('../../json/scheduled.json');
+const originalResponse = require('../../json/lenses/scheduled.json');
 
 var router = express.Router();
 

@@ -4,12 +4,12 @@ import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
 
-const wfh = require('../../../json/wfh.json');
-const color_effect = require('../../../json/color_effect.json');
-const funny = require('../../../json/funny.json');
-const gaming = require('../../../json/gaming.json');
-const cute = require('../../../json/cute.json');
-const character = require('../../../json/character.json');
+const wfh = require('../../../json/lenses/wfh.json');
+const color_effect = require('../../../json/lenses/color_effect.json');
+const funny = require('../../../json/lenses/funny.json');
+const gaming = require('../../../json/lenses/gaming.json');
+const cute = require('../../../json/lenses/cute.json');
+const character = require('../../../json/lenses/character.json');
 
 const originalResponses = {
     wfh,

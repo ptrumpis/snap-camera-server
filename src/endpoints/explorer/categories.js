@@ -4,7 +4,7 @@ import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
 
-const originalResponse = require('../../json/categories.json');
+const originalResponse = require('../../json/lenses/categories.json');
 
 var router = express.Router();
 
