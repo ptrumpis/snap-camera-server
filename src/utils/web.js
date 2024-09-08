@@ -4,13 +4,15 @@ import { Config } from './config.js';
 import * as DB from './db.js';
 import * as Util from './helper.js';
 
-const crawler = new LensWebCrawler();
-const Cache = new NodeCache({ 
+const Cache = new NodeCache({
     stdTTL: Config.search.web_cache.ttl,
     checkperiod: Config.search.web_cache.check,
 });
 
 const creatorUrl = Config.search.creator_url;
+const searchTimeout = Config.search.timeout;
+
+const crawler = new LensWebCrawler(searchTimeout);
 
 async function search(searchTerm) {
     let result = [];
