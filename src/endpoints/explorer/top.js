@@ -15,11 +15,15 @@ var router = express.Router();
 
 router.get('/', async function (req, res, next) {
     if (Config.app.flag.fetch_top_lenses) {
-        const webResponse = await crawler.getTopLenses();
-        return res.json(webResponse);
-    } else {
-        return res.json(Util.modifyResponseURLs(originalResponse));
+        try {
+            const webResponse = await crawler.getTopLenses();
+            return res.json(webResponse);
+        } catch (e) {
+            console.error(e);
+        }
     }
+
+    return res.json(Util.modifyResponseURLs(originalResponse));
 });
 
 export default router;
