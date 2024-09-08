@@ -11,12 +11,12 @@ dotenv.config();
 
 const storageServer = process.env.STORAGE_SERVER;
 const storagePath = process.env.STORAGE_PATH;
-const mediaDir = process.env.MEDIA_DIR.replace(/^\/+/, '');
-const mediaDirAlt = process.env.MEDIA_DIR_ALT.replace(/^\/+/, '');
-const importDir = process.env.IMPORT_DIR.replace(/^\/+/, '');
+const mediaDir = process.env.MEDIA_DIR?.replace(/^\/+/, '');
+const mediaDirAlt = process.env.MEDIA_DIR_ALT?.replace(/^\/+/, '');
+const importDir = process.env.IMPORT_DIR?.replace(/^\/+/, '');
 
-const baseUrl = storageServer.concat('/', importDir, '/');
-const defaultMediaBaseUrl = storageServer.concat('/', mediaDirAlt, '/');
+const baseUrl = storageServer?.concat('/', importDir, '/');
+const defaultMediaBaseUrl = storageServer?.concat('/', mediaDirAlt, '/');
 
 const allowOverwrite = Config.import.allow_overwrite;
 const zipArchive = Config.import.zip_archive;
@@ -97,10 +97,10 @@ async function storeLensAsZip(lensFile, destFile) {
 }
 
 async function copyDefaultMediaFiles(lensId) {
-    const srcDirectory = storagePath.concat('/', mediaDir);
-    const destDirectory = storagePath.concat('/', importDir, '/', lensId);
-
     try {
+        const srcDirectory = storagePath.concat('/', mediaDir);
+        const destDirectory = storagePath.concat('/', importDir, '/', lensId);
+
         if (!(await Storage.isDirectory(destDirectory))) {
             await fs.mkdir(destDirectory, { recursive: true });
         }
@@ -207,10 +207,10 @@ function exportCustomLensFromWebLens(webLens, updateExisting = false) {
 
     const lensId = webLens.lens_id;
 
-    // zip or lns archive
-    const lensFile = zipArchive ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
-
     try {
+        // zip or lns archive
+        const lensFile = zipArchive ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
+
         // return database compatible object
         return updateExisting ? {
             // lens
@@ -259,10 +259,10 @@ function exportCustomLens(lensId, updateExisting = false) {
         return false;
     }
 
-    // zip or lns archive
-    const lensFile = zipArchive ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
-
     try {
+        // zip or lns archive
+        const lensFile = zipArchive ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
+
         // return database compatible object
         return updateExisting ? {
             // lens

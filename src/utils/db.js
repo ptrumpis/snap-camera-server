@@ -17,8 +17,8 @@ const connection = mysql.createPool({
 });
 
 const storageServer = process.env.STORAGE_SERVER;
-const mediaDir = process.env.MEDIA_DIR.replace(/^\/+/, '');
-const defaultMediaPath = storageServer.concat('/', mediaDir, '/');
+const mediaDir = process.env.MEDIA_DIR?.replace(/^\/+/, '');
+const defaultMediaPath = storageServer?.concat('/', mediaDir, '/');
 
 const enableWebSource = Config.app.flag.enable_web_source;
 const enableCustomSource = Config.app.flag.enable_custom_source;
@@ -42,29 +42,33 @@ function importFilter(arr) {
 
 function lensesMediaFilter(lenses) {
     return lenses.map(lens => {
-        // filter out ignored media files according to config.yml
-        if (ignoreAltMedia) {
-            lens.standard_media_url = '';
-            lens.standard_media_poster_url = '';
-            lens.image_sequence = {};
-        } else if (ignoreImgSequence) {
-            lens.image_sequence = {};
-        }
+        try {
+            // filter out ignored media files according to config.yml
+            if (ignoreAltMedia) {
+                lens.standard_media_url = '';
+                lens.standard_media_poster_url = '';
+                lens.image_sequence = {};
+            } else if (ignoreImgSequence) {
+                lens.image_sequence = {};
+            }
 
-        // generic thumbnail fix
-        if (!lens.thumbnail_media_url) {
-            lens.thumbnail_media_url = lens.thumbnail_media_poster_url || lens.standard_media_poster_url;
-        }
+            // generic thumbnail fix
+            if (!lens.thumbnail_media_url) {
+                lens.thumbnail_media_url = lens.thumbnail_media_poster_url || lens.standard_media_poster_url;
+            }
 
-        // show placeholder media files for missing images
-        if (placeholderThumbnail && !lens.thumbnail_media_url) {
-            lens.thumbnail_media_url = defaultMediaPath.concat('thumbnail.jpg');
-        }
-        if (placeholderSnapcode && !lens.snapcode_url) {
-            lens.snapcode_url = defaultMediaPath.concat('snapcode.png')
-        }
-        if (placeholderIcon && !lens.icon_url) {
-            lens.icon_url = defaultMediaPath.concat('icon.png')
+            // show placeholder media files for missing images
+            if (placeholderThumbnail && !lens.thumbnail_media_url) {
+                lens.thumbnail_media_url = defaultMediaPath.concat('thumbnail.jpg');
+            }
+            if (placeholderSnapcode && !lens.snapcode_url) {
+                lens.snapcode_url = defaultMediaPath.concat('snapcode.png')
+            }
+            if (placeholderIcon && !lens.icon_url) {
+                lens.icon_url = defaultMediaPath.concat('icon.png')
+            }
+        } catch (e) {
+            console.error(e);
         }
 
         return lens;
