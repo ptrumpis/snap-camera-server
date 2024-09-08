@@ -9,8 +9,9 @@ import fetch from 'node-fetch';
 
 export default class SnapLensWebCrawler {
     SCRIPT_SELECTOR = '#__NEXT_DATA__';
-    constructor() {
+    constructor(connectionTimeoutMs = 9000) {
         this.json = {};
+        this.connectionTimeoutMs = connectionTimeoutMs;
     }
 
     async getLensByHash(hash) {
@@ -56,12 +57,33 @@ export default class SnapLensWebCrawler {
             const body = await this._loadUrl('https://www.snapchat.com/explore/' + slug);
             const $ = cheerio.load(body);
             const json = JSON.parse($(this.SCRIPT_SELECTOR).text());
+
             if (json && json?.props?.pageProps?.initialApolloState) {
+                // old data structure
                 const results = json.props.pageProps.initialApolloState;
                 for (const key in results) {
                     if (key != 'ROOT_QUERY') {
                         if (results[key].id && results[key].deeplinkUrl && results[key].lensName) {
                             lenses.push(this._searchItemToLens(results[key]));
+                        }
+                    }
+                }
+            } else if (json && json?.props?.pageProps?.encodedSearchResponse) {
+                // new data structure introduced in summer 2024
+                const searchResult = JSON.parse(json.props.pageProps.encodedSearchResponse);
+                let results = [];
+                for (const index in searchResult.sections) {
+                    if (searchResult.sections[index].title === 'Lenses') {
+                        results = searchResult.sections[index].results;
+                        break;
+                    }
+                }
+
+                for (const index in results) {
+                    if (results[index]?.result?.lens) {
+                        let lens = results[index].result.lens;
+                        if (lens.lensId && lens.deeplinkUrl && lens.name) {
+                            lenses.push(this._searchItemToLens(lens));
                         }
                     }
                 }
@@ -72,13 +94,43 @@ export default class SnapLensWebCrawler {
         return lenses;
     }
 
-    async _loadUrl(url) {
+    async getTopLenses() {
+        let lenses = [];
         try {
-            const response = await fetch(url);
-            return await response.text();
+            const body = await this._loadUrl('https://www.snapchat.com/lens');
+            const $ = cheerio.load(body);
+            const json = JSON.parse($(this.SCRIPT_SELECTOR).text());
+
+            if (json && json?.props?.pageProps?.topLenses) {
+                const results = json.props.pageProps.topLenses;
+                for (const index in results) {
+                    lenses.push(this._lensInfoToLens(results[index]));
+                }
+            }
         } catch (e) {
             console.error(e);
         }
+        return lenses;
+    }
+
+    async _loadUrl(url) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => {
+            controller.abort();
+        }, this.connectionTimeoutMs);
+
+        try {
+            const response = await fetch(url, { signal: controller.signal });
+            if (response.status !== 200) {
+                console.warn("Unexpected HTTP status", response.status);
+            }
+            return await response.text();
+        } catch (e) {
+            console.error(e);
+        } finally {
+            clearTimeout(timeout);
+        }
+
         return null;
     }
 
@@ -109,12 +161,12 @@ export default class SnapLensWebCrawler {
 
     _searchItemToLens(searchItem) {
         const uuid = this._extractUuidFromDeeplink(searchItem.deeplinkUrl);
-        return {
-            unlockable_id: searchItem.id,
+        let result = {
+            unlockable_id: searchItem.id || searchItem.lensId,
             uuid: uuid,
             snapcode_url: "https://app.snapchat.com/web/deeplink/snapcode?data=" + uuid + "&version=1&type=png",
             user_display_name: searchItem.creator?.title || "",
-            lens_name: searchItem.lensName || "",
+            lens_name: searchItem.lensName || searchItem.name ||"",
             lens_tags: "",
             lens_status: "Live",
             deeplink: searchItem.deeplinkUrl || "",
@@ -126,6 +178,14 @@ export default class SnapLensWebCrawler {
             obfuscated_user_slug: "",
             image_sequence: {}
         };
+        if (searchItem.thumbnailSequence) {
+            result.image_sequence = {
+                url_pattern: searchItem.thumbnailSequence?.urlPattern || "",
+                size: searchItem.thumbnailSequence?.numThumbnails || 0,
+                frame_interval_ms: searchItem.thumbnailSequence?.animationIntervalMs || 0
+            }
+        }
+        return result;
     }
 
     _lensInfoToLens(lensInfo) {
