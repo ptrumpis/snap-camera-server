@@ -30,7 +30,7 @@
     "db-migrate": "1.0.0-beta.29",
     "db-migrate-mysql": "^3.0.0",
     "dotenv": "^16.4.7",
-    "express": "^4.19.2",
+    "express": "^4.21.2",
     "formidable": "^3.5.2",
     "fzstd": "^0.1.0",
     "jszip": "^3.10.1",
