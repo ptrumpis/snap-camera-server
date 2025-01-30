@@ -80,12 +80,12 @@ auto_repair:
   blend_mode:
     # repair web lenses and automatically fix unknown blend mode values
     # disabling this option will stop future repairs but will not restore any previous repairs
-    replace_unknown: true
+    fix_unknown: true
 
-    # list of unknown values and a new replacement value
+    # list of old unknown values and a new replacement value
     values:
-      - unknown: 16
-        replacement: 13
+      - old: 16
+        new: 13
 
 # search configuration
 search:

@@ -32,7 +32,7 @@
             "disable_fallback": true
         },
         "blend_mode": {
-            "replace_unknown": true,
+            "fix_unknown": true,
             "values": []
         }
     },
