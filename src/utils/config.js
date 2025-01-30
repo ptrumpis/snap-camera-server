@@ -52,6 +52,42 @@ async function loadConfig() {
             },
         };
 
+        // @todo remove support code block in v4
+        // support for .env application config will be dropped in version 4
+        // --> 3.x support block start
+        const envKeys = [
+            'RELAY_SERVER',
+            'RELAY_TIMEOUT',
+            'ENABLE_WEB_SOURCE',
+            'ENABLE_CACHE_IMPORT',
+            'MIRROR_SEARCH_RESULTS',
+            'IGNORE_ALT_MEDIA',
+            'IGNORE_IMG_SEQUENCE'
+        ];
+
+        // merge values from .env into yamlConfig,
+        // but let config.yml values take precedence
+        envKeys.forEach((envKey) => {
+            const lowercaseKey = envKey.toLowerCase();
+
+            if (process.env[envKey] !== undefined) {
+                if (lowercaseKey === 'relay_server') {
+                    if (!yamlConfig.app.relay.server) {
+                        yamlConfig.app.relay.server = process.env[envKey];
+                    }
+                } else if (lowercaseKey === 'relay_timeout') {
+                    if (!yamlConfig.app.relay.timeout) {
+                        yamlConfig.app.relay.timeout = parseInt(process.env[envKey], 10);
+                    }
+                } else {
+                    if (!yamlConfig.app.flag.hasOwnProperty(lowercaseKey)) {
+                        yamlConfig.app.flag[lowercaseKey] = parseBoolean(process.env[envKey]);
+                    }
+                }
+            }
+        });
+        // <-- 3.x support block end
+
         return deepMerge(defaultConfig, yamlConfig);
     } catch (e) {
         console.error("Error loading configuration", e);
