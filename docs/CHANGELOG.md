@@ -1,6 +1,13 @@
 # 📋 Changelog - Snap Camera Server
 Release version history and feature overview
 
+## v3.3.0 - Maintenance Release
+- New upload API to import modified lenses
+- New cache import option to allow overwriting of existing lenses
+- New config options to control search timeout, caching and share urls
+- Fixed broken web search (no lenses showing)
+- Updated npm packages
+
 ## v3.2.1 - Patch Release
 - Fixed lens placeholder image bug
 - New config option to enable placeholder images (default: disabled)

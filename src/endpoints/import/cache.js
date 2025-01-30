@@ -39,7 +39,7 @@ const formMiddleWare = (req, res, next) => {
             }
         }
 
-        req.files = allFiles;
+        req.files = Array.isArray(allFiles) ? allFiles : [allFiles];
         req.allowOverwrite = fields.allow_overwrite === 'true';
 
         next();
