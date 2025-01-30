@@ -35,7 +35,7 @@
     "jszip": "^3.10.1",
     "mysql2": "^3.9.2",
     "node-cache": "^5.1.2",
-    "node-fetch": "^3.3.0",
+    "node-fetch": "^3.3.2",
     "sharp": "^0.32.6",
     "yaml": "^2.4.0"
   }
