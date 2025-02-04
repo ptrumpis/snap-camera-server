@@ -22,27 +22,37 @@ router.post('/', async function (req, res, next) {
 
         let unlock = await DB.getLensUnlock(lensId);
         if (unlock && unlock[0]) {
-            console.log('Re-downloading Unlock', lensId);
-            await Util.downloadUnlock(unlock[0].lens_id, unlock[0].lens_url)
-            return res.json({});
+            if (unlock[0].lens_id && unlock[0].lens_url) {
+                console.log('Re-downloading Unlock', lensId);
+                await Util.downloadUnlock(unlock[0].lens_id, unlock[0].lens_url)
+                return res.json({});
+            } else {
+                console.warn('Unlock Download URL is missing', lensId);
+            }
         }
 
         if (useRelay) {
+            console.log('Trying to get Unlock from relay server', lensId);
             unlock = await Util.getUnlockFromRelay(lensId);
             if (unlock) {
-                console.log('Getting Unlock from relay server', lensId);
+                console.log('Received Unlock from relay server', lensId);
                 await DB.insertUnlock(unlock, true);
                 return res.json({});
+            } else {
+                console.log('Failed to get Unlock from relay server', lensId);
             }
         }
 
         if (useWebSource) {
             if (lens && lens.uuid) {
+                console.log('Trying to get Unlock from web', lensId);
                 unlock = await Web.getUnlockByHash(uuid);
                 if (unlock) {
-                    console.log('Getting Unlock from web', lensId);
+                    console.log('Received Unlock from web', lensId);
                     await DB.insertUnlock(unlock, true);
                     return res.json({});
+                } else {
+                    console.log('Failed to get Unlock from web', lensId);
                 }
             }
         }
