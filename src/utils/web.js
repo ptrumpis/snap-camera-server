@@ -70,7 +70,11 @@ async function searchByCreatorSlug(obfuscatedUserSlug) {
 }
 
 async function getLensByHash(uuid) {
-    return await crawler.getLensByHash(uuid);
+    let lens = await crawler.getLensByHash(uuid);
+    if (lens) {
+        lens.web_import = 1;
+    }
+    return lens; 
 }
 
 async function getUnlockByHash(uuid) {
