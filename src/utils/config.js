@@ -40,6 +40,7 @@ async function loadConfig() {
                 zip_archive: true,
             },
             search: {
+                timeout: 9000,
                 web_cache: {
                     ttl: 1800,
                     check: 600,

@@ -65,6 +65,9 @@ import:
 
 # search configuration
 search:
+  # web search connection timeout in milliseconds
+  timeout: 9000
+
   # caching is required to activate web lenses within search results
   # web caching requires 'app.flag.enable_web_source' to be 'true'
   web_cache:
