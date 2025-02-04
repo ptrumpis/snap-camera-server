@@ -24,7 +24,7 @@ router.post('/', async function (req, res, next) {
         if (unlock && unlock[0]) {
             if (unlock[0].lens_id && unlock[0].lens_url) {
                 console.log('Re-downloading Unlock', lensId);
-                await Util.downloadUnlock(unlock[0].lens_id, unlock[0].lens_url)
+                await Util.downloadUnlock(unlock[0].lens_id, unlock[0].lens_url);
                 return res.json({});
             } else {
                 console.warn('Unlock Download URL is missing', lensId);
