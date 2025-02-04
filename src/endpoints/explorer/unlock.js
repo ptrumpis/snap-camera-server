@@ -17,16 +17,23 @@ router.get('/', async function (req, res, next) {
 
     const unlock = await DB.getLensUnlock(lensId);
     if (unlock && unlock[0]) {
-        // trigger re-download to catch missing files automatically
-        await Util.downloadUnlock(unlock[0].lens_id, unlock[0].lens_url);
+        if (unlock[0].lens_id && unlock[0].lens_url) {
+            // trigger re-download to catch missing files automatically
+            await Util.downloadUnlock(unlock[0].lens_id, unlock[0].lens_url);
 
-        return res.json(Util.modifyResponseURLs(unlock[0]));
-    } else {
-        const remoteUnlock = await getRemoteUnlockByLensId(lensId);
-        if (remoteUnlock) {
-            return res.json(remoteUnlock);
+            return res.json(Util.modifyResponseURLs(unlock[0]));
+        } else {
+            console.warn('Unlock Download URL is missing', lensId);
         }
     }
+
+    const remoteUnlock = await getRemoteUnlockByLensId(lensId);
+    if (remoteUnlock) {
+        return res.json(remoteUnlock);
+    }
+
+    // TODO FIX in upcomming versions
+    console.warn('This Lens can not be used. The issue is known and will most likely be fixed in upcomming versions of Snap Camera Server.', lensId);
 
     return res.json({});
 });
