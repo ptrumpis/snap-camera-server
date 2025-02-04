@@ -79,7 +79,11 @@ async function getLensByHash(uuid) {
 
 async function getUnlockByHash(uuid) {
     // alias function
-    return await getLensByHash(uuid);
+    let unlock = await getLensByHash(uuid);
+    if (unlock && unlock.lens_id && unlock.lens_url) {
+        return unlock;
+    }
+    return null; 
 }
 
 async function mirrorSearchResults(webResults) {
