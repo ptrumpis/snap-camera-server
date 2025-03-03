@@ -1,4 +1,4 @@
-import LensWebCrawler from '../lib/crawler.js';
+import LensWebCrawler from '@ptrumpis/snap-lens-web-crawler';
 import NodeCache from 'node-cache';
 import { Config } from './config.js';
 import * as DB from './db.js';
