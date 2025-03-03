@@ -1,5 +1,5 @@
 import JSZip from 'jszip';
-import LensFileParser from '../lib/parser.js';
+import LensFileParser from '@ptrumpis/snap-lens-file-extractor';
 import { Config } from './config.js';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs/promises';
