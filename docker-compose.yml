@@ -25,17 +25,17 @@ services:
     environment:
       - WEBAPP_PORT=5645
       - HTTP_PORT=80
-      - WWW_ROOT=${NGINX_WWW_ROOT}
+      - WWW_ROOT=/var/www/snapcamera
     volumes:
       - ./ssl/studio-app.snapchat.com.crt:/etc/ssl/certs/studio-app.snapchat.com.crt:ro
       - ./ssl/studio-app.snapchat.com.key:/etc/ssl/private/studio-app.snapchat.com.key:ro
       - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
       - ./nginx/theme:/etc/nginx/theme:ro
-      - ./nginx/snap-camera-categories-media:${NGINX_WWW_ROOT}/snap-camera-categories-media:ro
-      - ./nginx/snap-camera-media:${NGINX_WWW_ROOT}/snap-camera-media:ro
-      - ./nginx/snap-camera-media-alt:${NGINX_WWW_ROOT}/snap-camera-media-alt:ro
-      - ./import:${NGINX_WWW_ROOT}/import
-      - storage:${NGINX_WWW_ROOT}
+      - ./nginx/snap-camera-categories-media:/var/www/snapcamera/snap-camera-categories-media:ro
+      - ./nginx/snap-camera-media:/var/www/snapcamera/snap-camera-media:ro
+      - ./nginx/snap-camera-media-alt:/var/www/snapcamera/snap-camera-media-alt:ro
+      - ./import:/var/www/snapcamera/import
+      - storage:/var/www/snapcamera
     ports:
       - 127.0.0.1:${NGINX_LOCAL_PORT}:80
       - 127.0.0.1:443:443
@@ -51,11 +51,13 @@ services:
       - DB_NAME=${MYSQL_DATABASE}
       - DB_PORT=3306
       - PORT=5645
-      - STORAGE_SERVER=http://studio-app.snapchat.com:${NGINX_LOCAL_PORT}
       - STORAGE_PATH=/var/lib/snapcamera
       - IMPORT_DIR=import
       - MEDIA_DIR=snap-camera-media
       - MEDIA_DIR_ALT=snap-camera-media-alt
+      # the storage server url will be served to the snap camera application
+      # it must be reachable from your local network
+      - STORAGE_SERVER=http://studio-app.snapchat.com:${NGINX_LOCAL_PORT}
     volumes:
       # content of snap-camera-media (MEDIA_DIR) is not getting included automatically through storage
       - ./nginx/snap-camera-media:/var/lib/snapcamera/snap-camera-media:ro
