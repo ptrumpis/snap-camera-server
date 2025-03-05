@@ -7,13 +7,14 @@ import * as fs from 'fs/promises';
 import * as DB from '../../utils/db.js';
 import * as Importer from '../../utils/importer.js';
 import * as Util from '../../utils/helper.js';
+import pkg from '../../../package.json' with { type: 'json' };
 
 var router = express.Router();
 
 const tempDir = os.tmpdir();
 const configAllowOverwrite = Config.import.allow_overwrite;
 
-router.get('/', (req, res) => res.json('cache import enabled'));
+router.get('/', (req, res) => res.type('json').send(JSON.stringify({ status: 'cache import enabled', version: pkg.version }, null, 4)));
 
 const parseForm = (req, res, next) => {
     const form = formidable({ uploadDir: tempDir, multiples: true });
