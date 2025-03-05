@@ -23,6 +23,7 @@ services:
   webproxy:
     image: nginx
     environment:
+      - WEBAPP_HOST=webapp
       - WEBAPP_PORT=5645
       - HTTP_PORT=80
       - WWW_ROOT=/var/www/snapcamera
