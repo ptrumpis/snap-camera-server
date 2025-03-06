@@ -31,12 +31,25 @@ jobs:
         id: extract_tag
         run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
+      - name: Extract Base Image from Dockerfile
+        id: get_base_image
+        run: |
+          BASE_IMAGE=$(grep -i '^FROM' Dockerfile | head -n 1 | awk '{print $2}')
+          echo "BASE_IMAGE=$BASE_IMAGE" >> $GITHUB_ENV
+
+      - name: Get Supported Platforms
+        id: get_platforms
+        run: |
+          PLATFORMS=$(docker buildx imagetools inspect ${{ env.BASE_IMAGE }} --format '{{ range .Manifest.Platforms }}{{ .OS }}/{{ .Architecture }},{{ end }}' | sed 's/,$//')
+          echo "PLATFORMS=$PLATFORMS" >> $GITHUB_ENV
+        shell: bash
+
       - name: Build and Push Docker Image (Multi-Arch)
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          platforms: linux/amd64, linux/arm64, linux/arm/v7, windows/amd64, darwin/amd64
+          platforms: ${{ env.PLATFORMS }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
