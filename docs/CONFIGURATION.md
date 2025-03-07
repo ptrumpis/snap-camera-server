@@ -46,7 +46,7 @@ Create a copy of the file `example.env` and name the copy `.env` (without filena
 
 You can go with all default values and don't need to change anything unless your having problems with certain ports being occupied or if you want to host the server on the internet.
 
-Read the [Server Settings (.env)](https://github.com/ptrumpis/snap-camera-server/wiki/Server-Settings-(.env)) page for configuration details.
+Read the [Configuration Settings (.env)](https://github.com/ptrumpis/snap-camera-server/wiki/Configuration-Settings-(.env)) page for configuration details.
 
 ### 2. Generate SSL certificate ([Video Clip](https://youtu.be/4QJP8MLvSdA))
 Snap Camera will refuse to connect to your local server if you don't have a trusted SSL certificate.
