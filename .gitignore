@@ -1,7 +1,9 @@
+/.vscode/
 /import/
 /node_modules/
 /ssl/studio-app.snapchat.com.crt
 /ssl/studio-app.snapchat.com.key
 .env
+docker-compose.override.yml
 package-lock.json
 AutoConfig.exe
