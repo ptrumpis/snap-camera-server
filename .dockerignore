@@ -1,5 +1,7 @@
 .git/
 .github/
+.vscode/
+docs/
 import/
 mysql/
 nginx/
@@ -9,6 +11,6 @@ ssl/
 .env
 .gitignore
 AutoConfig.exe
-docker-compose.yml
+docker-compose*.yml
 gencert.sh
 gencert.bat
