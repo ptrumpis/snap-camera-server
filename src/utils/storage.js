@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import path from 'path';
 import sharp from 'sharp';
 import { Config } from './config.js';

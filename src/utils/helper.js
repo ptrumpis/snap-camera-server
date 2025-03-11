@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-import { Headers } from 'node-fetch';
 import { Config } from './config.js';
 import * as dotenv from 'dotenv';
 import * as DB from './db.js';
@@ -16,11 +14,11 @@ const modifyServerRegEx = new RegExp(Config.storage.urls.map(escapeRegExp).join(
 const shareUrlUuid = escapeRegExp('{UUID}');
 const shareUrls = Config.search.share_urls.map(escapeRegExp);
 
-const headers = new Headers({
+const headers = {
     'User-Agent': 'SnapCamera/1.21.0.0 (Windows 10 Version 2009)',
     'Content-Type': 'application/json',
     'X-Installation-Id': 'default'
-});
+};
 
 function escapeRegExp(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -58,7 +56,7 @@ async function relayRequest(path, method = 'GET', body = null) {
         }, relayTimeout);
 
         try {
-            let requestInit = { method: method, headers, signal: controller.signal };
+            let requestInit = { method: method, headers: headers, signal: controller.signal };
             if (body) {
                 requestInit.body = body;
             }
