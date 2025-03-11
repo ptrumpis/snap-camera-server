@@ -42,7 +42,7 @@ jobs:
         run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Debug Extracted Tag
-        run: echo "Extracted Tag: $TAG_NAME"
+        run: echo "Extracted Tag ${{ env.TAG_NAME }}"
 
       - name: Build and Push Docker Image (Multi-Arch)
         uses: docker/build-push-action@v5
