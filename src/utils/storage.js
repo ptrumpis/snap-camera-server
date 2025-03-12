@@ -203,8 +203,8 @@ async function downloadFile(targetUrl, subDirectory, fileName) {
 
     try {
         const response = await fetch(targetUrl);
-        const buffer = await response.buffer();
-        await fs.writeFile(newFile, buffer);
+        const buffer = await response.arrayBuffer();
+        await fs.writeFile(newFile, Buffer.from(buffer));
     } catch (e) {
         console.error("downloadFile error:", e, targetUrl);
         return false;
