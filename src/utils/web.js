@@ -1,10 +1,10 @@
-import LensWebCrawler from '@ptrumpis/snap-lens-web-crawler';
+import { SnapLensWebCrawler, CrawlerFailure } from '@ptrumpis/snap-lens-web-crawler';
 import NodeCache from 'node-cache';
 import { Config } from './config.js';
 import * as DB from './db.js';
 import * as Util from './helper.js';
 
-const Cache = new NodeCache({ 
+const Cache = new NodeCache({
     stdTTL: Config.search.web_cache.ttl,
     checkperiod: Config.search.web_cache.check,
 });
@@ -12,7 +12,7 @@ const Cache = new NodeCache({
 const creatorUrl = Config.search.creator_url;
 const searchTimeout = Config.search.timeout;
 
-const crawler = new LensWebCrawler(searchTimeout);
+const crawler = new SnapLensWebCrawler({ connectionTimeoutMs: searchTimeout });
 
 async function search(searchTerm) {
     let result = [];
@@ -24,12 +24,12 @@ async function search(searchTerm) {
 
         const uuid = Util.parseLensUuid(searchTerm);
         if (uuid) {
-            result = await crawler.getLensByHash(uuid) || [];
+            result = await getLensByHash(uuid) || [];
             if (!Array.isArray(result)) {
                 result = [result];
             }
         } else {
-            result = await crawler.searchLenses(searchTerm);
+            result = await searchByTerm(searchTerm);
         }
 
         return await Promise.all(result.map(async lens => {
@@ -46,46 +46,42 @@ async function search(searchTerm) {
     return result;
 }
 
-async function searchByUserName(userDisplayName) {
-    const obfuscated_user_slug = await DB.getObfuscatedSlugByDisplayName(userDisplayName);
-    if (obfuscated_user_slug) {
-        return await searchByCreatorSlug(obfuscated_user_slug);
-    }
+async function searchByTerm(searchTerm) {
+    const lenses = await crawler.searchLenses(searchTerm);
+    return lenses instanceof CrawlerFailure ? [] : lenses.map(lens => ({ ...lens, web_import: 1 }));
+}
 
-    return [];
+async function searchByUserName(userDisplayName) {
+    const obfuscatedUserSlug = await DB.getObfuscatedSlugByDisplayName(userDisplayName);
+    return obfuscatedUserSlug ? await searchByCreatorSlug(obfuscatedUserSlug) : [];
 }
 
 async function searchByCreatorSlug(obfuscatedUserSlug) {
-    let lenses = [];
-    for (let offset = 0; offset < 1000; offset += 100) {
-        let result = await crawler.getLensesByCreator(obfuscatedUserSlug, offset, 100);
-        lenses = lenses.concat(result);
-        if (result.length < 100) {
-            break;
-        }
-    }
-
-    return lenses.map(lens => {
-        lens.web_import = 1;
-        return lens;
-    });
+    const lenses = await crawler.getLensesByCreator(obfuscatedUserSlug);
+    return lenses instanceof CrawlerFailure ? [] : lenses.map(lens => ({ ...lens, web_import: 1 }));
 }
 
 async function getLensByHash(uuid) {
-    let lens = await crawler.getLensByHash(uuid);
-    if (lens) {
-        lens.web_import = 1;
-    }
-    return lens; 
+    let [lens, archivedLens] = await Promise.all([
+        crawler.getLensByHash(uuid),
+        crawler.getLensByArchivedSnapshot(uuid)
+    ]);
+
+    lens = lens instanceof CrawlerFailure ? {} : lens;
+    archivedLens = archivedLens instanceof CrawlerFailure ? {} : archivedLens;
+
+    const mergedLens = crawler.mergeLensItems(lens, archivedLens);
+
+    return Object.keys(mergedLens).length ? { ...mergedLens, web_import: 1 } : null;
 }
 
 async function getUnlockByHash(uuid) {
-    // alias function
-    let unlock = await getLensByHash(uuid);
+    const unlock = await getLensByHash(uuid);
     if (unlock && unlock.lens_id && unlock.lens_url) {
         return unlock;
     }
-    return null; 
+
+    return null;
 }
 
 async function mirrorSearchResults(webResults) {
