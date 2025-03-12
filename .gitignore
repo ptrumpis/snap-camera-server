@@ -1,3 +1,4 @@
+/.vagrant/
 /.vscode/
 /import/
 /node_modules/
@@ -7,3 +8,4 @@
 docker-compose.override.yml
 package-lock.json
 AutoConfig.exe
+

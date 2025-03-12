@@ -1,5 +1,6 @@
 .git/
 .github/
+.vagrant/
 .vscode/
 docs/
 import/
@@ -14,3 +15,4 @@ AutoConfig.exe
 docker-compose*.yml
 gencert.sh
 gencert.bat
+Vagrantfile
