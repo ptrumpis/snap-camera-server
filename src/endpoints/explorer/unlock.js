@@ -1,4 +1,5 @@
 import express from 'express';
+import Wayback from 'wayback.js';
 import { Config } from '../../utils/config.js';
 import * as DB from '../../utils/db.js';
 import * as Util from '../../utils/helper.js';
@@ -6,6 +7,9 @@ import * as Web from '../../utils/web.js';
 
 const useRelay = Config.app.relay.server;
 const useWebSource = Config.app.flag.enable_web_source;
+
+const wayback = new Wayback();
+const maxFileAgeInDays = 90;
 
 var router = express.Router();
 
@@ -20,6 +24,8 @@ router.get('/', async function (req, res, next) {
         if (unlock[0].lens_id && unlock[0].lens_url) {
             // trigger re-download to catch missing files automatically
             await Util.downloadUnlock(unlock[0].lens_id, unlock[0].lens_url);
+
+            wayback.saveOutdatedUrl(unlock[0].lens_url, maxFileAgeInDays);
 
             return res.json(Util.modifyResponseURLs(unlock[0]));
         } else {
@@ -43,7 +49,7 @@ async function getRemoteUnlockByLensId(lensId) {
         if (useRelay) {
             const unlock = await Util.getUnlockFromRelay(lensId);
             if (unlock) {
-                DB.insertUnlock(unlock);
+                await DB.insertUnlock(unlock);
                 return unlock;
             }
         }
