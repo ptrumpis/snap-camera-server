@@ -12,6 +12,8 @@ services:
 
   adminer:
     image: adminer
+    profiles:
+      - adminer
     environment:
       - ADMINER_DEFAULT_SERVER=mysql
       - ADMINER_DESIGN=${ADMINER_DESIGN}
