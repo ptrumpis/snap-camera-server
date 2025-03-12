@@ -11,7 +11,7 @@ Or complete the following 5 steps manually:
 4. [Start Docker](#4-starting-docker-video-clip)
 5. [Edit the /etc/hosts file](#5-edit-the-etchosts-file-video-clip)
 
-This can be done manually or automatically (Windows and Mac OS).
+This can be done manually or automatically (Windows and macOS).
 
 ## 🤖 Automatic Configuration
 ### Windows
@@ -19,19 +19,22 @@ Windows users can use the [Auto Configuration Tool](https://github.com/ptrumpis/
 
 If you prefer to do the steps manually then you can watch the video guide below which covers all the steps in detail.
 
-### Mac OS
-The [Auto Configuration Tool](https://github.com/ptrumpis/snap-camera-server-auto-config) now includes an `AutoConfig.applescript` file for Mac OS users.
+### macOS
+The [Auto Configuration Tool](https://github.com/ptrumpis/snap-camera-server-auto-config) includes an `autoconfig.sh` file for macOS users.
 
-You can open and run the file with your *Script Editor* on your macOS computer.
+You need to copy and run this command inside your Terminal window.
+```bash
+sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ptrumpis/snap-camera-server-auto-config/master/macOS/autoconfig.sh)"
+```
 
 ## 🎓 How To Video Guides
-You can watch these step by step video guides on YouTube if you need help with the configuration on your local machine.
+You can watch these step by step video guides on YouTube if you need help with the manual configuration on your local machine.
 
 ### Windows Installation Guide
-[![Snap Camera Server Windows Installation Guide](https://img.youtube.com/vi/bcsjvWHUr7c/0.jpg)](https://www.youtube.com/watch?v=bcsjvWHUr7c)
+[![Snap Camera Server Windows Installation Guide](https://img.youtube.com/vi/bcsjvWHUr7c/default.jpg)](https://www.youtube.com/watch?v=bcsjvWHUr7c)
 
-### Mac OS Installation Guide
-[![Snap Camera Server Mac OS Installation Guide](https://img.youtube.com/vi/b2ILHJaD1T4/0.jpg)](https://www.youtube.com/watch?v=b2ILHJaD1T4)
+### macOS Installation Guide
+[![Snap Camera Server Mac OS Installation Guide](https://img.youtube.com/vi/b2ILHJaD1T4/default.jpg)](https://www.youtube.com/watch?v=b2ILHJaD1T4)
 
 ## 💪 Manual Configuration Steps
 In addition to the full video guide each step is also covered by a short video tutorial
@@ -43,7 +46,7 @@ Create a copy of the file `example.env` and name the copy `.env` (without filena
 
 You can go with all default values and don't need to change anything unless your having problems with certain ports being occupied or if you want to host the server on the internet.
 
-Read the [Server Settings (.env)](https://github.com/ptrumpis/snap-camera-server/wiki/Server-Settings-(.env)) page for configuration details.
+Read the [Configuration Settings (.env)](https://github.com/ptrumpis/snap-camera-server/wiki/Configuration-Settings-(.env)) page for configuration details.
 
 ### 2. Generate SSL certificate ([Video Clip](https://youtu.be/4QJP8MLvSdA))
 Snap Camera will refuse to connect to your local server if you don't have a trusted SSL certificate.
@@ -60,6 +63,7 @@ Docker compose expects these two files by default, otherwise the containers will
 ### 3. Import Root certificate ([Video Clip](https://youtu.be/mJFmvTg1yfE))
 You need to tell your operating system to trust the newly generated certificate.
 
+#### Windows
 On Windows you can import the certificate in three different ways:
 1. By double-clicking the file and going through the pop up dialog
 2. By running the Windows management console application `certlm.msc`
@@ -70,6 +74,17 @@ certutil -addstore -enterprise Root ./ssl/studio-app.snapchat.com.crt
 ```
 
 You need to run this command as Administrator on a Windows Powershell.
+
+#### macOS
+On macOS you can run these two commands inside a Terminal window.
+
+```bash
+sudo security add-trusted-cert -d -r trustRoot -k ~/Library/Keychains/login.keychain-db ./ssl/studio-app.snapchat.com.crt
+```
+
+```bash
+sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ./ssl/studio-app.snapchat.com.crt
+```
 
 ### 4. Starting Docker ([Video Clip](https://youtu.be/2siSkWdZLbo))
 You may start the docker containers now by executing the command

@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import path from 'path';
 import sharp from 'sharp';
 import { Config } from './config.js';
@@ -203,8 +202,8 @@ async function downloadFile(targetUrl, subDirectory, fileName) {
 
     try {
         const response = await fetch(targetUrl);
-        const buffer = await response.buffer();
-        await fs.writeFile(newFile, buffer);
+        const buffer = await response.arrayBuffer();
+        await fs.writeFile(newFile, Buffer.from(buffer));
     } catch (e) {
         console.error("downloadFile error:", e, targetUrl);
         return false;

@@ -1,6 +1,14 @@
 # 📋 Changelog - Snap Camera Server
 Release version history and feature overview
 
+## v3.3.3 - Patch Release
+- Added latest web crawler code
+- Added temporary warning message when trying to activate non-working web lenses
+- Fixed lens upload and cache import bug
+- Fixed missing config option for crawler timeout
+- Fixed bug where web lenses would not be marked as such
+- (Experimental) Fix for failed web lens activation
+
 ## v3.3.0 - Maintenance Release
 - New upload API to import modified lenses
 - New cache import option to allow overwriting of existing lenses

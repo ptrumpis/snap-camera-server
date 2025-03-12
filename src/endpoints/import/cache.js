@@ -7,50 +7,45 @@ import * as fs from 'fs/promises';
 import * as DB from '../../utils/db.js';
 import * as Importer from '../../utils/importer.js';
 import * as Util from '../../utils/helper.js';
+import pkg from '../../../package.json' with { type: 'json' };
 
 var router = express.Router();
 
 const tempDir = os.tmpdir();
-
 const configAllowOverwrite = Config.import.allow_overwrite;
 
-router.get('/', async function (req, res, next) {
-    return res.json("cache import enabled");
-});
+router.get('/', (req, res) => res.type('json').send(JSON.stringify({ status: 'cache import enabled', version: pkg.version }, null, 4)));
 
-const formMiddleWare = (req, res, next) => {
+const parseForm = (req, res, next) => {
     const form = formidable({ uploadDir: tempDir, multiples: true });
     form.parse(req, (err, fields, files) => {
         if (err) {
-            next(err);
-            return;
+            return next(err);
         }
 
         if (!files || Object.keys(files).length === 0) {
-            res.json({ error: "No files uploaded." });
-            return;
+            return res.json({ error: "No files uploaded." });
         }
 
-        const allFiles = [];
-        for (const fieldName in files) {
-            if (files.hasOwnProperty(fieldName)) {
-                const fileArray = [].concat(files[fieldName] || []);
-                allFiles.push(...fileArray);
-            }
+        const allFiles = Object.values(files).flat().filter(file => file.size > 0);
+        if (allFiles.length === 0) {
+            return res.json({ error: 'All uploaded files are empty.' });
         }
 
         req.files = Array.isArray(allFiles) ? allFiles : [allFiles];
-        req.allowOverwrite = fields.allow_overwrite === 'true';
+        req.allowOverwrite = Array.isArray(fields.allow_overwrite) ? fields.allow_overwrite[0] === 'true' : fields.allow_overwrite === 'true';
 
         next();
     });
 };
 
-router.post('/', formMiddleWare, async function (req, res, next) {
+router.post('/', parseForm, async function (req, res, next) {
     console.log("Import Cache API call from", req.ip);
 
     let imported = [];
     let updated = [];
+    let discarded = [];
+    let failed = [];
     let error = false;
 
     try {
@@ -62,28 +57,30 @@ router.post('/', formMiddleWare, async function (req, res, next) {
         let settingsJson = false;
 
         // process and filter upload data
-        for (let i = 0; i < req.files.length; i++) {
-            let parentDir = path.basename(path.dirname(req.files[i].originalFilename));
-            let fileName = path.basename(req.files[i].originalFilename);
+        for (const file of req.files) {
+            let parentDir = path.basename(path.dirname(file.originalFilename));
+            let fileName = path.basename(file.originalFilename);
 
             // collect and verify required import data
-            if (req.files[i].size > 0) {
-                if (fileName === "lens.lns") {
-                    const lensId = parseInt(parentDir);
-                    if (Util.isLensId(lensId)) {
-                        lensIds.push(lensId);
-                        lenses.push({ id: lensId, path: req.files[i].filepath });
+            if (fileName === "lens.lns") {
+                const lensId = Number(parentDir);
+                if (Util.isLensId(lensId)) {
+                    lensIds.push(lensId);
+                    lenses.push({ id: lensId, path: file.filepath });
 
-                        // skip file removal of lenses until import is complete
-                        continue;
-                    }
-                } else if (fileName === "settings.json") {
-                    settingsJson = JSON.parse(await fs.readFile(req.files[i].filepath));
+                    // skip file removal of lenses until import is complete
+                    continue;
+                }
+            } else if (fileName === "settings.json") {
+                try {
+                    settingsJson = JSON.parse(await fs.readFile(file.filepath));
+                } catch (e) {
+                    return res.json({ error: 'Invalid JSON format in settings.json.' });
                 }
             }
 
             // remove unknown files & settings.json
-            await fs.unlink(req.files[i].filepath);
+            await fs.unlink(file.filepath);
         }
 
         if (!settingsJson) {
@@ -95,55 +92,80 @@ router.post('/', formMiddleWare, async function (req, res, next) {
             const duplicatedLensIds = await DB.getDuplicatedLensIds(lensIds);
 
             // start file import
-            for (let j = 0; j < lenses.length; j++) {
-                if (duplicatedLensIds.includes(lenses[j].id)) {
+            for (const lens of lenses) {
+                const lensId = Number(lens.id);
+                if (duplicatedLensIds.includes(lensId)) {
                     if (allowOverwrite) {
-                        console.log("Re-importing existing Lens", lenses[j].id);
-
-                        updated.push(lenses[j].id);
-
-                        await Importer.importLens(lenses[j].path, lenses[j].id, false);
+                        console.log("Re-importing existing Lens", lensId);
+                        if (await Importer.importLensFile(lens.path, lensId, false)) {
+                            updated.push(lensId);
+                        } else {
+                            failed.push(lensId);
+                        }
+                    } else {
+                        console.log("Discarding existing Lens", lensId);
+                        discarded.push(lensId);
                     }
                 } else {
-                    console.log("Importing new Lens", lenses[j].id);
-
-                    imported.push(lenses[j].id);
-
-                    await Importer.importLens(lenses[j].path, lenses[j].id, true);
+                    console.log("Importing new Lens", lensId);
+                    if (await Importer.importLensFile(lens.path, lensId, true)) {
+                        imported.push(lensId);
+                    } else {
+                        failed.push(lensId);
+                    }
                 }
 
                 // file import is complete, remove temporary file
-                await fs.unlink(lenses[j].path);
+                await fs.unlink(lens.path);
             }
 
-            // create matching database records for new imported files
             if (imported.length) {
-                const insertData = Importer.exportCacheLensesFromSettings(settingsJson, imported);
+                const insertData = Importer.importCacheLensesFromSettings(settingsJson, imported, false);
                 if (insertData) {
                     await DB.insertLens(insertData['lenses']);
                     await DB.insertUnlock(insertData['unlocks']);
+
+                    const actuallyImported = insertData['lenses'].map((entry) => entry.unlockable_id);
+                    failed = failed.concat(imported.filter(id => !actuallyImported.includes(id)));
+                    imported = actuallyImported;
+                } else {
+                    failed = failed.concat(imported);
+                    imported = [];
                 }
             }
 
-            // update unlocks table for existing lenses if config option is set
             if (updated.length) {
-                const updateData = Importer.exportCacheLensesFromSettings(settingsJson, updated, false);
+                const updateData = Importer.importCacheLensesFromSettings(settingsJson, updated, true);
                 if (updateData) {
                     await DB.updateLens(updateData['lenses']);
                     await DB.updateUnlock(updateData['unlocks']);
+
+                    const actuallyUpdated = updateData['lenses'].map((entry) => entry.unlockable_id);
+                    failed = failed.concat(updated.filter(id => !actuallyUpdated.includes(id)));
+                    updated = actuallyUpdated;
+                } else {
+                    failed = failed.concat(updated);
+                    updated = [];
                 }
             }
         }
     } catch (e) {
         console.error(e);
-        error = 'A server side error occured.';
+        return res.status(500).json({ error: 'A server side error occured.' });
     }
 
     return res.json({
         error: error,
         import: imported,
-        update: updated
+        update: updated,
+        discard: discarded,
+        fail: failed
     });
+});
+
+router.use((err, req, res, next) => {
+    console.error(err.name, err.message);
+    return res.status(400).json({ error: 'Invalid files uploaded.' });
 });
 
 export default router;

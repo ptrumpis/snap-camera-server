@@ -7,28 +7,27 @@ import * as DB from '../../utils/db.js';
 import * as Importer from '../../utils/importer.js';
 import * as Util from '../../utils/helper.js';
 import * as Web from '../../utils/web.js';
+import pkg from '../../../package.json' with { type: 'json' };
 
 var router = express.Router();
 
 const tempDir = os.tmpdir();
-
 const configAllowOverwrite = Config.import.allow_overwrite;
 
-router.get('/', async function (req, res, next) {
-    return res.json("lens import enabled");
-});
+router.get('/', (req, res) => res.type('json').send(JSON.stringify({ status: 'lens import enabled', version: pkg.version }, null, 4)));
 
-const formMiddleWare = (req, res, next) => {
+const parseForm = (req, res, next) => {
     const form = formidable({ uploadDir: tempDir, multiples: true });
     form.parse(req, (err, fields, files) => {
         if (err) {
-            next(err);
-            return;
+            return next(err);
         }
 
-        // file[] and id[] fields required
-        fields.id = [].concat(fields.id || []);
-        files.file = [].concat(files.file || []);
+        fields.id = fields['id[]'] ? [].concat(fields['id[]']) : [].concat(fields.id);
+        files.file = files['file[]'] ? [].concat(files['file[]']) : [].concat(files.file);
+
+        delete fields['id[]'];
+        delete files['file[]'];
 
         if (files.file.length === 0) {
             return res.json({ error: "No files uploaded." });
@@ -44,17 +43,19 @@ const formMiddleWare = (req, res, next) => {
         }));
 
         req.uploadData = uploadData;
-        req.allowOverwrite = fields.allow_overwrite === 'true';
+        req.allowOverwrite = Array.isArray(fields.allow_overwrite) ? fields.allow_overwrite[0] === 'true' : fields.allow_overwrite === 'true';
 
         next();
     });
 };
 
-router.post('/', formMiddleWare, async function (req, res, next) {
+router.post('/', parseForm, async function (req, res, next) {
     console.log("Import Lens API call from", req.ip);
 
     let imported = [];
     let updated = [];
+    let discarded = [];
+    let failed = [];
     let error = false;
 
     try {
@@ -69,16 +70,18 @@ router.post('/', formMiddleWare, async function (req, res, next) {
         for (const { id, file } of req.uploadData) {
             if (Util.isLensId(id)) {
                 // lens ID given
-                lensIds.push(id);
-                lenses.push({ id: id, path: file.filepath, web: false });
-            } else if (Util.isUrl(id)) {
-                // share URL given
+                const lensId = Number(id);
+                lensIds.push(lensId);
+                lenses.push({ id: lensId, path: file.filepath, web: false });
+            } else {
+                // share URL given or UUID
                 const uuid = Util.parseLensUuid(id);
                 if (uuid) {
                     const lens = await Web.getLensByHash(uuid);
                     if (lens && lens.lens_id) {
-                        lensIds.push(lens.lens_id);
-                        lenses.push({ id: lens.lens_id, path: file.filepath, web: lens });
+                        const lensId = Number(lens.unlockable_id);
+                        lensIds.push(lensId);
+                        lenses.push({ id: lensId, path: file.filepath, web: lens });
                     }
                 }
             }
@@ -90,33 +93,43 @@ router.post('/', formMiddleWare, async function (req, res, next) {
         // find already existing lenses and re-import if allow overwrite flag is set
         const duplicatedLensIds = await DB.getDuplicatedLensIds(lensIds);
 
-        for (let i = 0; i < lenses.length; i++) {
-            if (duplicatedLensIds.includes(lenses[i].id)) {
+        for (const lens of lenses) {
+            const lensId = Number(lens.id);
+            if (duplicatedLensIds.includes(lensId)) {
                 if (allowOverwrite) {
-                    console.log("Re-importing existing Lens", lenses[i].id);
-
-                    await Importer.importLens(lenses[i].path, lenses[i].id, false);
-
-                    const lens = (lenses[i].web) ? Importer.exportCustomLensFromWebLens(lenses[i].web, true) : Importer.exportCustomLens(lenses[i].id, true);
-                    if (lens) {
-                        updateData.push(lens);
-                        updated.push(lenses[i].id);
+                    console.log("Re-importing existing Lens", lensId);
+                    if (await Importer.importLensFile(lens.path, lensId, false)) {
+                        const data = (lens.web) ? Importer.importCustomLensFromWebLens(lens.web, true) : Importer.importCustomLens(lensId, true);
+                        if (data) {
+                            updateData.push(data);
+                            updated.push(lensId);
+                        } else {
+                            failed.push(lensId);
+                        }
+                    } else {
+                        failed.push(lensId);
                     }
+                } else {
+                    console.log("Discarding existing Lens", lensId);
+                    discarded.push(lensId);
                 }
             } else {
-                console.log("Importing new Lens", lenses[i].id);
-
-                await Importer.importLens(lenses[i].path, lenses[i].id, true);
-
-                const lens = (lenses[i].web) ? Importer.exportCustomLensFromWebLens(lenses[i].web, false) : Importer.exportCustomLens(lenses[i].id, false);
-                if (lens) {
-                    insertData.push(lens);
-                    imported.push(lenses[i].id);
+                console.log("Importing new Lens", lensId);
+                if (await Importer.importLensFile(lens.path, lensId, true)) {
+                    const data = (lens.web) ? Importer.importCustomLensFromWebLens(lens.web, false) : Importer.importCustomLens(lensId, false);
+                    if (data) {
+                        insertData.push(data);
+                        imported.push(lensId);
+                    } else {
+                        failed.push(lensId);
+                    }
+                } else {
+                    failed.push(lensId);
                 }
             }
 
             // file import is complete, remove temporary file
-            await fs.unlink(lenses[i].path);
+            await fs.unlink(lens.path);
         }
 
         // create matching database records for new imported files
@@ -132,14 +145,21 @@ router.post('/', formMiddleWare, async function (req, res, next) {
         }
     } catch (e) {
         console.error(e);
-        error = 'A server side error occured.';
+        return res.status(500).json({ error: 'A server side error occured.' });
     }
 
     return res.json({
         error: error,
         import: imported,
-        update: updated
+        update: updated,
+        discard: discarded,
+        fail: failed
     });
+});
+
+router.use((err, req, res, next) => {
+    console.error(err.name, err.message);
+    return res.status(400).json({ error: 'Invalid files uploaded.' });
 });
 
 export default router;

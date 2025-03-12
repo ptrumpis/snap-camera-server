@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "name": "snap-camera-server",
   "version": "4.0.0-alpha",
   "description": "Host your own Snap Camera private server",
@@ -11,6 +10,7 @@
     "server",
     "docker"
   ],
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "test:dev": "node --watch --test test/",
@@ -26,18 +26,19 @@
   },
   "license": "MIT",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.12",
+    "@ptrumpis/snap-lens-file-extractor": "~1.1.0",
+    "@ptrumpis/snap-lens-web-crawler": "~1.0.0-rc.1",
     "db-migrate": "1.0.0-beta.29",
-    "db-migrate-mysql": "^3.0.0",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "formidable": "^3.5.2",
-    "fzstd": "^0.1.0",
-    "jszip": "^3.10.1",
-    "mysql2": "^3.12.0",
-    "node-cache": "^5.1.2",
-    "node-fetch": "^3.3.2",
-    "sharp": "^0.33.5",
-    "yaml": "^2.7.0"
+    "db-migrate-mysql": "~3.0.0",
+    "dotenv": "~16.4.7",
+    "express": "~4.21.2",
+    "formidable": "~3.5.2",
+    "fzstd": "~0.1.1",
+    "jszip": "~3.10.1",
+    "mysql2": "~3.13.0",
+    "node-cache": "~5.1.2",
+    "sharp": "~0.33.5",
+    "wayback.js": "~0.0.3",
+    "yaml": "~2.7.0"
   }
 }

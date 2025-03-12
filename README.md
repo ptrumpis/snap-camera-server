@@ -9,14 +9,14 @@
 
 # 👻 Snap Camera Server v4.0
 An alternative self hosted solution for Snap Camera.  
-It will let you continue to use Snapcamera with all Snapchat filters after the shutdown on January 25, 2023.
+It will let you continue to use Snapcamera with almost all Snapchat filters after the shutdown on January 25, 2023.
 
 **This code is a fork of *jaku/SnapCameraPreservation* on steroids 💪** 
 - ✔️ No previously backed up files or third party server required.
-- ✔️ Access all Snap Lenses from **lens.snapchat.com** without restrictions.
+- ✔️ Access almost all Snap Lenses from **lens.snapchat.com**.
 - ✔️ Import Lenses from local application cache e.g. `AppData\Local\Snap\Snap Camera\cache\lenses`.
 - ✔️ All files will be stored inside a Docker Volume (e.g. on your local machine).
-- ✔️ Works 100% on Windows and Mac OS without missing Lenses.
+- ✔️ Runs local on Windows, Mac OS or hosted on a remote server.
 
 You get the full decentralized control and you can use *Snap Camera* until Doomsday.
 
@@ -34,10 +34,13 @@ This server requires Docker and OpenSSL and maybe 5 to 10 minutes of your time �
 2. [🛠️ Complete the configuration](docs/CONFIGURATION.md)
 3. [📖 Read the Server Wiki](https://github.com/ptrumpis/snap-camera-server/wiki)
 
+### 📺 Video Guides
 There are also step by step video guides for [📺 Windows](https://www.youtube.com/watch?v=bcsjvWHUr7c) and [📺 Mac OS](https://www.youtube.com/watch?v=b2ILHJaD1T4) available.  
+
+### ⏫ Upgrade Guides
 If you want to upgrade an existing server version to a newer version, have a look at:
-- [Upgrade v2.x to v3.x](docs/UPGRADING_v3.md)
-- [Upgrade v3.x to v4.x](docs/UPGRADING_v4.md)
+- [🔼 Upgrade v2.x to v3.x](docs/UPGRADING_v3.md)
+- [🔼 Upgrade v3.x to v4.x](docs/UPGRADING_v4.md)
 
 ## 💯 Advanced Features
 ### 📤 Snap Camera Cache Import 

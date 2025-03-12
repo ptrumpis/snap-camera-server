@@ -1,5 +1,5 @@
 import JSZip from 'jszip';
-import LensFileParser from '../lib/parser.js';
+import LensFileParser from '@ptrumpis/snap-lens-file-extractor';
 import { Config } from './config.js';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs/promises';
@@ -21,7 +21,7 @@ const defaultMediaBaseUrl = storageServer?.concat('/', mediaDirAlt, '/');
 const allowOverwrite = Config.import.allow_overwrite;
 const zipArchive = Config.import.zip_archive;
 
-async function importLens(lensFile, lensId, createMediaFiles = true) {
+async function importLensFile(lensFile, lensId, createMediaFiles = true) {
     if (!Util.isLensId(lensId)) {
         console.warn("Can't import lens with invalid lens ID", lensId);
         return false;
@@ -35,7 +35,10 @@ async function importLens(lensFile, lensId, createMediaFiles = true) {
             await fs.mkdir(destDirectory, { recursive: true });
         }
 
-        if (zipArchive) {
+        if (await isValidZip(lensFile)) {
+            const destFile = destDirectory.concat('/lens.zip');
+            result = await copyFile(lensFile, destFile);
+        } else if (zipArchive) {
             const destFile = destDirectory.concat('/lens.zip');
             result = await storeLensAsZip(lensFile, destFile);
         } else {
@@ -66,6 +69,16 @@ async function copyFile(srcFile, destFile) {
     }
 
     return false;
+}
+
+async function isValidZip(filePath) {
+    try {
+        const data = await fs.readFile(filePath);
+        await JSZip.loadAsync(data);
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 async function storeLensAsZip(lensFile, destFile) {
@@ -118,7 +131,7 @@ async function copyDefaultMediaFiles(lensId) {
     }
 }
 
-function exportCacheLensesFromSettings(settingsJson, lensIds = [], updateExisting = false) {
+function importCacheLensesFromSettings(settingsJson, lensIds = [], updateExisting = false) {
     let lenses = [];
     let unlocks = [];
 
@@ -196,7 +209,7 @@ function exportCacheLensesFromSettings(settingsJson, lensIds = [], updateExistin
     return { lenses, unlocks };
 }
 
-function exportCustomLensFromWebLens(webLens, updateExisting = false) {
+function importCustomLensFromWebLens(webLens, updateExisting = false) {
     if (!webLens || !webLens.unlockable_id || !webLens.lens_id) {
         return false;
     }
@@ -254,7 +267,7 @@ function exportCustomLensFromWebLens(webLens, updateExisting = false) {
     return false;
 }
 
-function exportCustomLens(lensId, updateExisting = false) {
+function importCustomLens(lensId, updateExisting = false) {
     if (!Util.isLensId(lensId)) {
         return false;
     }
@@ -289,7 +302,6 @@ function exportCustomLens(lensId, updateExisting = false) {
             standard_media_poster_url: defaultMediaBaseUrl.concat('standard_poster.jpg'),
             obfuscated_user_slug: "",
             image_sequence: {},
-            image_sequence: webLens.image_sequence,
             // unlock
             lens_id: lensId,
             lens_url: lensFile,
@@ -305,4 +317,4 @@ function exportCustomLens(lensId, updateExisting = false) {
     }
 }
 
-export { importLens, exportCacheLensesFromSettings, exportCustomLensFromWebLens, exportCustomLens };
+export { importLensFile, importCacheLensesFromSettings, importCustomLensFromWebLens, importCustomLens };

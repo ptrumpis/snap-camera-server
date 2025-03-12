@@ -37,7 +37,7 @@ server {
     # redirect all API calls
     location /vc/ {
         add_header        'Access-Control-Allow-Origin' '*' always;
-        proxy_pass         http://webapp:${WEBAPP_PORT}/vc/;
+        proxy_pass         http://${WEBAPP_HOST}:${WEBAPP_PORT}/vc/;
         proxy_redirect     off;
         proxy_http_version 1.1;
         proxy_set_header   Host $host;

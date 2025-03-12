@@ -491,6 +491,18 @@ function markUnlockAsMirrored(id) {
     }
 }
 
+function isDatabaseReady() {
+    return new Promise((resolve) => {
+        connection.query('SELECT 1;', [], async function (err, result) {
+            if (err) {
+                resolve(false);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+}
+
 function buildArgs(obj, whitelist, defaults = {}) {
     return whitelist.reduce((acc, key) => {
         if (obj.hasOwnProperty(key) && obj[key] !== undefined) {
@@ -506,4 +518,4 @@ function buildArgs(obj, whitelist, defaults = {}) {
     }, {});
 }
 
-export { searchLensByName, searchLensByTags, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, getObfuscatedSlugByDisplayName, insertLens, updateLens, insertUnlock, updateUnlock, insertUser, markLensAsMirrored, markUnlockAsMirrored };
+export { searchLensByName, searchLensByTags, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, getObfuscatedSlugByDisplayName, insertLens, updateLens, insertUnlock, updateUnlock, insertUser, markLensAsMirrored, markUnlockAsMirrored, isDatabaseReady };
