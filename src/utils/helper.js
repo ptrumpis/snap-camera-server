@@ -60,7 +60,7 @@ async function relayRequest(path, method = 'GET', body = null) {
         try {
             let requestInit = { method: method, headers, signal: controller.signal };
             if (body) {
-                requestInit.body = body;
+                requestInit.body = JSON.stringify(body);
             }
 
             const response = await fetch(`${relayServer}${path}`, requestInit);
