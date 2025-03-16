@@ -60,4 +60,9 @@ server {
             rewrite ^(.*)$ /web/deeplink/snapcode/$arg_data.$fileext break;
         }
     }
+
+    # redirect all missing .webp files to .png if present
+    location ~* (.*)\.webp$ {
+        try_files $request_filename $1.png =404;
+    }
 }
