@@ -75,14 +75,20 @@ router.post('/', parseForm, async function (req, res, next) {
             } else {
                 // share URL given or UUID
                 const uuid = Util.parseLensUuid(id);
-                if (uuid) {
-                    const lens = await Web.getLensByHash(uuid);
-                    if (lens && lens.lens_id) {
-                        const lensId = Number(lens.unlockable_id);
-                        lensIds.push(lensId);
-                        lenses.push({ id: lensId, path: file.filepath, web: lens });
-                    }
+                if (!uuid) {
+                    failed.push(id);
+                    continue;
                 }
+
+                const lens = await Web.getLensByHash(uuid);
+                if (!lens?.unlockable_id) {
+                    failed.push(uuid);
+                    continue;
+                }
+
+                const lensId = Number(lens.unlockable_id);
+                lensIds.push(lensId);
+                lenses.push({ id: lensId, path: file.filepath, web: lens });
             }
         }
 
@@ -90,15 +96,16 @@ router.post('/', parseForm, async function (req, res, next) {
         let updateData = [];
 
         // find already existing lenses and re-import if allow overwrite flag is set
-        const duplicatedLensIds = await DB.getDuplicatedLensIds(lensIds);
+        const duplicatedLensIds = lensIds.length ? await DB.getDuplicatedLensIds(lensIds) : [];
 
         for (const lens of lenses) {
             const lensId = Number(lens.id);
             if (duplicatedLensIds.includes(lensId)) {
                 if (allowOverwrite) {
                     console.log("Re-importing existing Lens", lensId);
-                    if (await Importer.importLensFile(lens.path, lensId, false)) {
-                        const data = (lens.web) ? Importer.importCustomLensFromWebLens(lens.web, true) : Importer.importCustomLens(lensId, true);
+                    const lensFilePath = await Importer.importLensFile(lens.path, lensId, false);
+                    if (lensFilePath) {
+                        const data = (lens.web) ? Importer.importCustomLensFromWebLens(lens.web, lensFilePath, true) : Importer.importCustomLens(lensId, lensFilePath, true);
                         if (data) {
                             updateData.push(data);
                             updated.push(lensId);
@@ -114,8 +121,9 @@ router.post('/', parseForm, async function (req, res, next) {
                 }
             } else {
                 console.log("Importing new Lens", lensId);
-                if (await Importer.importLensFile(lens.path, lensId, true)) {
-                    const data = (lens.web) ? Importer.importCustomLensFromWebLens(lens.web, false) : Importer.importCustomLens(lensId, false);
+                const lensFilePath = await Importer.importLensFile(lens.path, lensId, true);
+                if (lensFilePath) {
+                    const data = (lens.web) ? Importer.importCustomLensFromWebLens(lens.web, lensFilePath, false) : Importer.importCustomLens(lensId, lensFilePath, false);
                     if (data) {
                         insertData.push(data);
                         imported.push(lensId);

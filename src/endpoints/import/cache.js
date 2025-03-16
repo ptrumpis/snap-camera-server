@@ -91,12 +91,16 @@ router.post('/', parseForm, async function (req, res, next) {
             const duplicatedLensIds = await DB.getDuplicatedLensIds(lensIds);
 
             // start file import
+            let importedLenses = [];
+            let updatedLenses = [];
             for (const lens of lenses) {
                 const lensId = Number(lens.id);
                 if (duplicatedLensIds.includes(lensId)) {
                     if (allowOverwrite) {
                         console.log("Re-importing existing Lens", lensId);
-                        if (await Importer.importLensFile(lens.path, lensId, false)) {
+                        const lensFilePath = await Importer.importLensFile(lens.path, lensId, false);
+                        if (lensFilePath) {
+                            updatedLenses.push({ id: lensId, path: lensFilePath });
                             updated.push(lensId);
                         } else {
                             failed.push(lensId);
@@ -107,7 +111,9 @@ router.post('/', parseForm, async function (req, res, next) {
                     }
                 } else {
                     console.log("Importing new Lens", lensId);
-                    if (await Importer.importLensFile(lens.path, lensId, true)) {
+                    const lensFilePath = await Importer.importLensFile(lens.path, lensId, true);
+                    if (lensFilePath) {
+                        importedLenses.push({ id: lensId, path: lensFilePath });
                         imported.push(lensId);
                     } else {
                         failed.push(lensId);
@@ -118,8 +124,8 @@ router.post('/', parseForm, async function (req, res, next) {
                 await fs.unlink(lens.path);
             }
 
-            if (imported.length) {
-                const insertData = Importer.importCacheLensesFromSettings(settingsJson, imported, false);
+            if (importedLenses.length) {
+                const insertData = Importer.importCacheLensesFromSettings(settingsJson, importedLenses, false);
                 if (insertData) {
                     await DB.insertLens(insertData['lenses']);
                     await DB.insertUnlock(insertData['unlocks']);
@@ -133,8 +139,8 @@ router.post('/', parseForm, async function (req, res, next) {
                 }
             }
 
-            if (updated.length) {
-                const updateData = Importer.importCacheLensesFromSettings(settingsJson, updated, true);
+            if (updatedLenses.length) {
+                const updateData = Importer.importCacheLensesFromSettings(settingsJson, updatedLenses, true);
                 if (updateData) {
                     await DB.updateLens(updateData['lenses']);
                     await DB.updateUnlock(updateData['unlocks']);
