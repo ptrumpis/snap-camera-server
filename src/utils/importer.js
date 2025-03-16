@@ -37,13 +37,19 @@ async function importLensFile(lensFile, lensId, createMediaFiles = true) {
 
         if (await isValidZip(lensFile)) {
             const destFile = destDirectory.concat('/lens.zip');
-            result = await copyFile(lensFile, destFile);
+            if (await copyFile(lensFile, destFile)) {
+                result = destFile;
+            }
         } else if (zipArchive) {
             const destFile = destDirectory.concat('/lens.zip');
-            result = await storeLensAsZip(lensFile, destFile);
+            if (await storeLensAsZip(lensFile, destFile)) {
+                result = destFile;
+            }
         } else {
             const destFile = destDirectory.concat('/lens.lns');
-            result = await copyFile(lensFile, destFile);
+            if (await copyFile(lensFile, destFile)) {
+                result = destFile;
+            }
         }
 
         if (result && createMediaFiles) {
@@ -131,7 +137,7 @@ async function copyDefaultMediaFiles(lensId) {
     }
 }
 
-function importCacheLensesFromSettings(settingsJson, lensIds = [], updateExisting = false) {
+function importCacheLensesFromSettings(settingsJson, lensFileData = [], updateExisting = false) {
     let lenses = [];
     let unlocks = [];
 
@@ -145,14 +151,13 @@ function importCacheLensesFromSettings(settingsJson, lensIds = [], updateExistin
                     return false;
                 }
 
-                // only import specified lens ids if passed as second argument
-                let lensId = parseInt(info[i].lensId);
-                if (!lensId || (lensIds && !lensIds.includes(lensId))) {
+                const lensId = parseInt(info[i].lensId);
+                const data = lensFileData?.find(item => (item.id === lensId && item.path));
+                if (!lensId || !data) {
                     continue;
                 }
 
-                // zip or lns archive
-                const lensFile = zipArchive ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
+                const lensFile = data.path.endsWith('.zip') ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
 
                 let lens = updateExisting ? {
                     unlockable_id: lensId,
@@ -209,28 +214,26 @@ function importCacheLensesFromSettings(settingsJson, lensIds = [], updateExistin
     return { lenses, unlocks };
 }
 
-function importCustomLensFromWebLens(webLens, updateExisting = false) {
-    if (!webLens || !webLens.unlockable_id || !webLens.lens_id) {
+function importCustomLensFromWebLens(webLens, lensFilePath, updateExisting = false) {
+    if (!webLens || !webLens.unlockable_id) {
         return false;
     }
 
-    if (!Util.isLensId(webLens.lens_id)) {
+    if (!Util.isLensId(webLens.unlockable_id)) {
         return false;
     }
 
-    const lensId = webLens.lens_id;
+    const lensId = webLens.unlockable_id;
+    const lensFileUrl = lensFilePath.endsWith('.zip') ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
 
     try {
-        // zip or lns archive
-        const lensFile = zipArchive ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
-
         // return database compatible object
         return updateExisting ? {
             // lens
             unlockable_id: lensId,
             // unlock
             lens_id: lensId,
-            lens_url: lensFile,
+            lens_url: lensFileUrl,
             // lens & unlock flags
             web_import: 0,
             custom_import: 1,
@@ -252,7 +255,7 @@ function importCustomLensFromWebLens(webLens, updateExisting = false) {
             image_sequence: webLens.image_sequence,
             // unlock
             lens_id: lensId,
-            lens_url: lensFile,
+            lens_url: lensFileUrl,
             signature: webLens.signature,
             hint_id: webLens.hint_id,
             additional_hint_ids: webLens.additional_hint_ids,
@@ -267,22 +270,21 @@ function importCustomLensFromWebLens(webLens, updateExisting = false) {
     return false;
 }
 
-function importCustomLens(lensId, updateExisting = false) {
+function importCustomLens(lensId, lensFilePath, updateExisting = false) {
     if (!Util.isLensId(lensId)) {
         return false;
     }
 
-    try {
-        // zip or lns archive
-        const lensFile = zipArchive ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
+    const lensFileUrl = lensFilePath.endsWith('.zip') ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
 
+    try {
         // return database compatible object
         return updateExisting ? {
             // lens
             unlockable_id: lensId,
             // unlock
             lens_id: lensId,
-            lens_url: lensFile,
+            lens_url: lensFileUrl,
             // lens & unlock flags
             web_import: 0,
             custom_import: 1,
@@ -304,7 +306,7 @@ function importCustomLens(lensId, updateExisting = false) {
             image_sequence: {},
             // unlock
             lens_id: lensId,
-            lens_url: lensFile,
+            lens_url: lensFileUrl,
             signature: "",
             hint_id: "",
             additional_hint_ids: {},
