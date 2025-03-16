@@ -6,6 +6,7 @@ Release version history and feature overview
 - Added temporary warning message when trying to activate non-working web lenses
 - Fixed broken relay search
 - Fixed various lens upload and cache import bugs
+- Fixed 404 requests for WEBP images
 - Fixed missing config option for crawler timeout
 - Fixed bug where web lenses would not be marked as such
 
