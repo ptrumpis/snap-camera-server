@@ -40,9 +40,16 @@ async function loadConfig() {
                 zip_archive: true,
             },
             search: {
-                timeout: 9000,
+                crawler: {
+                    connectionTimeoutMs: 9000,
+                    minRequestDelayMs: 100,
+                    cacheTTL: 86400,
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+                    }
+                },
                 web_cache: {
-                    ttl: 1800,
+                    ttl: 3600,
                     check: 600,
                 },
                 creator_url: 'https://lensstudio.snapchat.com/creator/',

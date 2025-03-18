@@ -10,9 +10,9 @@ const Cache = new NodeCache({
 });
 
 const creatorUrl = Config.search.creator_url;
-const searchTimeout = Config.search.timeout;
+const crawlerConfig = Config.search.crawler;
 
-const crawler = new SnapLensWebCrawler({ connectionTimeoutMs: searchTimeout });
+const crawler = new SnapLensWebCrawler(crawlerConfig);
 
 async function search(searchTerm) {
     let result = [];

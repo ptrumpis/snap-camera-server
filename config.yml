@@ -65,8 +65,21 @@ import:
 
 # search configuration
 search:
-  # web search connection timeout in milliseconds
-  timeout: 9000
+  # Snap Lens Web Crawler settings for crawling https://snapchat.com/lens
+  # Package: https://github.com/ptrumpis/snap-lens-web-crawler
+  crawler:
+    # connection timeout in milliseconds
+    connectionTimeoutMs: 9000
+
+    # delay between subsequent requests in milliseconds
+    minRequestDelayMs: 100
+
+    # cache time in seconds to speed up search results
+    cacheTTL: 86400
+
+    # set custom headers to prevent HTTP 403 errors
+    headers:
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
 
   # caching is required to activate web lenses within search results
   # web caching requires 'app.flag.enable_web_source' to be 'true'
@@ -74,7 +87,7 @@ search:
     # standard time to live in seconds
     # web search results will expire after this time
     # 0 = infinity (memory usage will grow)
-    ttl: 1800
+    ttl: 3600
 
     # time in seconds to check all data and delete expired search results
     check: 600
@@ -96,7 +109,7 @@ search:
 storage:
   # urls to be served from local storage
   # you can add or remove urls
-  # update is required if relay server changes
+  # an update is required if relay server changes
   urls:
     - https://app.snapchat.com
     - https://bolt-gcdn.sc-cdn.net
