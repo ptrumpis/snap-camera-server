@@ -62,7 +62,9 @@ async function relayRequest(path, method = 'GET', body = null) {
             }
 
             const response = await fetch(`${relayServer}${path}`, requestInit);
-            if (response.status === 200) {
+            clearTimeout(timeout);
+
+            if (response?.ok) {
                 try {
                     // avoid json parse errors on empty data
                     const data = await response.text();
@@ -70,12 +72,16 @@ async function relayRequest(path, method = 'GET', body = null) {
                         return JSON.parse(data);
                     }
                 } catch (e) {
-                    console.error(e);
+                    console.error(e.message);
                 }
             }
         } catch (e) {
-            // catch rare fetch errors
-            console.error(e);
+            clearTimeout(timeout);
+            if (e.name === 'AbortError') {
+                console.warn(`Relay request timed out: ${path}`);
+            } else {
+                console.error(`Relay request error: ${path} - ${e.message}`);
+            }
         } finally {
             clearTimeout(timeout);
         }
