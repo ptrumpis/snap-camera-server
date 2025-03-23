@@ -47,22 +47,31 @@ server {
         proxy_set_header   X-Forwarded-Host $server_name;
     }
 
-    # New Snapcode URL Support
     # http://localhost/web/deeplink/snapcode/?data=UUID&type=PNG
     location /web/deeplink/snapcode {
-        if ($arg_type) {
-             set $fileext "$arg_type";
-        }
-        if ($arg_type = "") {
-             set $fileext "png";
-        }
         if ($arg_data) {
-            rewrite ^(.*)$ /web/deeplink/snapcode/$arg_data.$fileext break;
+            # this will test if the file exists by using the workarround below
+            rewrite ^.*$ /_/web/deeplink/snapcode/$arg_data.png last;
         }
+
+        # serve regular files
+        try_files $uri $uri/ @storage;
+    }
+
+    # snapcode workarround because nginx does not allow try_files inside if condition
+    location ~* ^/_/(.+)$ {
+        try_files $uri $uri/ /$1 /storage/$1 =404;
     }
 
     # redirect all missing .webp files to .png if present
-    location ~* (.*)\.webp$ {
-        try_files $request_filename $1.png =404;
+    location ~* \.webp$ {
+        rewrite ^(.*)\.webp$ $1.png last;
+    }
+
+    try_files $uri $uri/ @storage;
+
+    # all downloaded files are inside /storage as of v3.4
+    location @storage {
+        try_files /storage$uri /storage$uri/ =404;
     }
 }
