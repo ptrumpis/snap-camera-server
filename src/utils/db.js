@@ -217,23 +217,6 @@ function getLensUnlock(lensId) {
     });
 }
 
-function getObfuscatedSlugByDisplayName(userDisplayName) {
-    return new Promise(resolve => {
-        connection.query(`SELECT obfuscated_user_slug as slug FROM users WHERE user_display_name=? LIMIT 1;`, [
-            userDisplayName
-        ], async function (err, results) {
-            if (results && results[0]) {
-                resolve(results[0].slug);
-            } else {
-                if (err) {
-                    console.error(err, userDisplayName);
-                }
-                resolve('');
-            }
-        });
-    });
-}
-
 async function insertLens(lenses, forceDownload = false) {
     if (!Array.isArray(lenses)) {
         lenses = [lenses];
@@ -252,7 +235,7 @@ async function insertLens(lenses, forceDownload = false) {
             return;
         }
 
-        let { unlockable_id, lens_name, user_display_name, obfuscated_user_slug } = lens;
+        let { unlockable_id, lens_name, obfuscated_user_slug } = lens;
 
         await new Promise(resolve => {
             let args = buildArgs(lens, whitelist, {
@@ -266,7 +249,7 @@ async function insertLens(lenses, forceDownload = false) {
                 thumbnail_media_poster_url: "",
                 standard_media_url: "",
                 standard_media_poster_url: "",
-                obfuscated_user_slug: (!obfuscated_user_slug && user_display_name && lens.web_import) ? getObfuscatedSlugByDisplayName(user_display_name) : '',
+                obfuscated_user_slug: "",
                 image_sequence: "{}",
                 web_import: 0,
                 custom_import: 0,
@@ -514,4 +497,4 @@ function buildArgs(obj, whitelist, defaults = {}) {
     }, {});
 }
 
-export { searchLensByName, searchLensByTags, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, getObfuscatedSlugByDisplayName, insertLens, updateLens, insertUnlock, updateUnlock, insertUser, markLensAsMirrored, markUnlockAsMirrored, isDatabaseReady };
+export { searchLensByName, searchLensByTags, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, insertLens, updateLens, insertUnlock, updateUnlock, insertUser, markLensAsMirrored, markUnlockAsMirrored, isDatabaseReady };

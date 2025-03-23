@@ -9,10 +9,9 @@ const Cache = new NodeCache({
     checkperiod: Config.search.web_cache.check,
 });
 
-const creatorUrl = Config.search.creator_url;
-const crawlerConfig = Config.search.crawler;
+const Crawler = new SnapLensWebCrawler(Config.search.crawler);
 
-const crawler = new SnapLensWebCrawler(crawlerConfig);
+const creatorUrl = Config.search.creator_url;
 
 async function search(searchTerm) {
     let result = [];
@@ -33,9 +32,6 @@ async function search(searchTerm) {
         }
 
         return await Promise.all(result.map(async lens => {
-            if (lens.user_display_name && !lens.obfuscated_user_slug) {
-                lens.obfuscated_user_slug = await DB.getObfuscatedSlugByDisplayName(lens.user_display_name);
-            }
             lens.web_import = 1;
             return lens;
         }));
@@ -47,30 +43,25 @@ async function search(searchTerm) {
 }
 
 async function searchByTerm(searchTerm) {
-    const lenses = await crawler.searchLenses(searchTerm);
+    const lenses = await Crawler.searchLenses(searchTerm);
     return lenses instanceof CrawlerFailure ? [] : lenses.map(lens => ({ ...lens, web_import: 1 }));
 }
 
-async function searchByUserName(userDisplayName) {
-    const obfuscatedUserSlug = await DB.getObfuscatedSlugByDisplayName(userDisplayName);
-    return obfuscatedUserSlug ? await searchByCreatorSlug(obfuscatedUserSlug) : [];
-}
-
 async function searchByCreatorSlug(obfuscatedUserSlug) {
-    const lenses = await crawler.getLensesByCreator(obfuscatedUserSlug);
+    const lenses = await Crawler.getLensesByCreator(obfuscatedUserSlug);
     return lenses instanceof CrawlerFailure ? [] : lenses.map(lens => ({ ...lens, web_import: 1 }));
 }
 
 async function getLensByHash(uuid) {
     let [lens, archivedLens] = await Promise.all([
-        crawler.getLensByHash(uuid),
-        crawler.getLensByArchivedSnapshot(uuid)
+        Crawler.getLensByHash(uuid),
+        Crawler.getLensByArchivedSnapshot(uuid)
     ]);
 
     lens = lens instanceof CrawlerFailure ? {} : lens;
     archivedLens = archivedLens instanceof CrawlerFailure ? {} : archivedLens;
 
-    const mergedLens = crawler.mergeLensItems(lens, archivedLens);
+    const mergedLens = Crawler.mergeLensItems(lens, archivedLens);
 
     return Object.keys(mergedLens).length ? { ...mergedLens, web_import: 1 } : null;
 }
@@ -110,4 +101,4 @@ async function mirrorSearchResults(webResults) {
     webResults = null;
 }
 
-export { Cache, search, searchByUserName, searchByCreatorSlug, getLensByHash, getUnlockByHash, mirrorSearchResults }
+export { Crawler, Cache, search, getLensByHash, getUnlockByHash, mirrorSearchResults }
