@@ -65,19 +65,13 @@ import:
 
 # search configuration
 search:
-  # Snap Lens Web Crawler settings for crawling https://snapchat.com/lens
-  # Package: https://github.com/ptrumpis/snap-lens-web-crawler
+  # Settings for crawling https://snapchat.com/lens
   crawler:
-    # connection timeout in milliseconds
-    connectionTimeoutMs: 9000
-
-    # delay between subsequent requests in milliseconds
+    connectionTimeoutMs: 6000
+    failedRequestDelayMs: 3000
     minRequestDelayMs: 100
-
-    # cache time in seconds to speed up search results
-    cacheTTL: 86400
-
-    # set custom headers to prevent HTTP 403 errors
+    maxRequestRetries: 1
+    cacheTTL: 10800
     headers:
       User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
 
@@ -107,6 +101,19 @@ search:
 
 # storage configuration
 storage:
+  # Settings for downloading lens and asset files
+  crawler:
+    connectionTimeoutMs: 6000
+    failedRequestDelayMs: 3000
+    minRequestDelayMs: 0
+    maxRequestRetries: 1
+    cacheTTL: 0
+    gcInterval: false
+    headers:
+      User-Agent: SnapCamera/1.21.0.0 (Windows 10 Version 2009)
+      Content-Type: application/json
+      X-Installation-Id': default
+
   # urls to be served from local storage
   # you can add or remove urls
   # an update is required if relay server changes

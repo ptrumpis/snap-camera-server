@@ -41,9 +41,11 @@ async function loadConfig() {
             },
             search: {
                 crawler: {
-                    connectionTimeoutMs: 9000,
+                    connectionTimeoutMs: 6000,
+                    failedRequestDelayMs: 3000,
                     minRequestDelayMs: 100,
-                    cacheTTL: 86400,
+                    maxRequestRetries: 1,
+                    cacheTTL: 10800,
                     headers: {
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
                     }
@@ -56,6 +58,19 @@ async function loadConfig() {
                 share_urls: [],
             },
             storage: {
+                crawler: {
+                    connectionTimeoutMs: 6000,
+                    failedRequestDelayMs: 3000,
+                    minRequestDelayMs: 0,
+                    maxRequestRetries: 1,
+                    cacheTTL: 0,
+                    gcInterval: false,
+                    headers: {
+                      'User-Agent': 'SnapCamera/1.21.0.0 (Windows 10 Version 2009)',
+                      'Content-Type': 'application/json',
+                      'X-Installation-Id': 'default',
+                    }
+                },
                 urls: [],
             },
         };

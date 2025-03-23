@@ -13,7 +13,7 @@ const ignoreAltMedia = Config.app.flag.ignore_alt_media;
 const ignoreImgSequence = Config.app.flag.ignore_img_sequence;
 const validStorageUrls = Config.storage.urls || [];
 
-const Crawler = new SnapLensWebCrawler();
+const Crawler = new SnapLensWebCrawler(Config.storage.crawler);
 
 async function saveLens(lens) {
     if (!lens) {
