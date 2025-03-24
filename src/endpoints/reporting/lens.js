@@ -36,7 +36,7 @@ router.post('/', async function (req, res, next) {
             unlock = await Util.getUnlockFromRelay(lensId);
             if (unlock) {
                 console.log('Received Unlock from relay server', lensId);
-                await DB.insertUnlock(unlock, true);
+                await DB.insertUnlock(unlock);
                 return res.json({});
             } else {
                 console.log('Failed to get Unlock from relay server', lensId);
@@ -49,7 +49,7 @@ router.post('/', async function (req, res, next) {
                 unlock = await Web.getUnlockByHash(uuid);
                 if (unlock) {
                     console.log('Received Unlock from web', lensId);
-                    await DB.insertUnlock(unlock, true);
+                    await DB.insertUnlock(unlock);
                     return res.json({});
                 } else {
                     console.log('Failed to get Unlock from web', lensId);

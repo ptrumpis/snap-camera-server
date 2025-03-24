@@ -217,7 +217,7 @@ function getLensUnlock(lensId) {
     });
 }
 
-async function insertLens(lenses, forceDownload = false) {
+async function insertLens(lenses) {
     if (!Array.isArray(lenses)) {
         lenses = [lenses];
     }
@@ -267,8 +267,6 @@ async function insertLens(lenses, forceDownload = false) {
                     } else if (err.code !== "ER_DUP_ENTRY") {
                         console.log(err, unlockable_id, lens_name);
                         return resolve(false);
-                    } else if (forceDownload) {
-                        await Util.downloadLens(lens);
                     }
                     return resolve(true);
                 });
@@ -332,7 +330,7 @@ async function updateLens(lenses) {
     lenses = null;
 }
 
-async function insertUnlock(unlocks, forceDownload = false) {
+async function insertUnlock(unlocks) {
     if (!Array.isArray(unlocks)) {
         unlocks = [unlocks];
     }
@@ -365,8 +363,6 @@ async function insertUnlock(unlocks, forceDownload = false) {
                     } else if (err.code !== "ER_DUP_ENTRY") {
                         console.log(err, lens_id);
                         return resolve(false);
-                    } else if (forceDownload) {
-                        await Util.downloadUnlock(lens_id, lens_url);
                     }
                     return resolve(true);
                 });
@@ -497,4 +493,4 @@ function buildArgs(obj, whitelist, defaults = {}) {
     }, {});
 }
 
-export { searchLensByName, searchLensByTags, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, insertLens, updateLens, insertUnlock, updateUnlock, insertUser, markLensAsMirrored, markUnlockAsMirrored, isDatabaseReady };
+export { searchLensByName, searchLensByTags, searchLensByUuid, getDuplicatedLensIds, getMultipleLenses, getSingleLens, getLensUnlock, insertLens, updateLens, insertUnlock, updateUnlock, markLensAsMirrored, markUnlockAsMirrored, isDatabaseReady };
