@@ -83,6 +83,7 @@ async function saveRemoteFile(url) {
         let filePath = path.normalize(path.dirname(fileUrl.pathname));
         let fileName = path.basename(fileUrl.pathname);
 
+        // special dynamic url search param handling
         if (filePath.startsWith("/web/deeplink") && fileName === "snapcode" && fileUrl.searchParams.has('data') && fileUrl.searchParams.has('type')) {
             const regUuid = /^[a-f0-9]{32}\.png$/gi;
             const dataParam = fileUrl.searchParams.get('data');
@@ -92,7 +93,7 @@ async function saveRemoteFile(url) {
 
             // enforce png file type
             fileUrl.searchParams.set('type', 'png');
-            filePath = filePath.concat("/snapcode");
+            filePath = path.join(filePath, 'snapcode');
             fileName = dataParam.concat('.png');
         }
 
@@ -124,13 +125,13 @@ function validateRemoteOrigin(url) {
 async function downloadFile(targetUrl, subDirectory, fileName) {
     try {
         // old file path pre v3.4
-        const legacyFile = path.normalize(storagePath.concat(path.normalize(subDirectory), '/', fileName));
+        const legacyFile = path.join(storagePath, path.normalize(subDirectory), fileName);
         if (await isFile(legacyFile)) {
             return false;
         }
 
         // new root dir storage/ since v3.4
-        const newFile = path.normalize(storagePath.concat('/storage/', path.normalize(subDirectory), '/', fileName));
+        const newFile = path.join(storagePath, 'storage', path.normalize(subDirectory), fileName);
         if (await isFile(newFile)) {
             return false;
         }
