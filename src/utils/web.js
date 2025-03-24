@@ -53,7 +53,7 @@ async function getLensByHash(uuid) {
     lens = lens instanceof CrawlerFailure ? {} : lens;
     archivedLens = archivedLens instanceof CrawlerFailure ? {} : archivedLens;
 
-    const mergedLens = Crawler.mergeLensItems(lens, archivedLens);
+    const mergedLens = SnapLensWebCrawler.mergeLensItems(lens, archivedLens);
 
     return Object.keys(mergedLens).length ? { ...mergedLens, web_import: 1 } : null;
 }
