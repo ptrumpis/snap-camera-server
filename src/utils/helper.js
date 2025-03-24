@@ -124,27 +124,18 @@ async function downloadUnlock(lensId, lensUrl) {
 }
 
 function mergeLensesUnique(lenses, newLenses) {
-    if (newLenses && newLenses.length) {
-        if (lenses && lenses.length) {
-            let lensIds = [];
-            for (let i = 0; i < lenses.length; i++) {
-                lensIds.push(lenses[i].unlockable_id);
-            }
+    if (!Array.isArray(newLenses) || newLenses.length === 0) return lenses;
+    if (!Array.isArray(lenses) || lenses.length === 0) return newLenses;
 
-            for (let j = 0; j < newLenses.length; j++) {
-                if (lensIds.indexOf(newLenses[j].unlockable_id) !== -1) {
-                    // modify original array
-                    newLenses.splice(j, 1);
-                    j--;
-                }
-            }
+    const lensIds = new Set(lenses.map(lens => lens.unlockable_id));
 
-            lenses = lenses.concat(newLenses);
-        } else {
-            lenses = newLenses;
+    for (let i = newLenses.length - 1; i >= 0; i--) {
+        if (lensIds.has(newLenses[i].unlockable_id)) {
+            newLenses.splice(i, 1);
         }
     }
 
+    lenses.push(...newLenses);
     return lenses;
 }
 
