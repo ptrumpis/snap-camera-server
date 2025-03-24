@@ -1,8 +1,8 @@
 import express from 'express';
 import { Config } from '../../utils/config.js';
+import * as Cache from '../../utils/cache.js';
 import * as DB from '../../utils/db.js';
 import * as Util from '../../utils/helper.js';
-import * as Web from '../../utils/web.js';
 
 const useRelay = Config.app.relay.server;
 const useWebSource = Config.app.flag.enable_web_source;
@@ -81,7 +81,7 @@ router.post('/', async function (req, res, next) {
         }
 
         for (let i = 0; i < lensIds.length; i++) {
-            let lens = Web.Cache.get(lensIds[i]);
+            let lens = Cache.SearchCache.get(lensIds[i]);
             if (lens && lens.uuid) {
                 DB.insertLens(lens);
 

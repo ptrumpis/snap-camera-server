@@ -1,6 +1,7 @@
 import express from 'express';
 import Wayback from 'wayback.js';
 import { Config } from '../../utils/config.js';
+import * as Cache from '../../utils/cache.js';
 import * as DB from '../../utils/db.js';
 import * as Util from '../../utils/helper.js';
 import * as Web from '../../utils/web.js';
@@ -55,7 +56,7 @@ async function getRemoteUnlockByLensId(lensId) {
         }
 
         if (useWebSource) {
-            let lens = Web.Cache.get(lensId);
+            let lens = Cache.SearchCache.get(lensId);
             if (!lens || !lens.uuid) {
                 lens = await DB.getSingleLens(lensId);
                 if (lens && lens[0]) {

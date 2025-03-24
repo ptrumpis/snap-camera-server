@@ -1,5 +1,6 @@
 import express from 'express';
 import { Config } from '../../utils/config.js';
+import * as Cache from '../../utils/cache.js';
 import * as Util from '../../utils/helper.js';
 import * as Web from '../../utils/web.js';
 
@@ -53,7 +54,7 @@ router.post('/', async function (req, res, next) {
             for (let i = 0; i < webResults.length; i++) {
                 if (webResults[i].unlockable_id && webResults[i].uuid) {
                     // caching is required to activate the lens if search mirroring is disabled or delayed
-                    Web.Cache.set(webResults[i].unlockable_id, webResults[i]);
+                    Cache.SearchCache.set(webResults[i].unlockable_id, webResults[i]);
                 }
             }
         }

@@ -1,22 +1,14 @@
 import { SnapLensWebCrawler, CrawlerFailure } from '@ptrumpis/snap-lens-web-crawler';
-import NodeCache from 'node-cache';
 import { Config } from './config.js';
 import * as DB from './db.js';
 import * as Util from './helper.js';
 
-const Cache = new NodeCache({
-    stdTTL: Config.search.web_cache.ttl,
-    checkperiod: Config.search.web_cache.check,
-});
-
 const Crawler = new SnapLensWebCrawler(Config.search.crawler);
-
-const creatorUrl = Config.search.creator_url;
 
 async function search(searchTerm) {
     let result = [];
     try {
-        if (searchTerm.startsWith(creatorUrl)) {
+        if (searchTerm.startsWith(Config.search.creator_url)) {
             const slug = searchTerm.substr(searchTerm.lastIndexOf('/') + 1);
             return await searchByCreatorSlug(slug);
         }
@@ -101,4 +93,4 @@ async function mirrorSearchResults(webResults) {
     webResults = null;
 }
 
-export { Crawler, Cache, search, getLensByHash, getUnlockByHash, mirrorSearchResults }
+export { search, getLensByHash, getUnlockByHash, mirrorSearchResults }
