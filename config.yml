@@ -63,6 +63,32 @@ import:
   # otherwise uploaded files will not be validated
   zip_archive: true
 
+# top lens configuration
+top:
+  # Settings for crawling top lenses https://snapchat.com/lens
+  # requires 'app.flag.enable_web_source' to be 'true'
+  crawler:
+    connectionTimeoutMs: 6000
+    failedRequestDelayMs: 3000
+    minRequestDelayMs: 100
+    maxRequestRetries: 2
+    gcInterval: false
+    cacheTTL: 0
+    verbose: false
+    headers:
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
+
+  # caching is required to activate most new lenses since snapchat removed lens urls from their website
+  # requires 'app.flag.enable_web_source' to be 'true'
+  cache:
+    stdTTL: 86400
+    checkperiod: 3600
+    useClones: false
+
+  # fetch interval
+  # requires 'app.flag.enable_web_source' to be 'true'
+  interval: 3600
+
 # search configuration
 search:
   # Settings for crawling https://snapchat.com

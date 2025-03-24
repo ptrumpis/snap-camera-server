@@ -39,6 +39,26 @@ async function loadConfig() {
                 allow_overwrite: true,
                 zip_archive: true,
             },
+            top: {
+                crawler: {
+                    connectionTimeoutMs: 6000,
+                    failedRequestDelayMs: 3000,
+                    minRequestDelayMs: 100,
+                    maxRequestRetries: 2,
+                    gcInterval: false,
+                    cacheTTL: 0,
+                    verbose: false,
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+                    }
+                },
+                cache: {
+                    stdTTL: 86400,
+                    checkperiod: 3600,
+                    useClones: false,
+                },
+                interval: 3600,
+            },
             search: {
                 crawler: {
                     connectionTimeoutMs: 6000,
