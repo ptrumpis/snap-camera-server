@@ -64,15 +64,11 @@ async function relayRequest(path, method = 'GET', body = null) {
             const response = await fetch(`${relayServer}${path}`, requestInit);
             clearTimeout(timeout);
 
-            if (response?.ok) {
-                try {
-                    // avoid json parse errors on empty data
-                    const data = await response.text();
-                    if (data) {
-                        return JSON.parse(data);
-                    }
-                } catch (e) {
-                    console.error(e.message);
+            if (response?.ok && response.body) {
+                // don't use response.json() to avoid json parse errors on empty/invalid data
+                const data = await response.text();
+                if (data) {
+                    return JSON.parse(data);
                 }
             }
         } catch (e) {
@@ -86,6 +82,7 @@ async function relayRequest(path, method = 'GET', body = null) {
             clearTimeout(timeout);
         }
     }
+
     return {};
 }
 
