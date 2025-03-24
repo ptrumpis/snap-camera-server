@@ -1,6 +1,6 @@
 {
   "name": "snap-camera-server",
-  "version": "3.3.3",
+  "version": "3.4.0-alpha",
   "description": "Host your own Snap Camera private server",
   "keywords": [
     "snapchat",
@@ -26,7 +26,7 @@
   "license": "MIT",
   "dependencies": {
     "@ptrumpis/snap-lens-file-extractor": "~1.1.0",
-    "@ptrumpis/snap-lens-web-crawler": "~1.0.0-rc.1",
+    "@ptrumpis/snap-lens-web-crawler": "~1.0.0-rc.4",
     "db-migrate": "1.0.0-beta.29",
     "db-migrate-mysql": "~3.0.0",
     "dotenv": "~16.4.7",
@@ -34,10 +34,10 @@
     "formidable": "~3.5.2",
     "fzstd": "~0.1.1",
     "jszip": "~3.10.1",
-    "mysql2": "~3.13.0",
-    "node-cache": "~5.1.2",
+    "mysql2": "~3.14.0",
+    "node-cache": "5.1.2",
     "sharp": "~0.33.5",
-    "wayback.js": "~0.0.3",
+    "wayback.js": "~0.2.0",
     "yaml": "~2.7.0"
   }
 }
