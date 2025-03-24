@@ -65,7 +65,8 @@ import:
 
 # search configuration
 search:
-  # Settings for crawling https://snapchat.com/lens
+  # Settings for crawling https://snapchat.com
+  # requires 'app.flag.enable_web_source' to be 'true'
   crawler:
     connectionTimeoutMs: 6000
     failedRequestDelayMs: 3000
@@ -76,22 +77,18 @@ search:
       User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
 
   # caching is required to activate web lenses within search results
-  # web caching requires 'app.flag.enable_web_source' to be 'true'
-  web_cache:
-    # standard time to live in seconds
-    # web search results will expire after this time
-    # 0 = infinity (memory usage will grow)
-    ttl: 3600
-
-    # time in seconds to check all data and delete expired search results
-    check: 600
+  # requires 'app.flag.enable_web_source' to be 'true'
+  cache:
+    stdTTL: 3600
+    checkperiod: 600
+    useClones: true
 
   # creator base url for displaying all lenses of a single creator
-  # this feature requires 'app.flag.enable_web_source' to be 'true'
+  # requires 'app.flag.enable_web_source' to be 'true'
   creator_url: https://lensstudio.snapchat.com/creator/
 
   # supported lens share urls
-  # this feature requires 'app.flag.enable_web_source' to be 'true'
+  # requires 'app.flag.enable_web_source' to be 'true'
   # paste an url and strip/remove any other non static http parameters
   # - mark/replace the 32 character lens identifier with {UUID}
   share_urls:

@@ -50,9 +50,10 @@ async function loadConfig() {
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
                     }
                 },
-                web_cache: {
-                    ttl: 3600,
-                    check: 600,
+                cache: {
+                    stdTTL: 3600,
+                    checkperiod: 600,
+                    useClones: true,
                 },
                 creator_url: 'https://lensstudio.snapchat.com/creator/',
                 share_urls: [],
@@ -66,9 +67,9 @@ async function loadConfig() {
                     cacheTTL: 0,
                     gcInterval: false,
                     headers: {
-                      'User-Agent': 'SnapCamera/1.21.0.0 (Windows 10 Version 2009)',
-                      'Content-Type': 'application/json',
-                      'X-Installation-Id': 'default',
+                        'User-Agent': 'SnapCamera/1.21.0.0 (Windows 10 Version 2009)',
+                        'Content-Type': 'application/json',
+                        'X-Installation-Id': 'default',
                     }
                 },
                 urls: [],
