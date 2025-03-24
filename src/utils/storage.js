@@ -123,6 +123,13 @@ function validateRemoteOrigin(url) {
 
 async function downloadFile(targetUrl, subDirectory, fileName) {
     try {
+        // old file path pre v3.4
+        const legacyFile = path.normalize(storagePath.concat(path.normalize(subDirectory), '/', fileName));
+        if (await isFile(legacyFile)) {
+            return false;
+        }
+
+        // new root dir storage/ since v3.4
         const newFile = path.normalize(storagePath.concat('/storage/', path.normalize(subDirectory), '/', fileName));
         if (await isFile(newFile)) {
             return false;
