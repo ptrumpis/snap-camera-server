@@ -104,7 +104,7 @@ async function cacheTopLenses() {
                         continue;
                     }
 
-                    Cache.TopCache.set(lens.unlockable_id, lens);
+                    Cache.Top.set(lens.unlockable_id, lens);
                 }
             }
 

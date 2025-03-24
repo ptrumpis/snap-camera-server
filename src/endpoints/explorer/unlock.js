@@ -56,7 +56,7 @@ async function getRemoteUnlockByLensId(lensId) {
         }
 
         if (useWebSource) {
-            let lens = Cache.SearchCache.get(lensId);
+            let lens = Cache.Search.get(lensId);
             if (!lens || !lens.uuid) {
                 lens = await DB.getSingleLens(lensId);
                 if (lens && lens[0]) {

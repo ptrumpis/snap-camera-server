@@ -54,7 +54,7 @@ router.post('/', async function (req, res, next) {
             for (let i = 0; i < webResults.length; i++) {
                 if (webResults[i].unlockable_id && webResults[i].uuid) {
                     // caching is required to activate the lens if search mirroring is disabled or delayed
-                    Cache.SearchCache.set(webResults[i].unlockable_id, webResults[i]);
+                    Cache.Search.set(webResults[i].unlockable_id, webResults[i]);
                 }
             }
         }

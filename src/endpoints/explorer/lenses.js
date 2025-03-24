@@ -81,7 +81,7 @@ router.post('/', async function (req, res, next) {
         }
 
         for (let i = 0; i < lensIds.length; i++) {
-            let lens = Cache.SearchCache.get(lensIds[i]);
+            let lens = Cache.Search.get(lensIds[i]);
             if (lens && lens.uuid) {
                 DB.insertLens(lens);
 
