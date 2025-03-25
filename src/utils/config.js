@@ -71,8 +71,8 @@ async function loadConfig() {
                     }
                 },
                 cache: {
-                    stdTTL: 3600,
-                    checkperiod: 600,
+                    stdTTL: 86400,
+                    checkperiod: 3600,
                     useClones: true,
                 },
                 creator_url: 'https://lensstudio.snapchat.com/creator/',

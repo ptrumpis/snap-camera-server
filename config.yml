@@ -105,8 +105,8 @@ search:
   # caching is required to activate web lenses within search results
   # requires 'app.flag.enable_web_source' to be 'true'
   cache:
-    stdTTL: 3600
-    checkperiod: 600
+    stdTTL: 86400
+    checkperiod: 3600
     useClones: true
 
   # creator base url for displaying all lenses of a single creator
