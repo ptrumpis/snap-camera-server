@@ -104,6 +104,7 @@ async function cacheTopLenses() {
                         continue;
                     }
 
+                    lens.web_import = 1;
                     Cache.Top.set(lens.unlockable_id, lens);
                 }
             }
