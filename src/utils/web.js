@@ -45,22 +45,26 @@ async function searchByCreatorSlug(obfuscatedUserSlug) {
 }
 
 async function getLensByHash(uuid) {
+    const lens = await Crawler.getLensByHash(uuid);
+    if (!(lens instanceof CrawlerFailure)) {
+        lens.web_import = 1;
+        return lens;
+    }
+    return null;
+}
+
+async function getUnlockByHash(uuid) {
     let [lens, archivedLens] = await Promise.all([
-        Crawler.getLensByHash(uuid),
+        getLensByHash(uuid),
         Crawler.getLensByArchivedSnapshot(uuid)
     ]);
 
     lens = lens instanceof CrawlerFailure ? {} : lens;
     archivedLens = archivedLens instanceof CrawlerFailure ? {} : archivedLens;
 
-    const mergedLens = SnapLensWebCrawler.mergeLensItems(lens, archivedLens);
-
-    return Object.keys(mergedLens).length ? { ...mergedLens, web_import: 1 } : null;
-}
-
-async function getUnlockByHash(uuid) {
-    const unlock = await getLensByHash(uuid);
+    const unlock = SnapLensWebCrawler.mergeLensItems(archivedLens, lens);
     if (unlock && unlock.lens_id && unlock.lens_url) {
+        unlock.web_import = 1;
         return unlock;
     }
 

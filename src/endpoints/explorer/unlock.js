@@ -39,7 +39,7 @@ router.get('/', async function (req, res, next) {
         return res.json(remoteUnlock);
     }
 
-    console.info(`[Info] This lens cannot currently be activated: ${lensId}`);
+    console.info(`[Info] 😕 This lens cannot currently be activated: ${lensId}`);
 
     return res.json({});
 });
@@ -55,20 +55,27 @@ async function getRemoteUnlockByLensId(lensId) {
         }
 
         if (useWebSource) {
-            let lens = Cache.Search.get(lensId);
-            if (!lens || !lens.uuid) {
-                lens = await DB.getSingleLens(lensId);
-                if (lens && lens[0]) {
-                    lens = lens[0];
-                }
+            if (Cache.Top.has(lensId)) {
+                const topLens = Cache.Top.get(lensId);
+                DB.insertLens(topLens);
+                DB.insertUnlock(topLens);
+                return topLens;
             }
 
-            if (lens && lens.uuid) {
-                const unlockLensCombined = await Web.getUnlockByHash(lens.uuid);
-                if (unlockLensCombined) {
-                    DB.insertLens(unlockLensCombined);
-                    DB.insertUnlock(unlockLensCombined);
-                    return unlockLensCombined;
+            if (Cache.Search.has(lensId)) {
+                let lens = Cache.Search.get(lensId);
+                if (!lens?.uuid) {
+                    const dbLens = await DB.getSingleLens(lensId);
+                    lens = dbLens?.[0] ? { ...lens, ...dbLens } : lens;
+                }
+
+                if (lens?.uuid) {
+                    const unlockLensCombined = await Web.getUnlockByHash(lens.uuid);
+                    if (unlockLensCombined) {
+                        DB.insertLens(unlockLensCombined);
+                        DB.insertUnlock(unlockLensCombined);
+                        return unlockLensCombined;
+                    }
                 }
             }
         }
