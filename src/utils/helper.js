@@ -11,8 +11,10 @@ const relayServer = Config.app.relay.server;
 const storageServer = process.env.STORAGE_SERVER;
 const modifyServerRegEx = new RegExp(Config.storage.urls.map(escapeRegExp).join('|'), 'gi');
 
-const shareUrlUuidPlaceholder = escapeRegExp('{UUID}');
-const shareUrlsWithEscapedRegEx = Config.search.share_urls.map(escapeRegExp) || [];
+const validShareUrls = Config.search.share_urls.map((url) => {
+    url = escapeRegExp(url).replace(escapeRegExp('{UUID}'), '([a-f0-9]{32})').replace(/^https?:\/\//, 'http?s://');
+    return `^${url}`;
+}) || [];
 
 const headers = {
     'User-Agent': 'SnapCamera/1.21.0.0 (Windows 10 Version 2009)',
@@ -137,23 +139,15 @@ function mergeLensesUnique(lenses, newLenses) {
     return lenses;
 }
 
-function parseLensUuid(str, urlExtraction = true) {
+function parseLensUuid(str, extractFromShareUrl = true) {
     if (typeof str === "string") {
-        if (urlExtraction && isUrl(str)) {
-            for (const shareUrl of shareUrlsWithEscapedRegEx) {
-                try {
-                    const uuidMatch = str.match(new RegExp(shareUrl.replace(shareUrlUuidPlaceholder, '([a-f0-9]{32})'), 'i'));
-                    if (uuidMatch && uuidMatch[1]) {
-                        return parseLensUuid(uuidMatch[1], false);
-                    }
-                } catch (e) {
-                    console.error(`[Error] Trying to parse UUID from URL: ${str} - ${e.message}`);
-                }
+        if (extractFromShareUrl && isUrl(str)) {
+            const uuid = parseLensUuidFromShareUrl(str);
+            if (uuid) {
+                return uuid;
             }
         }
 
-        // global extraction attempt
-        // valid lens UUID's have 32 hexadecimal characters
         const uuid = str.match(/[a-f0-9]{32}/gi)
         if (uuid && uuid[0]) {
             return uuid[0];
@@ -161,6 +155,26 @@ function parseLensUuid(str, urlExtraction = true) {
     }
 
     return '';
+}
+
+function parseLensUuidFromShareUrl(url) {
+    for (const shareUrl of validShareUrls) {
+        try {
+            const uuidMatch = url.match(new RegExp(shareUrl, 'i'));
+            if (uuidMatch && uuidMatch[1]) {
+                return uuidMatch[1];
+            }
+        } catch (e) {
+            console.error(`[Error] Trying to parse UUID from URL: ${url} - ${e.message}`);
+        }
+    }
+
+    return '';
+}
+
+function isLensUuid(str) {
+    const uuid = /^[a-f0-9]{32}$/gi;
+    return uuid.test(str);
 }
 
 function isLensId(str) {
@@ -191,4 +205,4 @@ function sleep(ms) {
     });
 }
 
-export { advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, parseLensUuid, isLensId, isUrl, modifyResponseURLs, sleep };
+export { advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, parseLensUuid, parseLensUuidFromShareUrl, isLensUuid, isLensId, isUrl, modifyResponseURLs, sleep };

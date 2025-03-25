@@ -13,14 +13,21 @@ async function search(searchTerm) {
             return await searchByCreatorSlug(slug);
         }
 
-        const uuid = Util.parseLensUuid(searchTerm);
-        if (uuid) {
-            result = await getLensByHash(uuid) || [];
-            if (!Array.isArray(result)) {
-                result = [result];
+        if (Util.isLensUuid(searchTerm)) {
+            result = await getLensByHash(searchTerm) || [];
+        } else if (Util.isUrl(searchTerm)) {
+            const uuid = Util.parseLensUuidFromShareUrl(searchTerm);
+            if (uuid) {
+                result = await getLensByHash(uuid) || [];
+            } else {
+                result = await searchByUrl(searchTerm);
             }
         } else {
             result = await searchByTerm(searchTerm);
+        }
+
+        if (!Array.isArray(result)) {
+            result = [result];
         }
 
         return await Promise.all(result.map(async lens => {
@@ -32,6 +39,11 @@ async function search(searchTerm) {
     }
 
     return result;
+}
+
+async function searchByUrl(url) {
+    const lenses = await Crawler.getLensesFromUrl(url);
+    return lenses instanceof CrawlerFailure ? [] : lenses.map(lens => ({ ...lens, web_import: 1 }));
 }
 
 async function searchByTerm(searchTerm) {
