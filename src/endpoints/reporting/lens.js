@@ -16,43 +16,43 @@ router.post('/', async function (req, res, next) {
 
         const lens = await DB.getSingleLens(lensId);
         if (lens && lens[0]) {
-            console.log('Re-downloading Lens', lensId);
+            console.info(`[Info] Re-downloading Lens: ${lensId}`);
             await Util.downloadLens(lens[0]);
         }
 
         let unlock = await DB.getLensUnlock(lensId);
         if (unlock && unlock[0]) {
             if (unlock[0].lens_id && unlock[0].lens_url) {
-                console.log('Re-downloading Unlock', lensId);
+                console.info(`[Info] Re-downloading Unlock: ${lensId}`);
                 await Util.downloadUnlock(unlock[0].lens_id, unlock[0].lens_url);
                 return res.json({});
             } else {
-                console.warn('Unlock Download URL is missing', lensId);
+                console.warn(`[Warning] Unlock Download URL is missing: ${lensId}`);
             }
         }
 
         if (useRelay) {
-            console.log('Trying to get Unlock from relay server', lensId);
+            console.info(`[Info] Trying to get Unlock from relay server: ${lensId}`);
             unlock = await Util.getUnlockFromRelay(lensId);
             if (unlock) {
-                console.log('Received Unlock from relay server', lensId);
+                console.info(`[Info] Received Unlock from relay server: ${lensId}`);
                 await DB.insertUnlock(unlock);
                 return res.json({});
             } else {
-                console.log('Failed to get Unlock from relay server', lensId);
+                console.info(`[Info] Failed to get Unlock from relay server: ${lensId}`);
             }
         }
 
         if (useWebSource) {
             if (lens && lens.uuid) {
-                console.log('Trying to get Unlock from web', lensId);
+                console.info(`[Info] Trying to get Unlock from web: ${lensId}`);
                 unlock = await Web.getUnlockByHash(uuid);
                 if (unlock) {
-                    console.log('Received Unlock from web', lensId);
+                    console.info(`[Info] Received Unlock from web: ${lensId}`);
                     await DB.insertUnlock(unlock);
                     return res.json({});
                 } else {
-                    console.log('Failed to get Unlock from web', lensId);
+                    console.info(`[Info] Failed to get Unlock from web: ${lensId}`);
                 }
             }
         }

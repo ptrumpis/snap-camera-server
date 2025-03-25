@@ -134,8 +134,9 @@ async function loadConfig() {
 
         return deepMerge(defaultConfig, yamlConfig);
     } catch (e) {
-        console.error("Error loading configuration", e);
+        console.error(`[Error] Failed to load configuration: ${e.message}`);
     }
+
     return {};
 }
 

@@ -66,7 +66,7 @@ async function saveUnlock(url) {
 
         return await downloadFile(lensUrl.toString(), filePath, fileName);
     } catch (e) {
-        console.error(`[Error] saveRemoteFile: ${url} - ${e.message}`);
+        console.error(`[Error] Saving unlock failed: ${url} - ${e.message}`);
     }
 
     return false;
@@ -102,7 +102,7 @@ async function saveRemoteFile(url) {
 
         return true;
     } catch (e) {
-        console.error(`[Error] saveRemoteFile: ${url} - ${e.message}`);
+        console.error(`[Error] Saving remote file failed: ${url} - ${e.message}`);
     }
 
     return false;
@@ -136,14 +136,14 @@ async function downloadFile(targetUrl, subDirectory, fileName) {
             return false;
         }
 
-        console.log(`[Downloading] ${targetUrl}`);
+        console.info(`[Downloading] ${targetUrl}`);
 
         const result = await Crawler.downloadFile(targetUrl, newFile);
         if (result === true) {
             return newFile;
         }
     } catch (e) {
-        console.error(`[Error] downloadFile: ${targetUrl} - ${e.message}`);
+        console.error(`[Error] File download failed: ${targetUrl} - ${e.message}`);
     }
 
     return false;
@@ -154,14 +154,14 @@ async function convertWebpToPng(file) {
         if (typeof file === 'string' && file.endsWith('.webp')) {
             const fileAsPng = file.substring(0, file.lastIndexOf('.')).concat('.png');
 
-            console.log(`[Converting WEBP to PNG] ${file}`);
+            console.info(`[Info] Converting .webp to .png: ${file}`);
 
             await sharp(file).toFile(fileAsPng);
             await fs.unlink(file);
             return fileAsPng;
         }
     } catch (e) {
-        console.error(`[Error] convertWebpToPng: ${file} - ${e.message}`);
+        console.error(`[Error] Converting .webp to .png failed: ${file} - ${e.message}`);
     }
     return false;
 }

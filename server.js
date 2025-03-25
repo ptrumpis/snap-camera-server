@@ -48,6 +48,6 @@ app.use('/vc/v1', v1);
 app.use('*', wildcard);
 
 app.listen(serverPort, () => {
-    console.log(`Snap Camera Server is running on port ${serverPort}`);
+    console.info(`[Info] ✅ Snap Camera Server is running on port ${serverPort}`);
     init.bootstrap();
 });

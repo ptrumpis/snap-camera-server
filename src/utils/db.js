@@ -36,7 +36,6 @@ function importFilter(arr) {
             (enableWebSource || !element.web_import) && (enableCustomSource || !element.custom_import)
         ));
     }
-
     return arr;
 }
 
@@ -231,7 +230,7 @@ async function insertLens(lenses) {
     for (const lens of lenses) {
         // check required fields
         if (!lens || !lens.unlockable_id || !lens.lens_name || !lens.user_display_name) {
-            console.error("Invalid argument, expected lens object", lens);
+            console.error(`[Error] Invalid argument, expected lens object:`, lens);
             return;
         }
 
@@ -261,11 +260,10 @@ async function insertLens(lenses) {
                         if (obfuscated_user_slug) {
                             insertUser(lens);
                         }
-
                         await Util.downloadLens(lens);
-                        console.log("Saved Lens:", unlockable_id);
+                        console.info(`[Info] Saved Lens: ${unlockable_id}`);
                     } else if (err.code !== "ER_DUP_ENTRY") {
-                        console.log(err, unlockable_id, lens_name);
+                        console.error(err, unlockable_id, lens_name);
                         return resolve(false);
                     }
                     return resolve(true);
@@ -293,7 +291,7 @@ async function updateLens(lenses) {
     for (const lens of lenses) {
         // check required fields
         if (!lens || !lens.unlockable_id) {
-            console.error("Invalid argument, expected lens object", lens);
+            console.error(`[Error] Invalid argument, expected lens object:`, lens);
             return;
         }
 
@@ -311,12 +309,12 @@ async function updateLens(lenses) {
                             }
 
                             await Util.downloadLens(lens);
-                            console.log('Updated Lens:', unlockable_id);
+                            console.info(`[Info] Updated Lens: ${unlockable_id}`);
                         } else {
-                            console.warn('No rows updated for Lens:', unlockable_id);
+                            console.warn(`[Warning] No rows updated for Lens: ${unlockable_id}`);
                         }
                     } else {
-                        console.log(err, unlockable_id);
+                        console.error(err, unlockable_id);
                         return resolve(false);
                     }
                     return resolve(true);
@@ -340,7 +338,7 @@ async function insertUnlock(unlocks) {
     for (const unlock of unlocks) {
         // check required fields
         if (!unlock || !unlock.lens_id || !unlock.lens_url) {
-            console.error("Invalid argument, expected unlock object", unlock);
+            console.error(`[Error] Invalid argument, expected unlock object`, unlock);
             return;
         }
 
@@ -359,9 +357,9 @@ async function insertUnlock(unlocks) {
                 connection.query(`INSERT INTO unlocks SET ?`, args, async function (err, results) {
                     if (!err) {
                         await Util.downloadUnlock(lens_id, lens_url);
-                        console.log('Unlocked Lens:', lens_id);
+                        console.info(`[Info] Unlocked Lens: ${lens_id}`);
                     } else if (err.code !== "ER_DUP_ENTRY") {
-                        console.log(err, lens_id);
+                        console.error(err, lens_id);
                         return resolve(false);
                     }
                     return resolve(true);
@@ -385,7 +383,7 @@ async function updateUnlock(unlocks) {
     for (const unlock of unlocks) {
         // check required fields
         if (!unlock || !unlock.lens_id) {
-            console.error("Invalid argument, expected unlock object", unlock);
+            console.error(`[Error] Invalid argument, expected unlock object`, unlock);
             return;
         }
 
@@ -401,13 +399,12 @@ async function updateUnlock(unlocks) {
                             if (unlock.lens_url) {
                                 await Util.downloadUnlock(lens_id, unlock.lens_url);
                             }
-
-                            console.log('Updated Unlock:', lens_id);
+                            console.info(`[Info] Updated Unlock: ${lens_id}`);
                         } else {
-                            console.warn('No rows updated for Unlock:', lens_id);
+                            console.warn(`[Warning] No rows updated for Unlock: ${lens_id}`);
                         }
                     } else {
-                        console.log(err, lens_id);
+                        console.error(err, lens_id);
                         return resolve(false);
                     }
                     return resolve(true);
@@ -423,7 +420,7 @@ async function updateUnlock(unlocks) {
 
 async function insertUser(user) {
     if (!user || !user.obfuscated_user_slug || !user.user_display_name) {
-        console.error("Invalid argument, expected user object", user);
+        console.error(`[Error] Invalid argument, expected user object`, user);
         return;
     }
 
@@ -435,9 +432,9 @@ async function insertUser(user) {
         try {
             connection.query(`INSERT INTO users SET ?`, args, async function (err, results) {
                 if (!err) {
-                    console.log('New User:', user.user_display_name);
+                    console.info(`[Info] New User: ${user.user_display_name}`);
                 } else if (err.code !== "ER_DUP_ENTRY") {
-                    console.log(err, user);
+                    console.error(err, user);
                     return resolve(false);
                 }
                 return resolve(true);
@@ -454,7 +451,7 @@ function markLensAsMirrored(id) {
     try {
         connection.query(`UPDATE lenses SET mirrored=1 WHERE unlockable_id=?`, [id]);
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 }
 
@@ -462,7 +459,7 @@ function markUnlockAsMirrored(id) {
     try {
         connection.query(`UPDATE unlocks SET mirrored=1 WHERE lens_id=?`, [id]);
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 }
 

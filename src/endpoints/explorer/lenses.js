@@ -12,7 +12,7 @@ var router = express.Router();
 
 router.get('/', async function (req, res, next) {
     // missing request documentation
-    console.log("Undocumented GET request /vc/v1/explorer/lenses:", req.originalUrl);
+    console.debug("[Debug] Undocumented GET request /vc/v1/explorer/lenses:", req.originalUrl);
     res.json({});
 });
 

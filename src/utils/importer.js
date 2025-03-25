@@ -23,7 +23,7 @@ const zipArchive = Config.import.zip_archive;
 
 async function importLensFile(lensFile, lensId, createMediaFiles = true) {
     if (!Util.isLensId(lensId)) {
-        console.warn("Can't import lens with invalid lens ID", lensId);
+        console.warn(`[Warning] Can't import lens with invalid lens ID: ${lensId}`);
         return false;
     }
 
@@ -147,7 +147,7 @@ function importCacheLensesFromSettings(settingsJson, lensFileData = [], updateEx
             const info = settingsJson.lenses.cache.cachedInfo;
             for (let i = 0; i < info.length; i++) {
                 if (!info[i].lensId || typeof info[i].signature !== 'string') {
-                    console.error("Unexpected JSON structure at index", i, info[i]);
+                    console.warn(`[Warning] Unexpected JSON structure at index ${i}:`, info[i]);
                     return false;
                 }
 
@@ -202,7 +202,7 @@ function importCacheLensesFromSettings(settingsJson, lensFileData = [], updateEx
                 unlocks.push(unlock);
             }
         } else {
-            console.log("No cached lenses inside settings.json");
+            console.warn(`[Warning] No cached lenses inside settings.json`);
             return false;
         }
     } catch (e) {

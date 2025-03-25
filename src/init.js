@@ -15,7 +15,7 @@ const cacheTopLensesInterval = (useWebSource) ? setInterval(async () => {
 
 async function bootstrap() {
     while (!await DB.isDatabaseReady()) {
-        console.log(`⏳ Waiting for the database server to respond...`);
+        console.info(`[Info] ⏳ Waiting for the database server to respond...`);
         await Util.sleep(6000);
     }
 
@@ -29,11 +29,11 @@ async function bootstrap() {
         await cacheTopLenses();
     }
 
-    console.log(`✅ Initialization complete!`);
+    console.info(`[Info] ✅ Initialization complete!`);
 }
 
 function shutdown() {
-    console.log(`💤 Shutting down...`);
+    console.info(`[Info] 💤 Shutting down...`);
 
     if (cacheTopLensesInterval) {
         clearInterval(cacheTopLensesInterval);
@@ -46,9 +46,9 @@ async function runDatabaseMigration() {
     try {
         const migration = dbmigrate.getInstance(true);
         await migration.up();
-        console.log(`✅ Database migration complete!`);
+        console.info(`[Info] ✅ Database migration complete!`);
     } catch (e) {
-        console.error(`[Error] runDatabaseMigration: ${e.message}`);
+        console.error(`[Error] Database migration failed: ${e.message}`);
     }
 }
 
@@ -76,15 +76,15 @@ async function prefetchStaticLenses() {
     ];
 
     try {
-        console.log(`🔄 Prefetching static lenses...`);
+        console.info(`[Info] 🔄 Prefetching static lenses...`);
 
         for (let i = 0; i < staticLenses.length; i++) {
             await DB.insertLens(staticLenses[i]["lenses"]);
         }
 
-        console.log(`✅ Lens prefetching complete!`);
+        console.info(`[Info] ✅ Lens prefetching complete!`);
     } catch (e) {
-        console.error(`[Error] prefetchStaticLenses: ${e.message}`);
+        console.error(`[Error] Prefetching failed: ${e.message}`);
     }
 
     staticLenses.length = 0;
@@ -94,7 +94,7 @@ async function cacheTopLenses() {
     const Crawler = new SnapLensWebCrawler(Config.top.crawler);
 
     try {
-        console.log(`🔄 Caching top lenses...`);
+        console.info(`[Info] 🔄 Caching top lenses...`);
 
         for (const category in Crawler.TOP_CATEGORIES) {
             let topLenses = await Crawler.getTopLensesByCategory(category, null);
@@ -112,9 +112,9 @@ async function cacheTopLenses() {
             topLenses = null;
         }
 
-        console.log(`✅ Top lenses successfully cached!`);
+        console.info(`[Info] ✅ Top lenses successfully cached!`);
     } catch (e) {
-        console.error(`[Error] cacheTopLenses: ${e.message}`);
+        console.error(`[Error] Caching top lenses failed: ${e.message}`);
     } finally {
         Crawler.destroy();
     }

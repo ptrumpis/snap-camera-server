@@ -30,7 +30,7 @@ router.get('/', async function (req, res, next) {
 
             return res.json(Util.modifyResponseURLs(unlock[0]));
         } else {
-            console.warn('Unlock Download URL is missing', lensId);
+            console.warn(`[Warning] Unlock Download URL is missing: ${lensId}`);
         }
     }
 
@@ -39,8 +39,7 @@ router.get('/', async function (req, res, next) {
         return res.json(remoteUnlock);
     }
 
-    // TODO FIX in upcomming versions
-    console.warn('This Lens can not be used. The issue is known and will most likely be fixed in upcomming versions of Snap Camera Server.', lensId);
+    console.info(`[Info] This lens cannot currently be activated: ${lensId}`);
 
     return res.json({});
 });

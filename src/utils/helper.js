@@ -11,8 +11,8 @@ const relayServer = Config.app.relay.server;
 const storageServer = process.env.STORAGE_SERVER;
 const modifyServerRegEx = new RegExp(Config.storage.urls.map(escapeRegExp).join('|'), 'gi');
 
-const shareUrlUuid = escapeRegExp('{UUID}');
-const shareUrls = Config.search.share_urls.map(escapeRegExp);
+const shareUrlUuidPlaceholder = escapeRegExp('{UUID}');
+const shareUrlsWithEscapedRegEx = Config.search.share_urls.map(escapeRegExp) || [];
 
 const headers = {
     'User-Agent': 'SnapCamera/1.21.0.0 (Windows 10 Version 2009)',
@@ -25,18 +25,15 @@ function escapeRegExp(str) {
 }
 
 async function advancedSearch(searchTerm) {
-    // search lens by 32 character UUID
     const uuid = parseLensUuid(searchTerm);
     if (uuid) {
         return await DB.searchLensByUuid(uuid);
     }
 
-    // search lens by ID
     if (isLensId(searchTerm)) {
         return await DB.getSingleLens(searchTerm);
     }
 
-    // search lens by custom hashtags
     if (searchTerm.startsWith('#') && searchTerm.length >= 2) {
         const hashtags = searchTerm.match(/#\w+/gi) || [];
         if (hashtags && hashtags.length) {
@@ -44,12 +41,12 @@ async function advancedSearch(searchTerm) {
         }
     }
 
-    // search by lens name and creator name
     return await DB.searchLensByName(searchTerm);
 }
 
 async function relayRequest(path, method = 'GET', body = null) {
     if (relayServer) {
+        const url = `${relayServer}${path}`;
         const controller = new AbortController();
         const timeout = setTimeout(() => {
             controller.abort();
@@ -61,11 +58,12 @@ async function relayRequest(path, method = 'GET', body = null) {
                 requestInit.body = JSON.stringify(body);
             }
 
-            const response = await fetch(`${relayServer}${path}`, requestInit);
+            const response = await fetch(url, requestInit);
             clearTimeout(timeout);
 
             if (response?.ok && response.body) {
-                // don't use response.json() to avoid json parse errors on empty/invalid data
+                // don't use response.json()
+                // to avoid json parse errors on empty/invalid data
                 const data = await response.text();
                 if (data) {
                     return JSON.parse(data);
@@ -74,9 +72,9 @@ async function relayRequest(path, method = 'GET', body = null) {
         } catch (e) {
             clearTimeout(timeout);
             if (e.name === 'AbortError') {
-                console.warn(`Relay request timed out: ${path}`);
+                console.warn(`[Warning] Request to relay timed out: ${url}`);
             } else {
-                console.error(`Relay request error: ${path} - ${e.message}`);
+                console.error(`[Error] Request to relay failed: ${url} - ${e.message}`);
             }
         } finally {
             clearTimeout(timeout);
@@ -142,16 +140,14 @@ function mergeLensesUnique(lenses, newLenses) {
 function parseLensUuid(str, urlExtraction = true) {
     if (typeof str === "string") {
         if (urlExtraction && isUrl(str)) {
-            // try to extract from known share URL's
-            // otherwise use global extraction attempt
-            for (const url of shareUrls) {
+            for (const shareUrl of shareUrlsWithEscapedRegEx) {
                 try {
-                    const match = str.match(new RegExp(url.replace(shareUrlUuid, '([a-f0-9]{32})'), 'i'));
-                    if (match && match[1]) {
-                        return parseLensUuid(match[1], false);
+                    const uuidMatch = str.match(new RegExp(shareUrl.replace(shareUrlUuidPlaceholder, '([a-f0-9]{32})'), 'i'));
+                    if (uuidMatch && uuidMatch[1]) {
+                        return parseLensUuid(uuidMatch[1], false);
                     }
                 } catch (e) {
-                    console.error(e, str, url);
+                    console.error(`[Error] Trying to parse UUID from URL: ${str} - ${e.message}`);
                 }
             }
         }
@@ -168,7 +164,6 @@ function parseLensUuid(str, urlExtraction = true) {
 }
 
 function isLensId(str) {
-    // valid lens ID's have 11 to 16 digits
     const id = /^[0-9]{11,16}$/gi;
     return id.test(str);
 }
@@ -176,15 +171,14 @@ function isLensId(str) {
 function isUrl(url) {
     try {
         new URL(url);
-    } catch (e) {
-        return false;
-    }
-    return true;
+        return true;
+    } catch { }
+
+    return false;
 }
 
 function modifyResponseURLs(orgResponse) {
     if (storageServer) {
-        // point orignal URL's to our local storage server
         const response = JSON.stringify(orgResponse);
         return JSON.parse(response.replace(modifyServerRegEx, storageServer));
     }
