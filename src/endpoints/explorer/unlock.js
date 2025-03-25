@@ -69,13 +69,15 @@ async function getRemoteUnlockByLensId(lensId) {
                     lens = dbLens?.[0] ? { ...lens, ...dbLens } : lens;
                 }
 
-                if (lens?.uuid) {
-                    const unlockLensCombined = await Web.getUnlockByHash(lens.uuid);
-                    if (unlockLensCombined) {
-                        DB.insertLens(unlockLensCombined);
-                        DB.insertUnlock(unlockLensCombined);
-                        return unlockLensCombined;
-                    }
+                if (lens?.uuid && !lens?.lens_url) {
+                    const webLens = await Web.getUnlockByHash(lens.uuid);
+                    lens = webLens ? { ...webLens, ...lens } : lens;
+                }
+
+                if (lens?.lens_url) {
+                    DB.insertLens(lens);
+                    DB.insertUnlock(lens);
+                    return lens;
                 }
             }
         }
