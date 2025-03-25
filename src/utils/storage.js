@@ -20,6 +20,8 @@ async function saveLens(lens) {
         return false;
     }
 
+    let hasThumbnail = false;
+
     if (lens.icon_url) {
         await saveRemoteFile(lens.icon_url);
     }
@@ -27,26 +29,27 @@ async function saveLens(lens) {
         await saveRemoteFile(lens.snapcode_url);
     }
     if (lens.thumbnail_media_url) {
-        await saveRemoteFile(lens.thumbnail_media_url);
+        hasThumbnail = await saveRemoteFile(lens.thumbnail_media_url)
     }
     if (lens.thumbnail_media_poster_url) {
-        await saveRemoteFile(lens.thumbnail_media_poster_url);
+        hasThumbnail = await saveRemoteFile(lens.thumbnail_media_poster_url) || hasThumbnail;
     }
 
-    if (!ignoreAltMedia) {
-        if (lens.standard_media_url) {
-            await saveRemoteFile(lens.standard_media_url);
-        }
-        if (lens.standard_media_poster_url) {
-            await saveRemoteFile(lens.standard_media_poster_url);
-        }
+    if (!hasThumbnail && lens.image_sequence?.url_pattern) {
+        hasThumbnail = await saveRemoteFile(lens.image_sequence.url_pattern.replace('%d', 1));
+    }
 
-        if (!ignoreImgSequence) {
-            if (lens.image_sequence && lens.image_sequence?.size) {
-                let { url_pattern, size } = lens.image_sequence;
-                for (let i = 0; i < size; i++) {
-                    await saveRemoteFile(url_pattern.replace('%d', i));
-                }
+    if ((!ignoreAltMedia || !hasThumbnail) && lens.standard_media_poster_url) {
+        hasThumbnail = await saveRemoteFile(lens.standard_media_poster_url) || hasThumbnail;
+    }
+    if ((!ignoreAltMedia || !hasThumbnail) && lens.standard_media_url) {
+        hasThumbnail = await saveRemoteFile(lens.standard_media_url) || hasThumbnail;
+    }
+
+    if (!ignoreAltMedia && !ignoreImgSequence) {
+        if (lens.image_sequence?.url_pattern && lens.image_sequence?.size) {
+            for (let i = 0; i < lens.image_sequence.size; i++) {
+                await saveRemoteFile(lens.image_sequence.url_pattern.replace('%d', i));
             }
         }
     }
@@ -98,9 +101,10 @@ async function saveRemoteFile(url) {
         }
 
         const file = await downloadFile(fileUrl.toString(), filePath, fileName);
-        await convertWebpToPng(file);
-
-        return true;
+        if (typeof file === 'string') {
+            await convertWebpToPng(file);
+            return true;
+        }
     } catch (e) {
         console.error(`[Error] Saving remote file failed: ${url} - ${e.message}`);
     }

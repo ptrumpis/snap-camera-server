@@ -68,6 +68,11 @@ server {
         rewrite ^(.*)\.webp$ $1.png last;
     }
 
+    # try to replace 404 thumbnail errors
+    location ~* ^(.+)/thumbnail(.+\.jpg)$ {
+        try_files $uri /storage$uri $1/final$2 /storage$1/final$2 =404;
+    }
+
     try_files $uri $uri/ @storage;
 
     # all downloaded files are inside /storage as of v3.4

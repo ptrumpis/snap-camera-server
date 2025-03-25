@@ -41,6 +41,11 @@ function importFilter(arr) {
 
 function lensesMediaFilter(lenses) {
     return lenses.map(lens => {
+        // fix missing thumbnails
+        if (!lens.thumbnail_media_url) {
+            lens.thumbnail_media_url = lens.thumbnail_media_poster_url || lens.image_sequence?.url_pattern?.replace('%d', 1) || lens.standard_media_poster_url || lens.standard_media_url;
+        }
+
         // filter out ignored media files according to config.yml
         if (ignoreAltMedia) {
             lens.standard_media_url = '';
@@ -48,11 +53,6 @@ function lensesMediaFilter(lenses) {
             lens.image_sequence = {};
         } else if (ignoreImgSequence) {
             lens.image_sequence = {};
-        }
-
-        // generic thumbnail fix
-        if (!lens.thumbnail_media_url) {
-            lens.thumbnail_media_url = lens.thumbnail_media_poster_url || lens.standard_media_poster_url;
         }
 
         // show placeholder media files for missing images
