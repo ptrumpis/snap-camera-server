@@ -13,6 +13,10 @@ const cacheTopLensesInterval = (useWebSource) ? setInterval(async () => {
     await cacheTopLenses();
 }, topLensesRefreshSeconds * 1000).unref() : null;
 
+if (useWebSource) {
+    cacheTopLenses();
+}
+
 async function bootstrap() {
     while (!await DB.isDatabaseReady()) {
         console.info(`[Info] ⏳ Waiting for the database server to respond...`);
@@ -24,10 +28,6 @@ async function bootstrap() {
 
     process.on('SIGTERM', () => { shutdown(); });
     process.on('SIGINT', () => { shutdown(); });
-
-    if (useWebSource) {
-        await cacheTopLenses();
-    }
 
     console.info(`[Info] ✅ Initialization complete!`);
 }
