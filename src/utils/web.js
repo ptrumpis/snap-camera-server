@@ -30,10 +30,10 @@ async function search(searchTerm) {
             result = [result];
         }
 
-        return await Promise.all(result.map(async lens => {
+        return result.map(lens => {
             lens.web_import = 1;
             return lens;
-        }));
+        });
     } catch (e) {
         console.error(e);
     }
@@ -66,13 +66,18 @@ async function getLensByHash(uuid) {
 }
 
 async function getUnlockByHash(uuid) {
-    let [lens, archivedLens] = await Promise.all([
+    const [lensResult, archivedLensResult] = await Promise.allSettled([
         getLensByHash(uuid),
         Crawler.getLensByArchivedSnapshot(uuid)
     ]);
 
-    lens = lens instanceof CrawlerFailure ? {} : lens;
-    archivedLens = archivedLens instanceof CrawlerFailure ? {} : archivedLens;
+    const lens = lensResult.status === "fulfilled" && !(lensResult.value instanceof CrawlerFailure)
+        ? lensResult.value
+        : {};
+
+    const archivedLens = archivedLensResult.status === "fulfilled" && !(archivedLensResult.value instanceof CrawlerFailure)
+        ? archivedLensResult.value
+        : {};
 
     const unlock = SnapLensWebCrawler.mergeLensItems(archivedLens, lens);
     if (unlock && unlock.lens_id && unlock.lens_url) {
@@ -89,8 +94,8 @@ async function mirrorSearchResults(webResults) {
             if (webResults[i].uuid) {
                 try {
                     // object has both lens/unlock attributes on success (with more info)
-                    const lens = await getLensByHash(webResults[i].uuid);
-                    if (lens && lens.unlockable_id && lens.lens_name && lens.user_display_name) {
+                    const lens = await getUnlockByHash(webResults[i].uuid);
+                    if (lens && lens.unlockable_id && lens.lens_name) {
                         await DB.insertLens(lens);
                     } else {
                         await DB.insertLens(webResults[i]);
