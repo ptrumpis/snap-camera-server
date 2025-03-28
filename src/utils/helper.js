@@ -1,3 +1,4 @@
+import { SnapLensWebCrawler } from '@ptrumpis/snap-lens-web-crawler';
 import { Config } from './config.js';
 import * as dotenv from 'dotenv';
 import * as DB from './db.js';
@@ -139,6 +140,10 @@ function mergeLensesUnique(lenses, newLenses) {
     return lenses;
 }
 
+function mergeLens(primary, secondary) {
+    return SnapLensWebCrawler.mergeLensItems(primary, secondary);
+}
+
 function parseLensUuid(str, extractFromShareUrl = true) {
     if (typeof str === "string") {
         if (extractFromShareUrl && isUrl(str)) {
@@ -185,7 +190,7 @@ function isLensId(str) {
 function isGroupId(str) {
     var regex = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
     return regex.test(str);
-  }
+}
 
 function isUrl(url) {
     try {
@@ -210,4 +215,4 @@ function sleep(ms) {
     });
 }
 
-export { advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, parseLensUuid, parseLensUuidFromShareUrl, isLensUuid, isLensId, isGroupId, isUrl, modifyResponseURLs, sleep };
+export { advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, mergeLens, parseLensUuid, parseLensUuidFromShareUrl, isLensUuid, isLensId, isGroupId, isUrl, modifyResponseURLs, sleep };
