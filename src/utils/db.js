@@ -229,7 +229,7 @@ async function insertLens(lenses) {
 
     for (const lens of lenses) {
         // check required fields
-        if (!lens || !lens.unlockable_id || !lens.lens_name || !lens.user_display_name) {
+        if (!lens || !lens.unlockable_id || !lens.lens_name) {
             console.error(`[Error] Invalid argument, expected lens object:`, lens);
             return;
         }
@@ -240,6 +240,7 @@ async function insertLens(lenses) {
             let args = buildArgs(lens, whitelist, {
                 uuid: (!lens.uuid && lens.deeplink) ? Util.parseLensUuid(lens.deeplink) : '',
                 snapcode_url: "",
+                user_display_name: unlockable_id,
                 lens_tags: "",
                 lens_status: "Live",
                 deeplink: "",
