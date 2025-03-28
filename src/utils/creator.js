@@ -23,7 +23,7 @@ async function getLensGroup(groupId) {
         if (!isInitialized) {
             message = await client.init(apiToken);
             if (message instanceof ErrorMessage) {
-                throw BridgeError.fromJSON(message.error)
+                throw BridgeError.fromJSON(message.error);
             } else if (message instanceof DataMessage) {
                 isInitialized = (message.data) ? true : false;
             }
@@ -31,7 +31,7 @@ async function getLensGroup(groupId) {
 
         message = await client.getLensGroup(groupId);
         if (message instanceof ErrorMessage) {
-            throw BridgeError.fromJSON(message.error)
+            throw BridgeError.fromJSON(message.error);
         } else if (message instanceof DataMessage) {
             return message.data;
         }
