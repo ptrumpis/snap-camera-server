@@ -3,6 +3,7 @@ import { Config } from '../../utils/config.js';
 import * as Cache from '../../utils/cache.js';
 import * as Util from '../../utils/helper.js';
 import * as Web from '../../utils/web.js';
+import * as Creator from '../../utils/creator.js';
 
 const useRelay = Config.app.relay.server;
 const useWebSource = Config.app.flag.enable_web_source;
@@ -18,6 +19,16 @@ router.post('/', async function (req, res, next) {
     const searchTerm = req.body['query'].trim();
     if (searchTerm.length < 3 || (searchTerm.startsWith('(by') && !searchTerm.endsWith(')'))) {
         return res.json({ "lenses": [] });
+    }
+
+    if (Util.isGroupId(searchTerm)) {
+        const groupLenses = await Creator.getLensGroup(searchTerm);
+        if (Array.isArray(groupLenses) && groupLenses.length) {
+            for (const lens of groupLenses) {
+                Cache.Search.set(lens.lens_id, lens);
+            }
+            return res.json({ "lenses": groupLenses });
+        }
     }
 
     let searchResults = await Util.advancedSearch(searchTerm);

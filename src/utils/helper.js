@@ -182,6 +182,11 @@ function isLensId(str) {
     return id.test(str);
 }
 
+function isGroupId(str) {
+    var regex = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
+    return regex.test(str);
+  }
+
 function isUrl(url) {
     try {
         new URL(url);
@@ -205,4 +210,4 @@ function sleep(ms) {
     });
 }
 
-export { advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, parseLensUuid, parseLensUuidFromShareUrl, isLensUuid, isLensId, isUrl, modifyResponseURLs, sleep };
+export { advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, parseLensUuid, parseLensUuidFromShareUrl, isLensUuid, isLensId, isGroupId, isUrl, modifyResponseURLs, sleep };
