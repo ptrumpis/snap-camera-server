@@ -35,6 +35,8 @@ This server requires Docker and OpenSSL and maybe 5 to 10 minutes of your time �
 2. [🛠️ Complete the configuration](docs/CONFIGURATION.md)
 3. [📖 Read the Server Wiki](https://github.com/ptrumpis/snap-camera-server/wiki)
 
+Lens creators can refer to the [🎨 Lens Creator Guide](https://github.com/ptrumpis/snap-camera-server/wiki/Lens-Creator-Guide)
+
 ### 📺 Video Guides
 There are also step by step video guides for [📺 Windows](https://www.youtube.com/watch?v=bcsjvWHUr7c) and [📺 Mac OS](https://www.youtube.com/watch?v=b2ILHJaD1T4) available.  
 
