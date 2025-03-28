@@ -2,7 +2,14 @@
 Release version history and feature overview
 
 ## v3.4.0 - Creator Support Release
-- WIP
+- New group ID search support for lens creators
+- New generic URL search support
+- Improved and simplified lens storage logic
+- Improved stability and reliability of lens crawling
+- Improved codebase by outsourcing packages
+- Fixed broken activation of most popular lenses
+- Fixed broken thumbnails
+- Adminer no longer starts automatically to save resources
 
 ## v3.3.4 - Patch Release
 - Added latest v0.9.x web crawler code
