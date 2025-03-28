@@ -99,9 +99,13 @@ async function cacheTopLenses() {
         for (const category in Crawler.TOP_CATEGORIES) {
             let topLenses = await Crawler.getTopLensesByCategory(category, null);
             if (Array.isArray(topLenses) && topLenses.length) {
-                for (const lens of topLenses) {
-                    if (!lens.lens_url) {
+                for (let lens of topLenses) {
+                    if (!lens.lens_url || !lens.unlockable_id) {
                         continue;
+                    }
+
+                    if (Cache.Top.has(lens.unlockable_id)) {
+                        lens = Util.mergeLens(lens, Cache.Top.get(lens.unlockable_id));
                     }
 
                     lens.web_import = 1;
