@@ -54,6 +54,8 @@ services:
       - DB_NAME=${MYSQL_DATABASE}
       - DB_PORT=3306
       - PORT=5645
+      - BRIDGE_ADDR=ws://camera-kit-bridge:3000
+      - BRIDGE_API_TOKEN=${BRIDGE_API_TOKEN}
       - STORAGE_PATH=/var/lib/snapcamera
       - IMPORT_DIR=import
       - MEDIA_DIR=snap-camera-media
@@ -72,6 +74,15 @@ services:
       - ${APP_LOCAL_PORT}:5645
     depends_on:
       - mysql
+
+  camera-kit-bridge:
+    image: ptrumpis/snap-camerakit-bridge@sha256:2db205698617ca279548f9f327e3ebfc603af033aafe1dbcd4e770f8f1d25eeb
+    profiles:
+      - creator
+    ports:
+      - ${BRIDGE_LOCAL_PORT}:3000
+    depends_on:
+      - webapp
 
 volumes:
   storage:
