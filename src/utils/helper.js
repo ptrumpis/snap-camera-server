@@ -163,14 +163,16 @@ function parseLensUuid(str, extractFromShareUrl = true) {
 }
 
 function parseLensUuidFromShareUrl(url) {
-    for (const shareUrl of validShareUrls) {
-        try {
-            const uuidMatch = url.match(new RegExp(shareUrl, 'i'));
-            if (uuidMatch && uuidMatch[1]) {
-                return uuidMatch[1];
+    if (typeof url === 'string') {
+        for (const shareUrl of validShareUrls) {
+            try {
+                const uuidMatch = url.match(new RegExp(shareUrl, 'i'));
+                if (uuidMatch && uuidMatch[1]) {
+                    return uuidMatch[1];
+                }
+            } catch (e) {
+                console.error(`[Error] Trying to parse UUID from URL: ${url} - ${e.message}`);
             }
-        } catch (e) {
-            console.error(`[Error] Trying to parse UUID from URL: ${url} - ${e.message}`);
         }
     }
 
@@ -178,25 +180,30 @@ function parseLensUuidFromShareUrl(url) {
 }
 
 function isLensUuid(str) {
+    if (typeof str !== 'string') return false;
     const uuid = /^[a-f0-9]{32}$/gi;
     return uuid.test(str);
 }
 
 function isLensId(str) {
+    if (typeof str !== 'string') return false;
     const id = /^[0-9]{11,16}$/gi;
     return id.test(str);
 }
 
 function isGroupId(str) {
+    if (typeof str !== 'string') return false;
     var regex = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
     return regex.test(str);
 }
 
 function isUrl(url) {
-    try {
-        new URL(url);
-        return true;
-    } catch { }
+    if (typeof url === 'string') {
+        try {
+            new URL(url);
+            return true;
+        } catch { }
+    }
 
     return false;
 }
