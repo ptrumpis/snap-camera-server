@@ -128,23 +128,17 @@ function validateRemoteOrigin(url) {
 
 async function downloadFile(targetUrl, subDirectory, fileName) {
     try {
-        // old file path pre v3.4
-        const legacyFile = path.join(storagePath, path.normalize(subDirectory), fileName);
-        if (await isFile(legacyFile)) {
-            return false;
-        }
-
-        // new root dir storage/ since v3.4
-        const newFile = path.join(storagePath, 'storage', path.normalize(subDirectory), fileName);
-        if (await isFile(newFile)) {
+        const subFilePath = path.join(subDirectory, fileName);
+        if (await isSubFilePathPresent(subFilePath)) {
             return false;
         }
 
         console.info(`[Downloading] ${targetUrl}`);
 
-        const result = await Crawler.downloadFile(targetUrl, newFile);
+        const storageFilePath = path.join(storagePath, 'storage', subFilePath);
+        const result = await Crawler.downloadFile(targetUrl, storageFilePath);
         if (result === true) {
-            return newFile;
+            return storageFilePath;
         }
     } catch (e) {
         console.error(`[Error] File download failed: ${targetUrl} - ${e.message}`);
@@ -156,9 +150,9 @@ async function downloadFile(targetUrl, subDirectory, fileName) {
 async function convertWebpToPng(file) {
     try {
         if (typeof file === 'string' && file.endsWith('.webp')) {
-            const fileAsPng = file.substring(0, file.lastIndexOf('.')).concat('.png');
+            const fileAsPng = file.replace(/\.webp$/, '.png');
 
-            console.info(`[Info] Converting .webp to .png: ${file}`);
+            console.info(`[Info] Converting .webp to .png: ${fileAsPng}`);
 
             await sharp(file).toFile(fileAsPng);
             await fs.unlink(file);
@@ -167,6 +161,29 @@ async function convertWebpToPng(file) {
     } catch (e) {
         console.error(`[Error] Converting .webp to .png failed: ${file} - ${e.message}`);
     }
+    return false;
+}
+
+async function isSubFilePathPresent(subFilePath) {
+    try {
+        // check current storage location and legacy location before v3.4.0
+        // also check if .webp files are present as .png
+        const tryFiles = new Set([
+            path.join(storagePath, 'storage', path.normalize(subFilePath)).replace(/\.webp$/, '.png'),
+            path.join(storagePath, path.normalize(subFilePath)).replace(/\.webp$/, '.png'),
+            path.join(storagePath, 'storage', path.normalize(subFilePath)),
+            path.join(storagePath, path.normalize(subFilePath)),
+        ]);
+
+        for (const file of tryFiles) {
+            if (await isFile(file)) {
+                return true;
+            }
+        }
+    } catch (e) {
+        console.error(`[Error] Sub file path check failed: ${subFilePath} - ${e.message}`);
+    }
+
     return false;
 }
 
