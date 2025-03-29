@@ -89,7 +89,7 @@ async function relayRequest(path, method = 'GET', body = null) {
 
 async function getUnlockFromRelay(lensId) {
     const unlock = await relayRequest(`/vc/v1/explorer/unlock?uid=${lensId}`);
-    if (unlock && unlock.lens_id && unlock.lens_url) {
+    if (typeof unlock === 'object' && unlock.lens_id && unlock.lens_url) {
         return unlock;
     }
     return null;
