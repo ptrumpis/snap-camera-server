@@ -1,5 +1,7 @@
 import { BridgeError, CameraKitClient, DataMessage, ErrorMessage } from "@ptrumpis/snap-camerakit-bridge";
 import * as dotenv from 'dotenv';
+import * as Util from './helper.js';
+import * as Web from './web.js';
 
 dotenv.config();
 
@@ -33,13 +35,33 @@ async function getLensGroup(groupId) {
         if (message instanceof ErrorMessage) {
             throw BridgeError.fromJSON(message.error);
         } else if (message instanceof DataMessage) {
-            return message.data;
+            return await fixLensesForActivation(message.data);
         }
     } catch (e) {
         console.error(`[Error] Failed to get lens group: ${e.message}`);
     }
 
     return [];
+}
+
+async function fixLensesForActivation(lenses) {
+    if (!Array.isArray(lenses)) {
+        return lenses;
+    }
+
+    return Promise.all(lenses.map(async lens => {
+        if (!Util.isLensId(lens.unlockable_id) && lens.uuid) {
+            const webLens = await Web.getLensByHash(lens.uuid);
+            if (webLens?.unlockable_id) {
+                lens = Util.mergeLens(lens, webLens);
+                lens.unlockable_id = webLens.unlockable_id;
+                lens.lens_id = webLens.unlockable_id;
+                lens.web_import = 1;
+            }
+        }
+
+        return lens;
+    }));
 }
 
 export { getLensGroup };
