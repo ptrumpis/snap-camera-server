@@ -1,6 +1,5 @@
 import express from 'express';
 import { Config } from '../../utils/config.js';
-import * as Cache from '../../utils/cache.js';
 import * as Util from '../../utils/helper.js';
 import * as Web from '../../utils/web.js';
 import * as Creator from '../../utils/creator.js';
@@ -22,28 +21,31 @@ router.post('/', async function (req, res, next) {
     }
 
     if (Util.isGroupId(searchTerm)) {
-        const groupLenses = await Creator.getLensGroup(searchTerm);
-        if (Array.isArray(groupLenses) && groupLenses.length) {
-            for (const lens of groupLenses) {
-                Cache.Search.set(lens.lens_id, lens);
+        const groupResults = await Creator.getLensGroup(searchTerm);
+        if (Array.isArray(groupResults) && groupResults.length) {
+            if (mirrorSearchResults) {
+                Web.mirrorSearchResults(groupResults);
             }
-            return res.json({ "lenses": groupLenses });
+
+            Web.cacheSearchResults(groupResults);
+
+            return res.json({ "lenses": groupResults });
         }
     }
 
     let searchResults = await Util.advancedSearch(searchTerm);
-    if (searchResults && searchResults.length) {
+    if (Array.isArray(searchResults) && searchResults.length) {
         searchResults = Util.modifyResponseURLs(searchResults);
+    }
 
+    if (searchTerm.startsWith('#')) {
         // hashtag search (not supported by relay or web)
-        if (searchTerm.startsWith('#')) {
-            return res.json({ "lenses": searchResults });
-        }
+        return res.json({ "lenses": searchResults });
     }
 
     if (useRelay) {
         let relayResults = await Util.relayRequest(req.originalUrl, 'POST', { "query": searchTerm });
-        if (relayResults && relayResults['lenses'] && relayResults['lenses'].length) {
+        if (relayResults && Array.isArray(relayResults['lenses']) && relayResults['lenses'].length) {
             searchResults = Util.mergeLensesUnique(searchResults, relayResults['lenses']);
 
             if (mirrorSearchResults) {
@@ -55,19 +57,14 @@ router.post('/', async function (req, res, next) {
 
     if (useWebSource) {
         let webResults = await Web.search(searchTerm);
-        if (webResults && webResults.length) {
+        if (Array.isArray(webResults) && webResults.length) {
             searchResults = Util.mergeLensesUnique(searchResults, webResults);
 
             if (mirrorSearchResults) {
                 Web.mirrorSearchResults(webResults);
             }
 
-            for (let i = 0; i < webResults.length; i++) {
-                if (webResults[i].unlockable_id && webResults[i].uuid) {
-                    // caching is required to activate the lens if search mirroring is disabled or delayed
-                    Cache.Search.set(webResults[i].unlockable_id, webResults[i]);
-                }
-            }
+            Web.cacheSearchResults(webResults);
         }
         webResults = null;
     }

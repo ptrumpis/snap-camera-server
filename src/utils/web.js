@@ -1,18 +1,19 @@
 import { SnapLensWebCrawler, CrawlerFailure } from '@ptrumpis/snap-lens-web-crawler';
 import { Config } from './config.js';
+import * as Cache from './cache.js';
 import * as DB from './db.js';
 import * as Util from './helper.js';
 
 const Crawler = new SnapLensWebCrawler(Config.search.crawler);
 
 async function search(searchTerm) {
-    let result = [];
     try {
         if (searchTerm.startsWith(Config.search.creator_url)) {
             const slug = searchTerm.substr(searchTerm.lastIndexOf('/') + 1);
             return await searchByCreatorSlug(slug);
         }
 
+        let result = [];
         if (Util.isLensUuid(searchTerm)) {
             result = await getLensByHash(searchTerm) || [];
         } else if (Util.isUrl(searchTerm)) {
@@ -30,15 +31,12 @@ async function search(searchTerm) {
             result = [result];
         }
 
-        return result.map(lens => {
-            lens.web_import = 1;
-            return lens;
-        });
+        return result.map(lens => ({ ...lens, web_import: 1 }));
     } catch (e) {
         console.error(e);
     }
 
-    return result;
+    return [];
 }
 
 async function searchByUrl(url) {
@@ -79,7 +77,7 @@ async function getUnlockByHash(uuid) {
         ? archivedLensResult.value
         : {};
 
-    const unlock = SnapLensWebCrawler.mergeLensItems(archivedLens, lens);
+    const unlock = Util.mergeLens(archivedLens, lens);
     if (unlock && unlock.lens_id && unlock.lens_url) {
         unlock.web_import = 1;
         return unlock;
@@ -89,29 +87,53 @@ async function getUnlockByHash(uuid) {
 }
 
 async function mirrorSearchResults(webResults) {
-    if (webResults && webResults.length) {
-        for (let i = 0; i < webResults.length; i++) {
-            if (webResults[i].uuid) {
-                try {
-                    // object has both lens/unlock attributes on success (with more info)
-                    const lens = await getUnlockByHash(webResults[i].uuid);
-                    if (lens && lens.unlockable_id && lens.lens_name) {
-                        await DB.insertLens(lens);
-                    } else {
-                        await DB.insertLens(webResults[i]);
-                    }
+    if (Array.isArray(webResults) && webResults.length) {
+        for (let lens of webResults) {
+            if (!lens.uuid) {
+                continue;
+            }
 
-                    // there is no fallback for the unlock
-                    if (lens && lens.lens_id && lens.lens_url) {
-                        await DB.insertUnlock(lens);
-                    }
-                } catch (e) {
-                    console.error(e);
+            try {
+                const unlock = await getUnlockByHash(lens.uuid);
+                if (unlock) {
+                    lens = Util.mergeLens(unlock, lens);
                 }
+
+                if (lens?.lens_name && Util.isLensId(lens.unlockable_id)) {
+                    await DB.insertLens(lens);
+                }
+
+                if (lens?.lens_url && Util.isLensId(lens.lens_id)) {
+                    await DB.insertUnlock(lens);
+                }
+            } catch (e) {
+                console.error(e);
             }
         }
     }
     webResults = null;
 }
 
-export { search, getLensByHash, getUnlockByHash, mirrorSearchResults }
+function cacheSearchResults(webResults, preferExistingLens = false) {
+    if (Array.isArray(webResults) && webResults.length) {
+        for (let lens of webResults) {
+            if (!lens.unlockable_id || !lens.uuid) {
+                continue;
+            }
+
+            if (Cache.Search.has(lens.unlockable_id)) {
+                if (preferExistingLens) {
+                    lens = Util.mergeLens(Cache.Search.get(lens.unlockable_id), lens);
+                } else {
+                    lens = Util.mergeLens(lens, Cache.Search.get(lens.unlockable_id));
+                }
+            }
+
+            lens.web_import = 1;
+            Cache.Search.set(lens.unlockable_id, lens);
+        }
+    }
+    webResults = null;
+}
+
+export { search, getLensByHash, getUnlockByHash, mirrorSearchResults, cacheSearchResults }
