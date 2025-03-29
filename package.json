@@ -1,6 +1,6 @@
 {
   "name": "snap-camera-server",
-  "version": "3.4.0-beta.2",
+  "version": "3.4.0-beta.3",
   "description": "Host your own Snap Camera private server",
   "keywords": [
     "snapchat",
@@ -11,6 +11,9 @@
     "docker"
   ],
   "type": "module",
+  "engines": {
+    "node": ">=18.17"
+  },
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -25,7 +28,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@ptrumpis/snap-camerakit-bridge": "0.0.1-alpha",
+    "@ptrumpis/snap-camerakit-bridge": "0.0.1",
     "@ptrumpis/snap-lens-file-extractor": "~1.1.0",
     "@ptrumpis/snap-lens-web-crawler": "~1.0.0",
     "db-migrate": "1.0.0-beta.29",
