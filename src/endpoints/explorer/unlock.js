@@ -15,14 +15,14 @@ const maxFileAgeInDays = 90;
 var router = express.Router();
 
 router.get('/', async function (req, res, next) {
-    const lensId = req?.query?.uid || false;
+    const lensId = req.query?.uid || false;
     if (!lensId) {
         return res.json({});
     }
 
     if (Util.isLensId(lensId)) {
         const unlock = await DB.getLensUnlock(lensId);
-        if (unlock && unlock[0]) {
+        if (unlock?.[0]) {
             if (unlock[0].lens_id && unlock[0].lens_url) {
                 // trigger re-download to catch missing files automatically
                 await Util.downloadUnlock(unlock[0].lens_id, unlock[0].lens_url);
@@ -41,9 +41,9 @@ router.get('/', async function (req, res, next) {
         }
     }
 
-    const cacheUnlock = await getCacheUnlockByLensId(lensId);
-    if (cacheUnlock) {
-        return res.json(cacheUnlock);
+    const webUnlock = await getWebUnlockByLensId(lensId);
+    if (webUnlock) {
+        return res.json(webUnlock);
     }
 
     console.info(`[Info] 😕 This lens cannot currently be activated: ${lensId}`);
@@ -67,38 +67,26 @@ async function getRemoteUnlockByLensId(lensId) {
     return null;
 }
 
-async function getCacheUnlockByLensId(lensId) {
+async function getWebUnlockByLensId(lensId) {
     try {
         if (useWebSource) {
             if (Cache.Top.has(lensId)) {
-                const topLens = Cache.Top.get(lensId);
-                return unlockLens(topLens);
+                const topLens = await unlockWebLens(Cache.Top.get(lensId));
+                if (topLens) {
+                    return topLens;
+                }
             }
 
             if (Cache.Search.has(lensId)) {
-                let lens = Cache.Search.get(lensId);
-                if (!lens?.uuid) {
-                    const dbLens = await DB.getSingleLens(lensId);
-                    lens = (dbLens?.[0]) ? Util.mergeLens(dbLens, lens) : lens;
+                const searchLens = await unlockWebLens(Cache.Search.get(lensId));
+                if (searchLens) {
+                    return searchLens;
                 }
+            }
 
-                if (lens?.uuid && !Util.isLensId(lensId)) {
-                    const webLens = await Web.getLensByHash(lens.uuid);
-                    lens = (webLens) ? Util.mergeLens(webLens, lens) : lens;
-                }
-
-                if (lens?.uuid && !lens?.lens_url) {
-                    const webLens = await Web.getUnlockByHash(lens.uuid);
-                    lens = (webLens) ? Util.mergeLens(webLens, lens) : lens;
-                }
-
-                if (lens?.lens_id && !Util.isLensId(lens.lens_id) && Util.isLensId(lens.unlockable_id)) {
-                    lens.lens_id = lens.unlockable_id;
-                }
-
-                Cache.Search.set(lensId, lens);
-
-                return unlockLens(lens);
+            const lens = await DB.getSingleLens(lensId);
+            if (lens?.[0]) {
+                return await unlockWebLens(lens[0]);
             }
         }
     } catch (e) {
@@ -108,10 +96,30 @@ async function getCacheUnlockByLensId(lensId) {
     return null;
 }
 
-function unlockLens(lens) {
+async function unlockWebLens(lens) {
+    if (lens?.unlockable_id && !lens?.uuid) {
+        const dbLens = await DB.getSingleLens(lens.unlockable_id);
+        lens = (dbLens?.[0]) ? Util.mergeLens(dbLens[0], lens) : lens;
+    }
+
+    if (lens?.uuid && !Util.isLensId(lens.unlockable_id)) {
+        const webLens = await Web.getLensByHash(lens.uuid);
+        lens = (webLens) ? Util.mergeLens(webLens, lens) : lens;
+    }
+
+    if (lens?.uuid && !lens?.lens_url) {
+        const webLens = await Web.getUnlockByHash(lens.uuid);
+        lens = (webLens) ? Util.mergeLens(webLens, lens) : lens;
+    }
+
+    if (!Util.isLensId(lens?.lens_id) && Util.isLensId(lens?.unlockable_id)) {
+        lens.lens_id = lens.unlockable_id;
+    }
+
     if (lens?.lens_url && Util.isLensId(lens.unlockable_id) && Util.isLensId(lens.lens_id)) {
-        DB.insertLens(lens);
-        DB.insertUnlock(lens);
+        await DB.insertLens(lens);
+        await DB.insertUnlock(lens);
+
         return lens;
     }
 
