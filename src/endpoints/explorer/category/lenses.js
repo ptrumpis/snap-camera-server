@@ -24,7 +24,7 @@ var router = express.Router();
 
 router.get('/', async function (req, res, next) {
     const { category, limit, offset } = req.query;
-    if (!category || offset === 31 || !originalResponses[category]) {
+    if (!category || !originalResponses[category] || offset >= originalResponses[category].lenses.length) {
         return res.json({});
     }
 
