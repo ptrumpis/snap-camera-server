@@ -76,7 +76,7 @@ services:
       - mysql
 
   camera-kit-bridge:
-    image: ptrumpis/snap-camerakit-bridge@sha256:2db205698617ca279548f9f327e3ebfc603af033aafe1dbcd4e770f8f1d25eeb
+    image: ptrumpis/snap-camerakit-bridge:0.0.1
     profiles:
       - creator
     ports:
