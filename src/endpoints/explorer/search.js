@@ -11,11 +11,12 @@ const mirrorSearchResults = Config.app.flag.mirror_search_results;
 var router = express.Router();
 
 router.post('/', async function (req, res, next) {
-    if (!req.body || !req.body['query']) {
+    if (!req.body?.query || typeof req.body.query !== 'string') {
         return res.json({});
     }
 
-    const searchTerm = req.body['query'].trim();
+    const searchTerm = req.body.query.trim();
+
     if (searchTerm.length < 3 || (searchTerm.startsWith('(by') && !searchTerm.endsWith(')'))) {
         return res.json({ "lenses": [] });
     }
