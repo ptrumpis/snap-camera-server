@@ -121,6 +121,7 @@ search:
     - https://lens.snapchat.com/{UUID}
     - https://www.snapchat.com/lens/{UUID}
     - https://www.snapchat.com/unlock/?uuid={UUID}
+    - https://www.snapchat.com/unlock/?type=SNAPCODE&uuid={UUID}
 
 # storage configuration
 storage:
