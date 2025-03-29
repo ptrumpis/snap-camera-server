@@ -23,7 +23,7 @@ router.post('/', async function (req, res, next) {
 
     if (useRelay) {
         let relayResults = await Util.relayRequest(req.originalUrl, 'POST', { "deeplink": searchUrl });
-        if (relayResults && Array.isArray(relayResults['lenses']) && relayResults['lenses'].length) {
+        if (relayResults && Array.isArray(relayResults['lenses']) && relayResults['lenses'].length === 1) {
             if (mirrorSearchResults) {
                 Util.mirrorSearchResults(relayResults['lenses']);
             }
