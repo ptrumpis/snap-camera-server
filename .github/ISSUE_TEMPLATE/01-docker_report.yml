@@ -21,6 +21,20 @@ body:
     validations:
       required: true
 
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Provide a step-by-step guide to reproduce the issue.
+      placeholder: |
+        Short example:
+        1. Go to Server directory
+        2. Open Terminal
+        3. Execute 'docker compose up'
+        4. Docker container xyz fails with the error message: ...
+    validations:
+      required: true
+
   - type: markdown
     attributes:
       value: |

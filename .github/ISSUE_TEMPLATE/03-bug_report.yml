@@ -11,7 +11,12 @@ body:
       value: |
         ## 🐛 Bug Report
         Fill out the following information to help diagnose the issue.  
-        Note: non-working or infinite loading lenses are not bugs!
+
+  - type: markdown
+    attributes:
+      value: |
+       &NewLine;
+       #### ⚠️ Non-working or infinite loading lenses are <ins>NOT</ins> bugs that need to be reported.
 
   - type: textarea
     id: bug-description
@@ -28,9 +33,11 @@ body:
       label: Steps to Reproduce
       description: Provide a step-by-step guide to reproduce the issue.
       placeholder: |
-        1. Open Snap Camera.
-        2. Select a lens.
-        3. The application crashes.
+        Short example:
+        1. Start Snap Camera Server
+        2. Open Snap Camera
+        3. Select Lens xyz
+        4. The Server crashes...
     validations:
       required: true
 

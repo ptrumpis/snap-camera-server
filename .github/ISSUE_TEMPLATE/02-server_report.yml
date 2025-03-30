@@ -12,12 +12,32 @@ body:
         ## 💻 Report Server Problem
         Fill out the following information to help diagnose the issue.
 
+  - type: markdown
+    attributes:
+      value: |
+       &NewLine;
+       #### ⚠️ Non-working or infinite loading lenses are <ins>NOT</ins> Server issues that need to be reported.
+
   - type: textarea
     id: description
     attributes:
       label: Add a description
       description: Describe the issue in detail. What did you expect to happen, and what actually happened? You can also attach log files and screenshots.
       placeholder: Add your description here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Provide a step-by-step guide to reproduce the issue.
+      placeholder: |
+        Short example:
+        1. Start Snap Camera Server
+        2. Open Snap Camera
+        3. Type 'beauty' into the search bar
+        4. No results are shown
     validations:
       required: true
 
