@@ -10,7 +10,16 @@ Compatibility depends heavily on the Lens Studio version and the lens features u
 You can find an overview of incompatible features here:  
 [Lens Studio Compatibility](https://developers.snap.com/camera-kit/ar-content/lens-studio-compatibility)
 
-The safest version that is known to always work is Lens Studio 4.36.
+The safest version that is known to always work is [Lens Studio 4.36](https://ar.snap.com/download/v4-36-1)
+
+## 🚨 Pre-Requirements
+- [Latest Snap Camera Server](https://github.com/ptrumpis/snap-camera-server/releases/latest)
+- [Snap Camera Signature Patch](https://ptrumpis.github.io/snap-camera-signature-patch/)
+- [Update Snap Camera (Unofficial)](https://github.com/ptrumpis/snap-camera-server/wiki/Updating-Snap-Camera-(Unofficial))
+
+You should especially [Update Snap Camera (Unofficial)](https://github.com/ptrumpis/snap-camera-server/wiki/Updating-Snap-Camera-(Unofficial)), if your Lenses are published with:
+  - **Lens Studio >=4.4x**
+  - **Lens Studio 5.x**.
 
 ## 🛠️ 1. Preparing Snap Camera Server 
 ### 1.1. Create Snap Developer Account
