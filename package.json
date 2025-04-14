@@ -33,7 +33,7 @@
     "@ptrumpis/snap-lens-web-crawler": "~1.0.0",
     "db-migrate": "1.0.0-beta.29",
     "db-migrate-mysql": "~3.0.0",
-    "dotenv": "~16.4.7",
+    "dotenv": "~16.5.0",
     "express": "~4.21.2",
     "formidable": "~3.5.2",
     "fzstd": "~0.1.1",
