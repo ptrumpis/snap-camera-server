@@ -28,7 +28,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@ptrumpis/snap-camerakit-bridge": "0.0.1",
+    "@ptrumpis/snap-camerakit-bridge": "0.2.0",
     "@ptrumpis/snap-lens-file-extractor": "~1.1.0",
     "@ptrumpis/snap-lens-web-crawler": "~1.1.1",
     "db-migrate": "1.0.0-beta.29",

@@ -1,6 +1,6 @@
 services:
   camera-kit-bridge:
-    image: ptrumpis/snap-camerakit-bridge:0.0.1
+    image: ptrumpis/snap-camerakit-bridge:0.2.0
     profiles:
       - creator
     ports:
