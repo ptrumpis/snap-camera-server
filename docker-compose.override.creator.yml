@@ -4,6 +4,6 @@ services:
     profiles:
       - creator
     ports:
-      - ${BRIDGE_LOCAL_PORT}:3000
+      - ${BRIDGE_LOCAL_PORT:-3000}:3000
     depends_on:
       - webapp

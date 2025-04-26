@@ -2,10 +2,10 @@ services:
   mysql:
     image: mysql:8.0
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-123456}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-snapcamera}
     ports:
-      - ${MYSQL_LOCAL_PORT}:3306
+      - ${MYSQL_LOCAL_PORT:-3306}:3306
     volumes:
       - db:/var/lib/mysql
       - ./mysql:/docker-entrypoint-initdb.d:ro
@@ -18,12 +18,12 @@ services:
       - ADMINER_DEFAULT_SERVER=mysql
       - ADMINER_DESIGN=${ADMINER_DESIGN}
     ports:
-      - ${ADMINER_LOCAL_PORT}:8080
+      - ${ADMINER_LOCAL_PORT:-8080}:8080
     depends_on:
       - mysql
 
   webproxy:
-    image: nginx
+    image: nginx:1.27
     environment:
       - WEBAPP_HOST=webapp
       - WEBAPP_PORT=5645
@@ -40,7 +40,7 @@ services:
       - ./import:/var/www/snapcamera/import
       - storage:/var/www/snapcamera
     ports:
-      - ${NGINX_LOCAL_PORT}:80
+      - ${NGINX_LOCAL_PORT:-80}:80
       - 443:443
     depends_on:
       - webapp
@@ -49,9 +49,9 @@ services:
     build: .
     environment:
       - DB_HOST=mysql
-      - DB_USER=${MYSQL_USER}
-      - DB_PASS=${MYSQL_ROOT_PASSWORD}
-      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USER=${MYSQL_USER:-root}
+      - DB_PASS=${MYSQL_ROOT_PASSWORD:-123456}
+      - DB_NAME=${MYSQL_DATABASE:-snapcamera}
       - DB_PORT=3306
       - PORT=5645
       - BRIDGE_ADDR=ws://camera-kit-bridge:3000
@@ -61,7 +61,7 @@ services:
       - MEDIA_DIR_ALT=snap-camera-media-alt
       # the storage server url will be served to the snap camera application
       # it must be reachable from your local network
-      - STORAGE_SERVER=http://studio-app.snapchat.com:${NGINX_LOCAL_PORT}
+      - STORAGE_SERVER=http://studio-app.snapchat.com:${NGINX_LOCAL_PORT:-80}
     volumes:
       # content of snap-camera-media (MEDIA_DIR) is not getting included automatically through storage
       - ./nginx/snap-camera-media:/var/lib/snapcamera/snap-camera-media:ro
@@ -70,7 +70,7 @@ services:
       - /usr/src/app/node_modules
       - storage:/var/lib/snapcamera
     ports:
-      - ${APP_LOCAL_PORT}:5645
+      - ${APP_LOCAL_PORT:-5645}:5645
     depends_on:
       - mysql
 
@@ -79,7 +79,7 @@ services:
     profiles:
       - creator
     ports:
-      - ${BRIDGE_LOCAL_PORT}:3000
+      - ${BRIDGE_LOCAL_PORT:-3000}:3000
     depends_on:
       - webapp
 
