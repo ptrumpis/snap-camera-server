@@ -1,15 +1,13 @@
-import { BridgeError, CameraKitClient, DataMessage, ErrorMessage } from "@ptrumpis/snap-camerakit-bridge";
-import * as dotenv from 'dotenv';
+import { CameraKitClient } from "@ptrumpis/snap-camerakit-bridge/client";
+import { SnapCameraFormatter } from "@ptrumpis/snap-camerakit-bridge/format";
 import * as Util from './helper.js';
 import * as Web from './web.js';
-
-dotenv.config();
 
 const bridgeAddr = process.env.BRIDGE_ADDR;
 const apiToken = process.env.BRIDGE_API_TOKEN;
 let isInitialized = false;
 
-const client = (bridgeAddr) ? new CameraKitClient(bridgeAddr) : null;
+const client = (bridgeAddr) ? new CameraKitClient(bridgeAddr, { formatter: SnapCameraFormatter }) : null;
 
 async function getLensGroup(groupId) {
     try {
@@ -21,22 +19,12 @@ async function getLensGroup(groupId) {
             throw new Error('You need to edit your .env file and set BRIDGE_API_TOKEN');
         }
 
-        let message = null;
         if (!isInitialized) {
-            message = await client.init(apiToken);
-            if (message instanceof ErrorMessage) {
-                throw BridgeError.fromJSON(message.error);
-            } else if (message instanceof DataMessage) {
-                isInitialized = (message.data) ? true : false;
-            }
+            isInitialized = await client.init(apiToken) || false;
         }
 
-        message = await client.getLensGroup(groupId);
-        if (message instanceof ErrorMessage) {
-            throw BridgeError.fromJSON(message.error);
-        } else if (message instanceof DataMessage) {
-            return await fixLensesForActivation(message.data);
-        }
+        const lenses = await client.loadLensGroup(groupId);
+        return await fixLensesForActivation(lenses);
     } catch (e) {
         console.error(`[Error] Failed to get lens group: ${e.message}`);
     }
