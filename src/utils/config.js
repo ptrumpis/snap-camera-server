@@ -2,7 +2,12 @@ import YAML from 'yaml';
 import * as fs from 'fs/promises';
 import dotenv from 'dotenv';
 
-dotenv.config();
+const envConfig = dotenv.config();
+for (const key in envConfig.parsed) {
+    if (process.env[key]?.trim() === '') {
+        process.env[key] = envConfig.parsed[key]?.trim() || '';
+    }
+}
 
 const Config = await loadConfig();
 

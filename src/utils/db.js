@@ -1,9 +1,6 @@
 import mysql from 'mysql2';
 import { Config } from './config.js';
-import * as dotenv from 'dotenv';
 import * as Util from './helper.js';
-
-dotenv.config();
 
 const connection = mysql.createPool({
     host: process.env.DB_HOST,

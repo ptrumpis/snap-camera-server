@@ -1,11 +1,8 @@
 import { SnapLensWebCrawler } from '@ptrumpis/snap-lens-web-crawler';
-import * as dotenv from 'dotenv';
 import * as fs from 'fs/promises';
 import path from 'path';
 import sharp from 'sharp';
 import { Config } from './config.js';
-
-dotenv.config();
 
 const storagePath = process.env.STORAGE_PATH;
 const storageServer = process.env.STORAGE_SERVER;

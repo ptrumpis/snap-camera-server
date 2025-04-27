@@ -1,10 +1,7 @@
 import { SnapLensWebCrawler } from '@ptrumpis/snap-lens-web-crawler';
 import { Config } from './config.js';
-import * as dotenv from 'dotenv';
 import * as DB from './db.js';
 import * as Storage from './storage.js';
-
-dotenv.config();
 
 const relayTimeout = Config.app.relay.timeout;
 const relayServer = Config.app.relay.server;

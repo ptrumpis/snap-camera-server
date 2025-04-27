@@ -1,13 +1,10 @@
 import JSZip from 'jszip';
 import LensFileParser from '@ptrumpis/snap-lens-file-extractor';
 import { Config } from './config.js';
-import * as dotenv from 'dotenv';
 import * as fs from 'fs/promises';
 import * as zstd from 'fzstd';
 import * as Storage from './storage.js';
 import * as Util from './helper.js';
-
-dotenv.config();
 
 const storageServer = process.env.STORAGE_SERVER;
 const storagePath = process.env.STORAGE_PATH;

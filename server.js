@@ -1,4 +1,5 @@
-import express from 'express';
+import { Config } from './src/utils/config.js';
+import { bootstrap } from './src/init.js';
 import lenses from './src/endpoints/explorer/lenses.js';
 import categorylenses from './src/endpoints/explorer/category/lenses.js';
 import top from './src/endpoints/explorer/top.js';
@@ -14,11 +15,7 @@ import importCache from './src/endpoints/import/cache.js';
 import importLens from './src/endpoints/import/lens.js';
 import v1 from './src/endpoints/v1.js';
 import wildcard from './src/endpoints/wildcard.js';
-import { Config } from './src/utils/config.js';
-import * as init from './src/init.js';
-import * as dotenv from 'dotenv';
-
-dotenv.config();
+import express from 'express';
 
 const enableCacheImport = Config.app.flag.enable_cache_import;
 const enableCustomImport = Config.app.flag.enable_custom_import;
@@ -49,5 +46,5 @@ app.use('*', wildcard);
 
 app.listen(serverPort, () => {
     console.info(`[Info] ✅ Snap Camera Server is running on port ${serverPort}`);
-    init.bootstrap();
+    bootstrap();
 });
