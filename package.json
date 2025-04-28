@@ -16,6 +16,7 @@
   },
   "main": "server.js",
   "scripts": {
+    "db-migrate": "node node_modules/db-migrate/bin/db-migrate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Patrick Trumpis <ptrumpis@pm.me>",
