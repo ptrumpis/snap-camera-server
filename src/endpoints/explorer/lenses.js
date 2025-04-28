@@ -59,7 +59,7 @@ router.post('/', async function (req, res, next) {
         for (const id of parsedLensIds) {
             const lens = Cache.Search.get(id) || Cache.Top.get(id);
             if (lens?.uuid) {
-                await DB.insert(lens);
+                await DB.insertLens(lens);
                 lenses.push(lens);
             }
         }
