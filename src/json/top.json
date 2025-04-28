@@ -7,7 +7,6 @@
 			"lens_name": "Dark EN",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=0f2a44c5053e4adc907c56165b996e25&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/202cf5e7eefe4cb7b8180a7437db45cf",
 			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail/83991ec7-3f52-4489-b516-7fe5e020541c.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/83991ec7-3f52-4489-b516-7fe5e020541c.jpg",
 			"obfuscated_user_slug": "qUTSplMPOkdJUtjlh5zhVw"
@@ -90,12 +89,11 @@
 		},
 		{
 			"unlockable_id": "53678280876",
-			"snapcode_url": "https://snapcodes.storage.googleapis.com/png/09d36f32-3205-3a84-8efe-610ff930c09f_320_57c48142-92c2-4e7f-80a4-a60cbe5bae00.png",
+			"snapcode_url": "https://app.snapchat.com/web/deeplink/snapcode?data=6ab5f1a84985446d895df386682afda9&version=1&type=png",
 			"user_display_name": "aram k",
 			"lens_name": "blue colorful face",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=6ab5f1a84985446d895df386682afda9&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/5cac303a001f4edea8429c01b9b4dd9a",
 			"obfuscated_user_slug": "vNH1A435pixgdMvBC-jQvQ"
 		},
 		{
@@ -115,7 +113,6 @@
 			"lens_name": "Ski Mask",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=ffe324f7480b41d28e48026379f5971b&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/ba91463ddbc049179e74d8b4e4c49f6d",
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/697eacd5-087d-49e4-b6ed-8096f472d563.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/697eacd5-087d-49e4-b6ed-8096f472d563.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/697eacd5-087d-49e4-b6ed-8096f472d563.jpg",
@@ -138,32 +135,29 @@
 		},
 		{
 			"unlockable_id": "53680200877",
-			"snapcode_url": "https://snapcodes.storage.googleapis.com/png/1bd7847f-cbdf-3821-8e18-3a9362c4c0b9_320_ee64f750-427f-411a-aa91-9c6a313be330.png",
+			"snapcode_url": "https://app.snapchat.com/web/deeplink/snapcode?data=5428a8d878714ff0b814e1cfe050ae64&version=1&type=png",
 			"user_display_name": "aram k",
 			"lens_name": "pink colorful face",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=5428a8d878714ff0b814e1cfe050ae64&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/4556b947cfd84046a0c68cc037a8b7d2",
 			"obfuscated_user_slug": "vNH1A435pixgdMvBC-jQvQ"
 		},
 		{
 			"unlockable_id": "56224940888",
-			"snapcode_url": "https://snapcodes.storage.googleapis.com/png/7afb282d-06e6-357f-aa7f-6ae244178ce9_320_0b793dc9-2e8b-4244-878d-613aeedf005f.png",
+			"snapcode_url": "https://app.snapchat.com/web/deeplink/snapcode?data=1abc8ad0c71a4896b3158d2451f27678&version=1&type=png",
 			"user_display_name": "aram k",
 			"lens_name": "white colorful",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=1abc8ad0c71a4896b3158d2451f27678&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/a29f4589b6a54f50bac260fc89608b0b",
 			"obfuscated_user_slug": "vNH1A435pixgdMvBC-jQvQ"
 		},
 		{
 			"unlockable_id": "48324810880",
-			"snapcode_url": "https://snapcodes.storage.googleapis.com/png/62c306cf-87b0-37b6-a049-25a73b27c809_320_7d490dc6-cb1c-463e-8cb3-8c220cb45f7e.png",
+			"snapcode_url": "https://app.snapchat.com/web/deeplink/snapcode?data=88cef2d3b0264a948dfafc320eb5f860&version=1&type=png",
 			"user_display_name": "aram k",
 			"lens_name": "colorful face",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=88cef2d3b0264a948dfafc320eb5f860&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/27463a990d644f98b124ad088102eab4",
 			"obfuscated_user_slug": "vNH1A435pixgdMvBC-jQvQ"
 		},
 		{
@@ -173,7 +167,6 @@
 			"lens_name": "Ski Mask",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=ee410b5864104dbeb1dcbb6ef6f722e9&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/cfe995644ec04b87a8fafe3a72508137",
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/14cacf2c-3309-42ba-81c7-6773311464e2.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/14cacf2c-3309-42ba-81c7-6773311464e2.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/14cacf2c-3309-42ba-81c7-6773311464e2.jpg",
@@ -182,12 +175,11 @@
 		},
 		{
 			"unlockable_id": "57371130876",
-			"snapcode_url": "https://snapcodes.storage.googleapis.com/png/61e5dd42-68b1-39f4-b3da-b6e6475e23f8_320_5d23f4b7-d76d-4e83-ba3e-c9f64d071eb2.png",
+			"snapcode_url": "https://app.snapchat.com/web/deeplink/snapcode?data=ece92b8cd7a941e2873867ea2e7aef98&version=1&type=png",
 			"user_display_name": "aram",
 			"lens_name": "LT purple colorful",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=ece92b8cd7a941e2873867ea2e7aef98&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/e71d6c0d02cf41c094b9574419a28588",
 			"obfuscated_user_slug": "vNH1A435pixgdMvBC-jQvQ"
 		},
 		{
@@ -225,7 +217,6 @@
 			"lens_name": "summer",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=154f7e4c06134cbfb47e932304db501c&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/6c833bdc74d84dcab1ea70297f8cf26e",
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/8f484056-1a9a-40e9-9ba7-23b8a38946de.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/8f484056-1a9a-40e9-9ba7-23b8a38946de.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/8f484056-1a9a-40e9-9ba7-23b8a38946de.jpg",
@@ -261,7 +252,6 @@
 			"lens_name": "Sid",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=58301b779e7d429390494b13579b87a0&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/9653e912036344ab8a767314c271261d",
 			"obfuscated_user_slug": "Q9itJgTKgQTPcufiZf0Xng"
 		},
 		{
@@ -283,7 +273,6 @@
 			"lens_name": "motion v2",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=ffe51eed65d541fcb4248d7a82e8506c&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/b4fae62da827441b9f2b91d6cb918473",
 			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail/378c37af-7d14-494b-b276-063bc2290d9e.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/378c37af-7d14-494b-b276-063bc2290d9e.jpg",
 			"obfuscated_user_slug": "HLCiJKS15SQ7N2oxZByNpg"
@@ -295,17 +284,15 @@
 			"lens_name": "lp lightning glow",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=0be1d4fa7f5f45b0939769bd1bef9965&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/3cdddde54fd24e59bfa2bdddd79d5961",
 			"obfuscated_user_slug": "HyJp0dmsbCR208j34fFylw"
 		},
 		{
 			"unlockable_id": "54390720875",
-			"snapcode_url": "https://snapcodes.storage.googleapis.com/png/2170a373-6971-332a-aee3-6ae20aecc0f0_320_adb45888-e3a3-4c06-9ddf-98b3bf1ed72f.png",
+			"snapcode_url": "https://app.snapchat.com/web/deeplink/snapcode?data=e444c744866d4c98844f401af0e5bfa4&version=1&type=png",
 			"user_display_name": "aram k",
 			"lens_name": "purple colorful",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=e444c744866d4c98844f401af0e5bfa4&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/58561e64e1a64235bf17fc8399f3493f",
 			"obfuscated_user_slug": "vNH1A435pixgdMvBC-jQvQ"
 		},
 		{
@@ -343,7 +330,6 @@
 			"lens_name": "kachow",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=e1e86cce6d9b4c9c99f34b8d4e153950&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/682c61579e71423c971dbf534fa20cda",
 			"obfuscated_user_slug": "vfCTxoJTHUvWJbQK2sh1Uw"
 		},
 		{
@@ -362,12 +348,11 @@
 		},
 		{
 			"unlockable_id": "56227690877",
-			"snapcode_url": "https://snapcodes.storage.googleapis.com/png/c420f942-5046-3fb8-90a9-393d051af706_320_1ba8dc2e-c398-491e-878a-f391a2b43651.png",
+			"snapcode_url": "https://app.snapchat.com/web/deeplink/snapcode?data=c805991915c440bc919eba514abab75f&version=1&type=png",
 			"user_display_name": "aram k",
 			"lens_name": "red colorful",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=c805991915c440bc919eba514abab75f&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/601e18696f624d76acac13aaf6d98da8",
 			"obfuscated_user_slug": "vNH1A435pixgdMvBC-jQvQ"
 		},
 		{
@@ -377,7 +362,6 @@
 			"lens_name": "sharpen saturation",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=6ff5a565fca249a1948b1963ee2881b4&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/abb3473df96545229dd5a94f9c438a0b",
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/0571a777-ff9c-41f8-8900-c63780bc8d4f.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/0571a777-ff9c-41f8-8900-c63780bc8d4f.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/0571a777-ff9c-41f8-8900-c63780bc8d4f.jpg",

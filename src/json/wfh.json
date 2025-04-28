@@ -75,7 +75,6 @@
 			"lens_name": "School Nerd",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=6221ca0d530a410f84313baf38c5bedb&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/6e5b6a6ec12642e6a829832022c10d5a",
 			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/52b43368-1ab2-4165-9023-13d408c8a1b7.jpg",
 			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/52b43368-1ab2-4165-9023-13d408c8a1b7.mp4",
 			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/52b43368-1ab2-4165-9023-13d408c8a1b7.jpg",
@@ -136,17 +135,12 @@
 		},
 		{
 			"unlockable_id": "47355050875",
-			"snapcode_url": "https://snapcodes.storage.googleapis.com/png/cbff5c0a-7d0a-3279-9989-af02cdd39ba8_320_b8bb2afb-1529-4ef5-82c5-a4ffb7802d0b.png",
+			"snapcode_url": "https://app.snapchat.com/web/deeplink/snapcode?data=97e7c51a50434e67b39604614009b688&version=1&type=png",
 			"user_display_name": "Ken Ng",
 			"lens_name": "Blur Bookshelf BG",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=97e7c51a50434e67b39604614009b688&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/ce9600a07c5241fa8be37c3be914e481",
-			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/16a7b41e-326c-43e2-a4bf-f6640d6a78c3.jpg",
-			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/16a7b41e-326c-43e2-a4bf-f6640d6a78c3.mp4",
-			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/16a7b41e-326c-43e2-a4bf-f6640d6a78c3.jpg",
-			"obfuscated_user_slug": "nBUDSgxliHuU6azutQk-Nw",
-			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/16a7b41e-326c-43e2-a4bf-f6640d6a78c3.jpg"
+			"obfuscated_user_slug": "nBUDSgxliHuU6azutQk-Nw"
 		},
 		{
 			"unlockable_id": "45859520892",

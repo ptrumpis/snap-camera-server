@@ -414,17 +414,12 @@
 		},
 		{
 			"unlockable_id": "57800070884",
-			"snapcode_url": "https://snapcodes.storage.googleapis.com/png/3a4de9d3-347e-336f-9fd7-700c2c0e8d89_320_098f8a5c-03fd-41ca-8ec3-54237074d4f3.png",
+			"snapcode_url": "https://app.snapchat.com/web/deeplink/snapcode?data=f08c3f52140e4c42b5eb499d9294f287&version=1&type=png",
 			"user_display_name": "G G🖤",
 			"lens_name": "Dianas heart",
 			"lens_status": "Live",
 			"deeplink": "https://www.snapchat.com/unlock/?type=SNAPCODE&uuid=f08c3f52140e4c42b5eb499d9294f287&metadata=01",
-			"icon_url": "https://lens-storage.storage.googleapis.com/png/a261e9f0d21444c7928681d053634801",
-			"thumbnail_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/eb0eb720-67b7-47e4-b1b1-d22341f3d001.jpg",
-			"standard_media_url": "https://community-lens.storage.googleapis.com/preview-media/final/eb0eb720-67b7-47e4-b1b1-d22341f3d001.mp4",
-			"standard_media_poster_url": "https://community-lens.storage.googleapis.com/preview-media/final_poster/eb0eb720-67b7-47e4-b1b1-d22341f3d001.jpg",
-			"obfuscated_user_slug": "T1vsw2vF1U9qprLg3AkbFw",
-			"thumbnail_media_url": "https://community-lens.storage.googleapis.com/preview-media/thumbnail_poster/eb0eb720-67b7-47e4-b1b1-d22341f3d001.jpg"
+			"obfuscated_user_slug": "T1vsw2vF1U9qprLg3AkbFw"
 		}
 	]
 }
