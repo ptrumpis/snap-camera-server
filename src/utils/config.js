@@ -130,7 +130,9 @@ async function loadConfig() {
                     }
                 } else {
                     if (!yamlConfig.app.flag.hasOwnProperty(lowercaseKey)) {
-                        yamlConfig.app.flag[lowercaseKey] = parseBoolean(process.env[envKey]);
+                        try {
+                            yamlConfig.app.flag[lowercaseKey] = JSON.parse(process.env[envKey]?.toLowerCase());
+                        } catch {}
                     }
                 }
             }
