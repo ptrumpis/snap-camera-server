@@ -22,16 +22,20 @@ async function bootstrap() {
     }
 
     await runDatabaseMigration();
-    await prefetchStaticLenses();
 
     process.on('SIGTERM', () => { shutdown(); });
     process.on('SIGINT', () => { shutdown(); });
 
-    console.info(`[Info] ✅ Initialization complete!`);
-    
     if (useWebSource) {
-        cacheTopLenses();
+        await Promise.allSettled([
+            cacheTopLenses(),
+            prefetchStaticLenses()
+        ]);
+    } else {
+        await prefetchStaticLenses();
     }
+
+    console.info(`[Info] ✅ Initialization complete!`);
 }
 
 function shutdown() {
