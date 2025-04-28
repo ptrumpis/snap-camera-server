@@ -234,13 +234,14 @@ async function insertLens(lenses) {
         let { unlockable_id, lens_name, obfuscated_user_slug } = lens;
 
         await new Promise(resolve => {
+            const uuid = (!lens.uuid && lens.deeplink) ? Util.parseLensUuid(lens.deeplink) : lens.uuid;
             let args = buildArgs(lens, whitelist, {
-                uuid: (!lens.uuid && lens.deeplink) ? Util.parseLensUuid(lens.deeplink) : '',
-                snapcode_url: "",
+                uuid: uuid,
+                snapcode_url: Util.snapcodeUrl(uuid),
                 user_display_name: unlockable_id,
                 lens_tags: "",
                 lens_status: "Live",
-                deeplink: "",
+                deeplink: Util.deeplinkUrl(uuid),
                 icon_url: "",
                 thumbnail_media_url: "",
                 thumbnail_media_poster_url: "",

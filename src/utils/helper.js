@@ -205,6 +205,20 @@ function isUrl(url) {
     return false;
 }
 
+function snapcodeUrl(uuid) {
+    if (typeof uuid === 'string' && uuid) {
+        return `https://app.snapchat.com/web/deeplink/snapcode?data=${uuid}&version=1&type=png`;
+    }
+    return '';
+}
+
+function deeplinkUrl(uuid) {
+    if (typeof uuid === 'string' && uuid) {
+        return `https://snapchat.com/unlock/?type=SNAPCODE&uuid=${uuid}&metadata=01`;
+    }
+    return '';
+}
+
 function modifyResponseURLs(orgResponse) {
     if (storageServer) {
         const response = JSON.stringify(orgResponse);
@@ -219,4 +233,4 @@ function sleep(ms) {
     });
 }
 
-export { advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, mergeLens, parseLensUuid, parseLensUuidFromShareUrl, isLensUuid, isLensId, isGroupId, isUrl, modifyResponseURLs, sleep };
+export { advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, mergeLens, parseLensUuid, parseLensUuidFromShareUrl, isLensUuid, isLensId, isGroupId, isUrl, snapcodeUrl, deeplinkUrl, modifyResponseURLs, sleep };
