@@ -5,17 +5,15 @@ import { Config } from './utils/config.js';
 import * as Cache from './utils/cache.js';
 import * as DB from './utils/db.js';
 import * as Util from './utils/helper.js';
+import * as Web from './utils/web.js';
 
 const useWebSource = Config.app.flag.enable_web_source;
+const mirrorSearchResults = Config.app.flag.mirror_search_results;
 
 const topLensesRefreshSeconds = Math.max(Config.top.interval || 0, 3600);
 const cacheTopLensesInterval = (useWebSource) ? setInterval(async () => {
     await cacheTopLenses();
 }, topLensesRefreshSeconds * 1000).unref() : null;
-
-if (useWebSource) {
-    cacheTopLenses();
-}
 
 async function bootstrap() {
     while (!await DB.isDatabaseReady()) {
@@ -30,6 +28,10 @@ async function bootstrap() {
     process.on('SIGINT', () => { shutdown(); });
 
     console.info(`[Info] ✅ Initialization complete!`);
+    
+    if (useWebSource) {
+        cacheTopLenses();
+    }
 }
 
 function shutdown() {
@@ -44,6 +46,7 @@ function shutdown() {
 
 async function runDatabaseMigration() {
     try {
+        console.info(`[Info] 🔄 Database migration...`);
         const migration = dbmigrate.getInstance(true);
         await migration.up();
         console.info(`[Info] ✅ Database migration complete!`);
@@ -111,10 +114,14 @@ async function cacheTopLenses() {
                     lens.web_import = 1;
                     Cache.Top.set(lens.unlockable_id, lens);
                 }
-            }
 
-            topLenses.length = 0;
-            topLenses = null;
+                if (mirrorSearchResults) {
+                    Web.mirrorSearchResults(topLenses);
+                } else {
+                    topLenses.length = 0;
+                    topLenses = null;
+                }
+            }
         }
 
         console.info(`[Info] ✅ Top lenses successfully cached!`);
