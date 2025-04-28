@@ -224,41 +224,21 @@ function importCustomLensFromWebLens(webLens, lensFilePath, updateExisting = fal
     const lensFileUrl = lensFilePath.endsWith('.zip') ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
 
     try {
-        // return database compatible object
-        return updateExisting ? {
-            // lens
+        const commonFields = {
             unlockable_id: lensId,
-            // unlock
             lens_id: lensId,
             lens_url: lensFileUrl,
-            // lens & unlock flags
             web_import: 0,
             custom_import: 1,
-        } : {
-            // lens
-            unlockable_id: lensId,
-            snapcode_url: webLens.snapcode_url,
-            user_display_name: webLens.user_display_name,
-            lens_name: webLens.lens_name,
-            lens_tags: webLens.lens_tags,
-            lens_status: webLens.lens_status,
-            deeplink: webLens.deeplink,
-            icon_url: webLens.icon_url,
-            thumbnail_media_url: webLens.thumbnail_media_url,
-            thumbnail_media_poster_url: webLens.thumbnail_media_poster_url,
-            standard_media_url: webLens.standard_media_url,
-            standard_media_poster_url: webLens.standard_media_poster_url,
-            obfuscated_user_slug: webLens.obfuscated_user_slug,
-            image_sequence: webLens.image_sequence,
-            // unlock
-            lens_id: lensId,
-            lens_url: lensFileUrl,
-            signature: webLens.signature,
-            hint_id: webLens.hint_id,
-            additional_hint_ids: webLens.additional_hint_ids,
-            // lens & unlock flags
-            web_import: 0,
-            custom_import: 1,
+        };
+
+        if (updateExisting) {
+            return commonFields;
+        }
+
+        return {
+            ...(webLens || {}),
+            ...commonFields,
         };
     } catch (e) {
         console.error(e);
