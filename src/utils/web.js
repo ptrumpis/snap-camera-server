@@ -94,9 +94,11 @@ async function mirrorSearchResults(webResults) {
             }
 
             try {
-                const unlock = await getUnlockByHash(lens.uuid);
-                if (unlock) {
-                    lens = Util.mergeLens(unlock, lens);
+                if (!lens.lens_url || !Util.isLensId(lens.lens_id)) {
+                    const unlock = await getUnlockByHash(lens.uuid);
+                    if (unlock) {
+                        lens = Util.mergeLens(unlock, lens);
+                    }
                 }
 
                 if (lens?.lens_name && Util.isLensId(lens.unlockable_id)) {
