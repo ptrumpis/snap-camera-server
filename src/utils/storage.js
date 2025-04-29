@@ -100,8 +100,9 @@ async function saveRemoteFile(url) {
         const file = await downloadFile(fileUrl.toString(), filePath, fileName);
         if (typeof file === 'string') {
             await convertWebpToPng(file);
-            return true;
         }
+
+        return file ? true: false;
     } catch (e) {
         console.error(`[Error] Saving remote file failed: ${url} - ${e.message}`);
     }
@@ -127,7 +128,7 @@ async function downloadFile(targetUrl, subDirectory, fileName) {
     try {
         const subFilePath = path.join(subDirectory, fileName);
         if (await isSubFilePathPresent(subFilePath)) {
-            return false;
+            return true;
         }
 
         console.info(`[Downloading] ${targetUrl}`);
