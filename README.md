@@ -7,7 +7,7 @@
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/ptrumpis)](https://github.com/sponsors/ptrumpis)
 [![GitHub Discussions](https://img.shields.io/github/discussions/ptrumpis/snap-camera-server)](https://github.com/ptrumpis/snap-camera-server/discussions)
 
-# 👻 Snap Camera Server v3.4-beta
+# 👻 Snap Camera Server v3.4
 A self hosted solution for Snap Camera.  
 It will let you continue to use Snapcamera with almost all Snapchat filters after the shutdown on January 25, 2023.  
 
