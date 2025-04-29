@@ -29,6 +29,11 @@ router.get('/', async function (req, res, next) {
 
                 wayback.saveOutdatedUrl(unlock[0].lens_url, maxFileAgeInDays);
 
+                if (Array.isArray(unlock[0].assets) && unlock[0].assets.length) {
+                    console.info(`[Info] 👻 This lens requires additional assets to load: [${unlock[0].assets.join(', ')}].`);
+                    console.info(`[Info] 🌐 Visit https://github.com/snapcamera/assets for more info.`);
+                }
+
                 return res.json(Util.modifyResponseURLs(unlock[0]));
             } else {
                 console.warn(`[Warning] Unlock Download URL is missing: ${lensId}`);
