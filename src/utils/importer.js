@@ -294,6 +294,8 @@ function importCustomLens(lensId, lensFilePath, updateExisting = false) {
     } catch (e) {
         console.error(e);
     }
+
+    return false;
 }
 
 export { importLensFile, importCacheLensesFromSettings, importCustomLensFromWebLens, importCustomLens };
