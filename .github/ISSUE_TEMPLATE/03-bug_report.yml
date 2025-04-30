@@ -1,0 +1,93 @@
+name: 🐛 Bug Report
+description: Report a bug in the code base.
+title: "[🐛 Bug]: "
+labels: ["bug"]
+projects: ["ptrumpis/3"]
+assignees:
+  - ptrumpis
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐛 Bug Report
+        Fill out the following information to help diagnose the issue.  
+
+  - type: markdown
+    attributes:
+      value: |
+       &NewLine;
+       #### ⚠️ Non-working or infinite loading lenses are <ins>NOT</ins> bugs that need to be reported.
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug Description
+      description: Describe the issue in detail. What did you expect to happen, and what actually happened? You can also attach log files and screenshots.
+      placeholder: The application crashes when I select a lens...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Provide a step-by-step guide to reproduce the issue.
+      placeholder: |
+        Short example:
+        1. Start Snap Camera Server
+        2. Open Snap Camera
+        3. Select Lens xyz
+        4. The Server crashes...
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ## ✍️ Provide your system information.
+
+  - type: dropdown
+    id: snap-camera-server-version
+    attributes:
+      label: Server Version
+      description: Please select your Snap Camera Server version.
+      options:
+        - v3.4.0
+        - v3.3.4
+        - v3.3.0
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: Operating System
+      description: Please select your operating system.
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS 15
+        - macOS 14
+        - macOS 13
+        - Other
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        &NewLine;
+        ## 🗹 Confirmation
+        You must confirm that you have reviewed the **[📘 Wiki](https://github.com/ptrumpis/snap-camera-server/wiki)** and the **[💬 Discussions](https://github.com/ptrumpis/snap-camera-server/discussions)** section  
+        and that your problem has not been resolved there.
+
+  - type: checkboxes
+    id: wiki-and-discussions-confirmation
+    attributes:
+      label: Confirm
+      options:
+        - label: I confirm that the **[📘 Wiki](https://github.com/ptrumpis/snap-camera-server/wiki)** did not resolve my issue.
+          required: true
+        - label: I confirm that the **[💬 Discussions](https://github.com/ptrumpis/snap-camera-server/discussions)** did not resolve my issue.
+          required: true

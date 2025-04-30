@@ -1,8 +1,8 @@
 import express from 'express';
 import { Config } from '../../utils/config.js';
+import * as Cache from '../../utils/cache.js';
 import * as DB from '../../utils/db.js';
 import * as Util from '../../utils/helper.js';
-import * as Web from '../../utils/web.js';
 
 const useRelay = Config.app.relay.server;
 const useWebSource = Config.app.flag.enable_web_source;
@@ -12,89 +12,60 @@ var router = express.Router();
 
 router.get('/', async function (req, res, next) {
     // missing request documentation
-    console.log("Undocumented GET request /vc/v1/explorer/lenses:", req.originalUrl);
+    console.debug("[Debug] Undocumented GET request /vc/v1/explorer/lenses:", req.originalUrl);
     res.json({});
 });
 
 router.post('/', async function (req, res, next) {
-    if (!req.body || !req.body['lenses'] || !(req.body['lenses'] instanceof Array)) {
+    const lensIds = req.body?.lenses;
+
+    if (!Array.isArray(lensIds) || lensIds.length > MAX_LENSES) {
         return res.json({});
     }
 
-    // initialize ID array
-    let lensIds = req.body['lenses'];
     let lenses = [];
+    const parsedLensIds = lensIds.map(id => parseInt(id)).filter(Number.isInteger);
 
-    if (lensIds.length > MAX_LENSES) {
-        return res.json({});
+    if (parsedLensIds.length > 1) {
+        lenses = await DB.getMultipleLenses(parsedLensIds);
+    } else if (parsedLensIds.length === 1) {
+        lenses = await DB.getSingleLens(parsedLensIds[0]);
     }
 
-    const removeFoundId = function (lensId) {
-        const idx = lensIds.indexOf(parseInt(lensId));
-        if (idx !== -1) {
-            lensIds.splice(idx, 1);
-        }
-    };
-
-    if (lensIds.length > 1) {
-        lenses = await DB.getMultipleLenses(lensIds);
-    } else if (lensIds.length === 1) {
-        const id = parseInt(lensIds[0]);
-        lenses = await DB.getSingleLens(id);
-    }
-
-    if (lenses && lenses.length) {
-        for (let i = 0; i < lenses.length; i++) {
-            // trigger re-download to catch missing files automatically
-            await Util.downloadLens(lenses[i]);
-        }
+    if (lenses.length) {
+        await Promise.all(lenses.map(Util.downloadLens));
         lenses = Util.modifyResponseURLs(lenses);
     }
 
-    // use relay for missing lens ID's
-    if (useRelay && lensIds.length) {
-        for (let i = 0; i < lenses.length; i++) {
-            removeFoundId(lenses[i].unlockable_id);
-        }
+    const removeFoundId = (lensId) => {
+        const idx = parsedLensIds.indexOf(parseInt(lensId));
+        if (idx !== -1) parsedLensIds.splice(idx, 1);
+    };
 
-        let data = await Util.relayRequest(req.originalUrl, 'POST', { "lenses": lensIds });
-        if (data && data['lenses'] && (data['lenses'] instanceof Array)) {
-            // relay should return lenses but not more than requested
-            if (data['lenses'].length <= lensIds.length) {
-                DB.insertLens(data['lenses']);
+    if (useRelay && parsedLensIds.length) {
+        lenses.forEach(lens => removeFoundId(lens.unlockable_id));
 
-                // merge with local results
-                if (lenses && lenses.length) {
-                    lenses = lenses.concat(data['lenses']);
-                } else {
-                    lenses = data['lenses'];
-                }
-            }
+        const relayResult = await Util.relayRequest(req.originalUrl, 'POST', { lenses: parsedLensIds });
+        // relay should return lenses but not more than requested
+        if (Array.isArray(relayResult?.lenses) && relayResult.lenses.length <= parsedLensIds.length) {
+            await DB.insertLens(relayResult.lenses);
+            lenses = lenses.concat(relayResult.lenses);
         }
-        data = null;
     }
 
-    // use web cache for missing lens ID's
-    if (useWebSource && lensIds.length) {
-        for (let i = 0; i < lenses.length; i++) {
-            removeFoundId(lenses[i].unlockable_id);
-        }
+    if (useWebSource && parsedLensIds.length) {
+        lenses.forEach(lens => removeFoundId(lens.unlockable_id));
 
-        for (let i = 0; i < lensIds.length; i++) {
-            let lens = Web.Cache.get(lensIds[i]);
-            if (lens && lens.uuid) {
-                DB.insertLens(lens);
-
-                // add to local results
+        for (const id of parsedLensIds) {
+            const lens = Cache.Search.get(id) || Cache.Top.get(id);
+            if (lens?.uuid) {
+                await DB.insertLens(lens);
                 lenses.push(lens);
             }
         }
     }
 
-    lensIds = null;
-    return res.json({
-        "lenses": lenses
-    });
+    return res.json({ lenses });
 });
 
 export default router;

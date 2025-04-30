@@ -40,7 +40,7 @@ const parseForm = (req, res, next) => {
 };
 
 router.post('/', parseForm, async function (req, res, next) {
-    console.log("Import Cache API call from", req.ip);
+    console.info(`[Import] Cache API call from: ${req.ip}`);
 
     let imported = [];
     let updated = [];
@@ -98,7 +98,7 @@ router.post('/', parseForm, async function (req, res, next) {
                 const lensId = Number(lens.id);
                 if (duplicatedLensIds.includes(lensId)) {
                     if (allowOverwrite) {
-                        console.log("Re-importing existing Lens", lensId);
+                        console.info(`[Import] Re-importing existing Lens: ${lensId}`);
                         const lensFilePath = await Importer.importLensFile(lens.path, lensId, false);
                         if (lensFilePath) {
                             updatedLenses.push({ id: lensId, path: lensFilePath });
@@ -107,11 +107,11 @@ router.post('/', parseForm, async function (req, res, next) {
                             failed.push(lensId);
                         }
                     } else {
-                        console.log("Discarding existing Lens", lensId);
+                        console.info(`[Import] Discarding existing Lens: ${lensId}`);
                         discarded.push(lensId);
                     }
                 } else {
-                    console.log("Importing new Lens", lensId);
+                    console.info(`[Import] Importing new Lens: ${lensId}`);
                     const lensFilePath = await Importer.importLensFile(lens.path, lensId, true);
                     if (lensFilePath) {
                         importedLenses.push({ id: lensId, path: lensFilePath });

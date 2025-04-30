@@ -1,18 +1,22 @@
+import { SnapLensWebCrawler } from '@ptrumpis/snap-lens-web-crawler';
 import { Config } from './config.js';
-import * as dotenv from 'dotenv';
 import * as DB from './db.js';
 import * as Storage from './storage.js';
-
-dotenv.config();
 
 const relayTimeout = Config.app.relay.timeout;
 const relayServer = Config.app.relay.server;
 
 const storageServer = process.env.STORAGE_SERVER;
-const modifyServerRegEx = new RegExp(Config.storage.urls.map(escapeRegExp).join('|'), 'gi');
 
-const shareUrlUuid = escapeRegExp('{UUID}');
-const shareUrls = Config.search.share_urls.map(escapeRegExp);
+const modifyServerRegEx = new RegExp(Config.storage.urls.map((url) => {
+    url = escapeRegExp(url).replace(/^https?:\/\//, 'https?://');
+    return url;
+}).join('|'), 'gi');
+
+const validShareUrls = Config.search.share_urls.map((url) => {
+    url = escapeRegExp(url).replace(escapeRegExp('{UUID}'), '([a-f0-9]{32})').replace(/^https?:\/\//, 'https?://');
+    return `^${url}`;
+}) || [];
 
 const headers = {
     'User-Agent': 'SnapCamera/1.21.0.0 (Windows 10 Version 2009)',
@@ -25,18 +29,15 @@ function escapeRegExp(str) {
 }
 
 async function advancedSearch(searchTerm) {
-    // search lens by 32 character UUID
     const uuid = parseLensUuid(searchTerm);
     if (uuid) {
         return await DB.searchLensByUuid(uuid);
     }
 
-    // search lens by ID
     if (isLensId(searchTerm)) {
         return await DB.getSingleLens(searchTerm);
     }
 
-    // search lens by custom hashtags
     if (searchTerm.startsWith('#') && searchTerm.length >= 2) {
         const hashtags = searchTerm.match(/#\w+/gi) || [];
         if (hashtags && hashtags.length) {
@@ -44,12 +45,12 @@ async function advancedSearch(searchTerm) {
         }
     }
 
-    // search by lens name and creator name
     return await DB.searchLensByName(searchTerm);
 }
 
 async function relayRequest(path, method = 'GET', body = null) {
     if (relayServer) {
+        const url = `${relayServer}${path}`;
         const controller = new AbortController();
         const timeout = setTimeout(() => {
             controller.abort();
@@ -61,31 +62,35 @@ async function relayRequest(path, method = 'GET', body = null) {
                 requestInit.body = JSON.stringify(body);
             }
 
-            const response = await fetch(`${relayServer}${path}`, requestInit);
-            if (response.status === 200) {
-                try {
-                    // avoid json parse errors on empty data
-                    const data = await response.text();
-                    if (data) {
-                        return JSON.parse(data);
-                    }
-                } catch (e) {
-                    console.error(e);
+            const response = await fetch(url, requestInit);
+            clearTimeout(timeout);
+
+            if (response?.ok && response.body) {
+                // don't use response.json()
+                // to avoid json parse errors on empty/invalid data
+                const data = await response.text();
+                if (data) {
+                    return JSON.parse(data);
                 }
             }
         } catch (e) {
-            // catch rare fetch errors
-            console.error(e);
+            clearTimeout(timeout);
+            if (e.name === 'AbortError') {
+                console.warn(`[Warning] Request to relay timed out: ${url}`);
+            } else {
+                console.error(`[Error] Request to relay failed: ${url} - ${e.message}`);
+            }
         } finally {
             clearTimeout(timeout);
         }
     }
+
     return {};
 }
 
 async function getUnlockFromRelay(lensId) {
     const unlock = await relayRequest(`/vc/v1/explorer/unlock?uid=${lensId}`);
-    if (unlock && unlock.lens_id && unlock.lens_url) {
+    if (typeof unlock === 'object' && unlock.lens_id && unlock.lens_url) {
         return unlock;
     }
     return null;
@@ -121,49 +126,34 @@ async function downloadUnlock(lensId, lensUrl) {
 }
 
 function mergeLensesUnique(lenses, newLenses) {
-    if (newLenses && newLenses.length) {
-        if (lenses && lenses.length) {
-            let lensIds = [];
-            for (let i = 0; i < lenses.length; i++) {
-                lensIds.push(lenses[i].unlockable_id);
-            }
+    if (!Array.isArray(newLenses) || newLenses.length === 0) return lenses;
+    if (!Array.isArray(lenses) || lenses.length === 0) return newLenses;
 
-            for (let j = 0; j < newLenses.length; j++) {
-                if (lensIds.indexOf(newLenses[j].unlockable_id) !== -1) {
-                    // modify original array
-                    newLenses.splice(j, 1);
-                    j--;
-                }
-            }
+    const lensIds = new Set(lenses.map(lens => lens.unlockable_id));
 
-            lenses = lenses.concat(newLenses);
-        } else {
-            lenses = newLenses;
+    for (let i = newLenses.length - 1; i >= 0; i--) {
+        if (lensIds.has(newLenses[i].unlockable_id)) {
+            newLenses.splice(i, 1);
         }
     }
 
+    lenses.push(...newLenses);
     return lenses;
 }
 
-function parseLensUuid(str, urlExtraction = true) {
+function mergeLens(primary, secondary) {
+    return SnapLensWebCrawler.mergeLensItems(primary, secondary);
+}
+
+function parseLensUuid(str, extractFromShareUrl = true) {
     if (typeof str === "string") {
-        if (urlExtraction && isUrl(str)) {
-            // try to extract from known share URL's
-            // otherwise use global extraction attempt
-            for (const url of shareUrls) {
-                try {
-                    const match = str.match(new RegExp(url.replace(shareUrlUuid, '([a-f0-9]{32})'), 'i'));
-                    if (match && match[1]) {
-                        return parseLensUuid(match[1], false);
-                    }
-                } catch (e) {
-                    console.error(e, str, url);
-                }
+        if (extractFromShareUrl && isUrl(str)) {
+            const uuid = parseLensUuidFromShareUrl(str);
+            if (uuid) {
+                return uuid;
             }
         }
 
-        // global extraction attempt
-        // valid lens UUID's have 32 hexadecimal characters
         const uuid = str.match(/[a-f0-9]{32}/gi)
         if (uuid && uuid[0]) {
             return uuid[0];
@@ -173,24 +163,68 @@ function parseLensUuid(str, urlExtraction = true) {
     return '';
 }
 
+function parseLensUuidFromShareUrl(url) {
+    if (typeof url === 'string') {
+        for (const shareUrl of validShareUrls) {
+            try {
+                const uuidMatch = url.match(new RegExp(shareUrl, 'i'));
+                if (uuidMatch && uuidMatch[1]) {
+                    return uuidMatch[1];
+                }
+            } catch (e) {
+                console.error(`[Error] Trying to parse UUID from URL: ${url} - ${e.message}`);
+            }
+        }
+    }
+
+    return '';
+}
+
+function isLensUuid(str) {
+    if (typeof str !== 'string') return false;
+    const uuid = /^[a-f0-9]{32}$/gi;
+    return uuid.test(str);
+}
+
 function isLensId(str) {
-    // valid lens ID's have 11 to 16 digits
+    if (typeof str !== 'string') return false;
     const id = /^[0-9]{11,16}$/gi;
     return id.test(str);
 }
 
+function isGroupId(str) {
+    if (typeof str !== 'string') return false;
+    var regex = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
+    return regex.test(str);
+}
+
 function isUrl(url) {
-    try {
-        new URL(url);
-    } catch (e) {
-        return false;
+    if (typeof url === 'string') {
+        try {
+            new URL(url);
+            return true;
+        } catch { }
     }
-    return true;
+
+    return false;
+}
+
+function snapcodeUrl(uuid) {
+    if (typeof uuid === 'string' && uuid) {
+        return `https://app.snapchat.com/web/deeplink/snapcode?data=${uuid}&version=1&type=png`;
+    }
+    return '';
+}
+
+function deeplinkUrl(uuid) {
+    if (typeof uuid === 'string' && uuid) {
+        return `https://snapchat.com/unlock/?type=SNAPCODE&uuid=${uuid}&metadata=01`;
+    }
+    return '';
 }
 
 function modifyResponseURLs(orgResponse) {
     if (storageServer) {
-        // point orignal URL's to our local storage server
         const response = JSON.stringify(orgResponse);
         return JSON.parse(response.replace(modifyServerRegEx, storageServer));
     }
@@ -203,4 +237,4 @@ function sleep(ms) {
     });
 }
 
-export { advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, parseLensUuid, isLensId, isUrl, modifyResponseURLs, sleep };
+export { escapeRegExp, advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, mergeLens, parseLensUuid, parseLensUuidFromShareUrl, isLensUuid, isLensId, isGroupId, isUrl, snapcodeUrl, deeplinkUrl, modifyResponseURLs, sleep };

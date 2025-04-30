@@ -1,11 +1,14 @@
 blank_issues_enabled: false
 contact_links:
-  - name: List of incompatible Lenses
+  - name: 📷 Report non-working Lenses
     url: https://github.com/ptrumpis/snap-camera-server/discussions/8
-    about: Report non working lenses here.
-  - name: Q&A
+    about: List of incompatible Lenses
+  - name: 🙏 Ask the community for help
     url: https://github.com/ptrumpis/snap-camera-server/discussions/categories/q-a
-    about: Please ask and answer questions here.
-  - name: Share ideas for new features
-    url: https://github.com/ptrumpis/snap-camera-server/discussions/categories/ideas
-    about: You can ask for feature requests here
+    about: Please ask general questions here, there may already be an answer to your question.
+  - name: 📘 Wiki
+    url: https://github.com/ptrumpis/snap-camera-server/wiki
+    about: In the wiki you will find many solutions to problems and background information.
+  - name: 💬 Discussions
+    url: https://github.com/ptrumpis/snap-camera-server/discussions
+    about: Join Discussions and find answers to common problems.

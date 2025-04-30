@@ -11,8 +11,12 @@
     "docker"
   ],
   "type": "module",
+  "engines": {
+    "node": ">=18.17"
+  },
   "main": "server.js",
   "scripts": {
+    "db-migrate": "node node_modules/db-migrate/bin/db-migrate",
     "test:dev": "node --watch --test test/",
     "test": "node --test test/"
   },
@@ -26,19 +30,20 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@ptrumpis/snap-camerakit-bridge": "0.2.0",
     "@ptrumpis/snap-lens-file-extractor": "~1.1.0",
-    "@ptrumpis/snap-lens-web-crawler": "~1.0.0-rc.1",
+    "@ptrumpis/snap-lens-web-crawler": "~1.1.1",
     "db-migrate": "1.0.0-beta.29",
     "db-migrate-mysql": "~3.0.0",
-    "dotenv": "~16.4.7",
-    "express": "~4.21.2",
-    "formidable": "~3.5.2",
+    "dotenv": "~16.5.0",
+    "express": "~5.1.0",
+    "formidable": "~3.5.4",
     "fzstd": "~0.1.1",
     "jszip": "~3.10.1",
-    "mysql2": "~3.13.0",
-    "node-cache": "~5.1.2",
-    "sharp": "~0.33.5",
-    "wayback.js": "~0.0.3",
-    "yaml": "~2.7.0"
+    "mysql2": "~3.14.1",
+    "node-cache": "5.1.2",
+    "sharp": "~0.34.1",
+    "wayback.js": "~0.2.0",
+    "yaml": "~2.7.1"
   }
 }

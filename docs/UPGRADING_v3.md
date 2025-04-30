@@ -43,7 +43,7 @@ We need to tell Docker Desktop about our new Server.
 
 Run this command with a Windows Powershell or macOS Terminal inside your new server directory:
 ```bash
-docker compose up
+docker compose up --build
 ```
 
 ## Done

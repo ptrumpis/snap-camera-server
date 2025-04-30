@@ -1,13 +1,10 @@
 import JSZip from 'jszip';
 import LensFileParser from '@ptrumpis/snap-lens-file-extractor';
 import { Config } from './config.js';
-import * as dotenv from 'dotenv';
 import * as fs from 'fs/promises';
 import * as zstd from 'fzstd';
 import * as Storage from './storage.js';
 import * as Util from './helper.js';
-
-dotenv.config();
 
 const storageServer = process.env.STORAGE_SERVER;
 const storagePath = process.env.STORAGE_PATH;
@@ -23,7 +20,7 @@ const zipArchive = Config.import.zip_archive;
 
 async function importLensFile(lensFile, lensId, createMediaFiles = true) {
     if (!Util.isLensId(lensId)) {
-        console.warn("Can't import lens with invalid lens ID", lensId);
+        console.warn(`[Warning] Can't import lens with invalid lens ID: ${lensId}`);
         return false;
     }
 
@@ -147,7 +144,7 @@ function importCacheLensesFromSettings(settingsJson, lensFileData = [], updateEx
             const info = settingsJson.lenses.cache.cachedInfo;
             for (let i = 0; i < info.length; i++) {
                 if (!info[i].lensId || typeof info[i].signature !== 'string') {
-                    console.error("Unexpected JSON structure at index", i, info[i]);
+                    console.warn(`[Warning] Unexpected JSON structure at index ${i}:`, info[i]);
                     return false;
                 }
 
@@ -202,7 +199,7 @@ function importCacheLensesFromSettings(settingsJson, lensFileData = [], updateEx
                 unlocks.push(unlock);
             }
         } else {
-            console.log("No cached lenses inside settings.json");
+            console.warn(`[Warning] No cached lenses inside settings.json`);
             return false;
         }
     } catch (e) {
@@ -227,41 +224,21 @@ function importCustomLensFromWebLens(webLens, lensFilePath, updateExisting = fal
     const lensFileUrl = lensFilePath.endsWith('.zip') ? baseUrl.concat(lensId, '/lens.zip') : baseUrl.concat(lensId, '/lens.lns');
 
     try {
-        // return database compatible object
-        return updateExisting ? {
-            // lens
+        const commonFields = {
             unlockable_id: lensId,
-            // unlock
             lens_id: lensId,
             lens_url: lensFileUrl,
-            // lens & unlock flags
             web_import: 0,
             custom_import: 1,
-        } : {
-            // lens
-            unlockable_id: lensId,
-            snapcode_url: webLens.snapcode_url,
-            user_display_name: webLens.user_display_name,
-            lens_name: webLens.lens_name,
-            lens_tags: webLens.lens_tags,
-            lens_status: webLens.lens_status,
-            deeplink: webLens.deeplink,
-            icon_url: webLens.icon_url,
-            thumbnail_media_url: webLens.thumbnail_media_url,
-            thumbnail_media_poster_url: webLens.thumbnail_media_poster_url,
-            standard_media_url: webLens.standard_media_url,
-            standard_media_poster_url: webLens.standard_media_poster_url,
-            obfuscated_user_slug: webLens.obfuscated_user_slug,
-            image_sequence: webLens.image_sequence,
-            // unlock
-            lens_id: lensId,
-            lens_url: lensFileUrl,
-            signature: webLens.signature,
-            hint_id: webLens.hint_id,
-            additional_hint_ids: webLens.additional_hint_ids,
-            // lens & unlock flags
-            web_import: 0,
-            custom_import: 1,
+        };
+
+        if (updateExisting) {
+            return commonFields;
+        }
+
+        return {
+            ...(webLens || {}),
+            ...commonFields,
         };
     } catch (e) {
         console.error(e);
@@ -317,6 +294,8 @@ function importCustomLens(lensId, lensFilePath, updateExisting = false) {
     } catch (e) {
         console.error(e);
     }
+
+    return false;
 }
 
 export { importLensFile, importCacheLensesFromSettings, importCustomLensFromWebLens, importCustomLens };

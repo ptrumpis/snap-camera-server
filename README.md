@@ -8,12 +8,13 @@
 [![GitHub Discussions](https://img.shields.io/github/discussions/ptrumpis/snap-camera-server)](https://github.com/ptrumpis/snap-camera-server/discussions)
 
 # 👻 Snap Camera Server v4.0
-An alternative self hosted solution for Snap Camera.  
-It will let you continue to use Snapcamera with almost all Snapchat filters after the shutdown on January 25, 2023.
+A self hosted solution for Snap Camera.  
+It will let you continue to use Snapcamera with almost all Snapchat filters after the shutdown on January 25, 2023.  
 
 **This code is a fork of *jaku/SnapCameraPreservation* on steroids 💪** 
 - ✔️ No previously backed up files or third party server required.
-- ✔️ Access almost all Snap Lenses from **lens.snapchat.com**.
+- ✔️ Create and use your own Snap Lenses with Lens Studio.
+- ✔️ Access most popular Snap Lenses from **snapchat.com/lens**.
 - ✔️ Import Lenses from local application cache e.g. `AppData\Local\Snap\Snap Camera\cache\lenses`.
 - ✔️ All files will be stored inside a Docker Volume (e.g. on your local machine).
 - ✔️ Runs local on Windows, Mac OS or hosted on a remote server.
@@ -24,7 +25,7 @@ See the [📋 Changelog](docs/CHANGELOG.md) for a full list of changes and featu
 
 ## ⚠️ Pre-Requirements
 This server requires Docker and OpenSSL and maybe 5 to 10 minutes of your time ⏲️
-- [🐋 Docker](https://www.docker.com/)
+- [🐋 Docker](https://www.docker.com/) (or [Vagrant](https://www.vagrantup.com/) as experimental alternative)
 - [🔐 OpenSSL](https://www.openssl.org/) (Download from [slproweb.com](https://slproweb.com/products/Win32OpenSSL.html) as Windows user)
 
 *The client application is required to apply the filters to your webcam ([Download Snap Camera](https://github.com/ptrumpis/snap-camera-server/discussions/6))*
@@ -33,6 +34,8 @@ This server requires Docker and OpenSSL and maybe 5 to 10 minutes of your time �
 1. [📥 Download the latest release](https://github.com/ptrumpis/snap-camera-server/releases/latest)
 2. [🛠️ Complete the configuration](docs/CONFIGURATION.md)
 3. [📖 Read the Server Wiki](https://github.com/ptrumpis/snap-camera-server/wiki)
+
+Lens creators can refer to the [🎨 Lens Creator Guide](https://github.com/ptrumpis/snap-camera-server/wiki/Lens-Creator-Guide)
 
 ### 📺 Video Guides
 There are also step by step video guides for [📺 Windows](https://www.youtube.com/watch?v=bcsjvWHUr7c) and [📺 Mac OS](https://www.youtube.com/watch?v=b2ILHJaD1T4) available.  
@@ -43,12 +46,16 @@ If you want to upgrade an existing server version to a newer version, have a loo
 - [🔼 Upgrade v3.x to v4.x](docs/UPGRADING_v4.md)
 
 ## 💯 Advanced Features
-### 📤 Snap Camera Cache Import 
-You can import your local cached lenses through this online interface [Snap Lens Cache Import](https://ptrumpis.github.io/snap-lens-cache-import/)  
-Watch the [📺 Re-Import Cache Video Guide](https://www.youtube.com/watch?v=alo49et3QxY) if you need help.
+### 👨‍🎨 Create Lenses with Lens Studio
+Create as many new Lenses as you want with Lens Studio and use them with your Snap Camera application.  
+Follow the [Lens Creator Guide](https://github.com/ptrumpis/snap-camera-server/wiki/Lens-Creator-Guide) to get started.
 
-### 🌐 Web Lens Download
-All Snap Lenses are still available for download at **https://lens.snapchat.com** (hidden from view).  
+### 📤 Import Cache and Upload  Lenses
+You can import your local cached lenses through this online interface [Snap Lens Cache Import](https://ptrumpis.github.io/snap-lens-cache-import/).  
+But don't be fooled by the name [Snap Lens Cache Import](https://ptrumpis.github.io/snap-lens-cache-import/), you can also upload as many custom lenses as you want through the online form.  
+
+### 🌐 Use Snapchat Web Lenses
+Activate the most popular Lenses from [snapchat.com/lens](https://snapchat.com/lens).  
 You need to apply a special [Snap Camera Signature Patch](https://ptrumpis.github.io/snap-camera-signature-patch/) to your `Snap Camera.exe` to get access to these web lenses.
 
 ## 💬 Community

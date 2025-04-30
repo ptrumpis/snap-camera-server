@@ -1,4 +1,4 @@
-# config.yml v3.3
+# config.yml v3.4
 # you can now backup or share this file with your friends without revealing credentials
 
 # application configuration
@@ -87,40 +87,84 @@ auto_repair:
       - old: 16
         new: 13
 
+# top lens configuration
+top:
+  # Settings for crawling top lenses https://snapchat.com/lens
+  # requires 'app.flag.enable_web_source' to be 'true'
+  crawler:
+    connectionTimeoutMs: 6000
+    failedRequestDelayMs: 3000
+    minRequestDelayMs: 100
+    maxRequestRetries: 2
+    gcInterval: false
+    cacheTTL: 0
+    verbose: false
+    headers:
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
+
+  # caching is required to activate most new lenses since snapchat removed lens urls from their website
+  # requires 'app.flag.enable_web_source' to be 'true'
+  cache:
+    stdTTL: 86400
+    checkperiod: 3600
+    useClones: false
+
+  # fetch interval
+  # requires 'app.flag.enable_web_source' to be 'true'
+  interval: 3600
+
 # search configuration
 search:
-  # web search connection timeout in milliseconds
-  timeout: 9000
+  # Settings for crawling https://snapchat.com
+  # requires 'app.flag.enable_web_source' to be 'true'
+  crawler:
+    connectionTimeoutMs: 6000
+    failedRequestDelayMs: 3000
+    minRequestDelayMs: 100
+    maxRequestRetries: 1
+    cacheTTL: 10800
+    headers:
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
 
   # caching is required to activate web lenses within search results
-  # web caching requires 'app.flag.enable_web_source' to be 'true'
-  web_cache:
-    # standard time to live in seconds
-    # web search results will expire after this time
-    # 0 = infinity (memory usage will grow)
-    ttl: 1800
-
-    # time in seconds to check all data and delete expired search results
-    check: 600
+  # requires 'app.flag.enable_web_source' to be 'true'
+  cache:
+    stdTTL: 86400
+    checkperiod: 3600
+    useClones: true
 
   # creator base url for displaying all lenses of a single creator
-  # this feature requires 'app.flag.enable_web_source' to be 'true'
+  # requires 'app.flag.enable_web_source' to be 'true'
   creator_url: https://lensstudio.snapchat.com/creator/
 
   # supported lens share urls
-  # this feature requires 'app.flag.enable_web_source' to be 'true'
+  # requires 'app.flag.enable_web_source' to be 'true'
   # paste an url and strip/remove any other non static http parameters
   # - mark/replace the 32 character lens identifier with {UUID}
   share_urls:
     - https://lens.snapchat.com/{UUID}
     - https://www.snapchat.com/lens/{UUID}
     - https://www.snapchat.com/unlock/?uuid={UUID}
+    - https://www.snapchat.com/unlock/?type=SNAPCODE&uuid={UUID}
 
 # storage configuration
 storage:
+  # Settings for downloading lens and asset files
+  crawler:
+    connectionTimeoutMs: 6000
+    failedRequestDelayMs: 3000
+    minRequestDelayMs: 0
+    maxRequestRetries: 1
+    cacheTTL: 0
+    gcInterval: false
+    headers:
+      User-Agent: SnapCamera/1.21.0.0 (Windows 10 Version 2009)
+      Content-Type: application/json
+      X-Installation-Id: default
+
   # urls to be served from local storage
   # you can add or remove urls
-  # update is required if relay server changes
+  # an update is required if relay server changes
   urls:
     - https://app.snapchat.com
     - https://bolt-gcdn.sc-cdn.net

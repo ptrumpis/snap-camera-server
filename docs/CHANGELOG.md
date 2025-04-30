@@ -1,13 +1,24 @@
 # 📋 Changelog - Snap Camera Server
 Release version history and feature overview
 
-## v3.3.3 - Patch Release
-- Added latest web crawler code
+## v3.4.0 - Creator Support Release
+- New group ID search support for lens creators
+- New generic URL search support
+- Improved and simplified lens storage logic
+- Improved stability and reliability of lens crawling
+- Improved codebase by outsourcing packages
+- Fixed broken activation of most popular lenses
+- Fixed broken thumbnails
+- Adminer no longer starts automatically to save resources
+
+## v3.3.4 - Patch Release
+- Added latest v0.9.x web crawler code
 - Added temporary warning message when trying to activate non-working web lenses
-- Fixed lens upload and cache import bug
+- Fixed broken relay search
+- Fixed various lens upload and cache import bugs
+- Fixed 404 requests for WEBP images
 - Fixed missing config option for crawler timeout
 - Fixed bug where web lenses would not be marked as such
-- (Experimental) Fix for failed web lens activation
 
 ## v3.3.0 - Maintenance Release
 - New upload API to import modified lenses

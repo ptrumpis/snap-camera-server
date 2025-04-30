@@ -3,12 +3,12 @@ import * as fs from 'fs/promises';
 import dotenv from 'dotenv';
 import { createRequire } from 'module';
 
-dotenv.config();
-
-const require = createRequire(import.meta.url);
-
-// load default values from json file
-const defaultConfig = require('../json/config/defaults.json');
+const envConfig = dotenv.config();
+for (const key in envConfig.parsed) {
+    if (process.env[key]?.trim() === '') {
+        process.env[key] = envConfig.parsed[key]?.trim() || '';
+    }
+}
 
 const Config = await loadConfig();
 
@@ -17,10 +17,14 @@ async function loadConfig() {
         const configFile = await fs.readFile("config.yml", { encoding: 'utf8' });
         const yamlConfig = YAML.parse(configFile);
 
+        const require = createRequire(import.meta.url);
+        const defaultConfig = require('../json/config/defaults.json');
+
         return deepMerge(defaultConfig, yamlConfig);
     } catch (e) {
-        console.error("Error loading configuration", e);
+        console.error(`[Error] Failed to load configuration: ${e.message}`);
     }
+
     return {};
 }
 
