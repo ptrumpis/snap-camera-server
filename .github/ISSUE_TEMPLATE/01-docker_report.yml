@@ -1,6 +1,6 @@
 name: 🐳 Report Docker Problem
 description: Report a problem with Docker Desktop
-title: "[🐳 Docker]: "
+title: "[Docker]: "
 labels: ["docker"]
 projects: ["ptrumpis/3"]
 assignees:
