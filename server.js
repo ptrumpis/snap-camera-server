@@ -14,7 +14,6 @@ import download from './src/endpoints/update/download.js';
 import importCache from './src/endpoints/import/cache.js';
 import importLens from './src/endpoints/import/lens.js';
 import v1 from './src/endpoints/v1.js';
-import wildcard from './src/endpoints/wildcard.js';
 import express from 'express';
 
 const enableCacheImport = Config.app.flag.enable_cache_import;
@@ -42,8 +41,6 @@ if (enableCustomImport) {
     app.use('/vc/v1/import/lens', importLens);
 }
 app.use('/vc/v1', v1);
-app.use('*', wildcard);
-
 app.listen(serverPort, () => {
     console.info(`[Info] ✅ Snap Camera Server is running on port ${serverPort}`);
     bootstrap();
