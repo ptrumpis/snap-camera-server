@@ -7,10 +7,14 @@ const relayTimeout = Config.app.relay.timeout;
 const relayServer = Config.app.relay.server;
 
 const storageServer = process.env.STORAGE_SERVER;
-const modifyServerRegEx = new RegExp(Config.storage.urls.map(escapeRegExp).join('|'), 'gi');
+
+const modifyServerRegEx = new RegExp(Config.storage.urls.map((url) => {
+    url = escapeRegExp(url).replace(/^https?:\/\//, 'https?://');
+    return url;
+}).join('|'), 'gi');
 
 const validShareUrls = Config.search.share_urls.map((url) => {
-    url = escapeRegExp(url).replace(escapeRegExp('{UUID}'), '([a-f0-9]{32})').replace(/^https?:\/\//, 'http?s://');
+    url = escapeRegExp(url).replace(escapeRegExp('{UUID}'), '([a-f0-9]{32})').replace(/^https?:\/\//, 'https?://');
     return `^${url}`;
 }) || [];
 
