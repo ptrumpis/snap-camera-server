@@ -136,7 +136,7 @@ storage:
     headers:
       User-Agent: SnapCamera/1.21.0.0 (Windows 10 Version 2009)
       Content-Type: application/json
-      X-Installation-Id': default
+      X-Installation-Id: default
 
   # urls to be served from local storage
   # you can add or remove urls
