@@ -237,4 +237,4 @@ function sleep(ms) {
     });
 }
 
-export { advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, mergeLens, parseLensUuid, parseLensUuidFromShareUrl, isLensUuid, isLensId, isGroupId, isUrl, snapcodeUrl, deeplinkUrl, modifyResponseURLs, sleep };
+export { escapeRegExp, advancedSearch, relayRequest, getUnlockFromRelay, mirrorSearchResults, downloadLens, downloadUnlock, mergeLensesUnique, mergeLens, parseLensUuid, parseLensUuidFromShareUrl, isLensUuid, isLensId, isGroupId, isUrl, snapcodeUrl, deeplinkUrl, modifyResponseURLs, sleep };

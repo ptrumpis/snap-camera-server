@@ -3,12 +3,17 @@ import * as fs from 'fs/promises';
 import path from 'path';
 import sharp from 'sharp';
 import { Config } from './config.js';
+import { escapeRegExp } from './helper.js';
 
 const storagePath = process.env.STORAGE_PATH;
 const storageServer = process.env.STORAGE_SERVER;
 const ignoreAltMedia = Config.app.flag.ignore_alt_media;
 const ignoreImgSequence = Config.app.flag.ignore_img_sequence;
-const validStorageUrls = Config.storage.urls || [];
+
+const validStorageUrls = Config.storage.urls.map((url) => {
+    url = escapeRegExp(url).replace(/^https?:\/\//, 'https?://');
+    return `^${url}`;
+}) || [];
 
 const Crawler = new SnapLensWebCrawler(Config.storage.crawler);
 
@@ -102,7 +107,7 @@ async function saveRemoteFile(url) {
             await convertWebpToPng(file);
         }
 
-        return file ? true: false;
+        return file ? true : false;
     } catch (e) {
         console.error(`[Error] Saving remote file failed: ${url} - ${e.message}`);
     }
@@ -116,8 +121,12 @@ function validateRemoteOrigin(url) {
     }
 
     for (const storageUrl of validStorageUrls) {
-        if (url.startsWith(storageUrl)) {
-            return true;
+        try {
+            if (url.match(new RegExp(storageUrl, 'i'))) {
+                return true;
+            }
+        } catch (e) {
+            console.error(`[Error] Trying to validate remote origin: ${url} - ${e.message}`);
         }
     }
 
