@@ -31,7 +31,7 @@
   "dependencies": {
     "@ptrumpis/snap-camerakit-bridge": "0.2.0",
     "@ptrumpis/snap-lens-file-extractor": "~1.1.0",
-    "@ptrumpis/snap-lens-web-crawler": "~1.1.1",
+    "@ptrumpis/snap-lens-web-crawler": "~1.1.2",
     "db-migrate": "1.0.0-beta.29",
     "db-migrate-mysql": "~3.0.0",
     "dotenv": "~16.5.0",
