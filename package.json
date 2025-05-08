@@ -16,6 +16,10 @@
   },
   "main": "server.js",
   "scripts": {
+    "server": "docker compose up --build --force-recreate",
+    "adminer": "docker compose --profile adminer up --build --force-recreate",
+    "creator": "docker compose --profile creator up --build --force-recreate",
+    "full": "docker compose --profile full up --build --force-recreate",
     "db-migrate": "node node_modules/db-migrate/bin/db-migrate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
