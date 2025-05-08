@@ -3,6 +3,7 @@ services:
     image: ptrumpis/snap-camerakit-bridge:0.2.0
     profiles:
       - creator
+      - full
     ports:
       - ${BRIDGE_LOCAL_PORT:-3000}:3000
     depends_on:
