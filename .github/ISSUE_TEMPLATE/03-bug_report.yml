@@ -1,6 +1,6 @@
 name: 🐛 Bug Report
 description: Report a bug in the code base.
-title: "[🐛 Bug]: "
+title: "[Bug]: "
 labels: ["bug"]
 projects: ["ptrumpis/3"]
 assignees:

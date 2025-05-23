@@ -1,6 +1,14 @@
 # 📋 Changelog - Snap Camera Server
 Release version history and feature overview
 
+## v3.4.1 - Patch Release
+- Fix http(s) handling of storage and share urls
+- Fix storage crawler HTTP header typo
+- Fix Import Error: Missing lens.lns files
+- Optimized gencert.sh SSL file generation
+- Update lens crawler to bypass scrape blocking
+- Update npm packages
+
 ## v3.4.0 - Creator Support Release
 - New group ID search support for lens creators
 - New generic URL search support

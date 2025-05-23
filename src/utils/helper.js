@@ -187,7 +187,7 @@ function isLensUuid(str) {
 }
 
 function isLensId(str) {
-    if (typeof str !== 'string') return false;
+    if (typeof str !== 'string' && typeof str !== 'number') return false;
     const id = /^[0-9]{11,16}$/gi;
     return id.test(str);
 }

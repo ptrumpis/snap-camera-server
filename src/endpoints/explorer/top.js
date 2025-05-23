@@ -9,18 +9,16 @@ const require = createRequire(import.meta.url);
 const originalResponse = require('../../json/lenses/top.json');
 
 const searchTimeout = Config.search.timeout;
-const crawler = new LensWebCrawler(searchTimeout);
 
 var router = express.Router();
 
 router.get('/', async function (req, res, next) {
+    const { country, limit, offset } = req.query;
+
     if (Config.app.flag.fetch_top_lenses) {
-        try {
-            const webResponse = await crawler.getTopLenses();
-            return res.json(webResponse);
-        } catch (e) {
-            console.error(e);
-        }
+        // TODO
+    } else if (offset >= originalResponse.lenses.length) {
+        return res.json({});
     }
 
     return res.json(Util.modifyResponseURLs(originalResponse));

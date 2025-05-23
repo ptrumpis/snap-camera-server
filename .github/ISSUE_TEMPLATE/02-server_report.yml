@@ -1,6 +1,6 @@
 name: 💻 Report Server Problem
 description: Report a problem with the Server application.
-title: "[💻 Server]: "
+title: "[Server]: "
 labels: ["server"]
 projects: ["ptrumpis/3"]
 assignees:

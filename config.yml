@@ -1,4 +1,4 @@
-# config.yml v3.4
+# config.yml v3.4.1
 # you can now backup or share this file with your friends without revealing credentials
 
 # application configuration
@@ -99,8 +99,6 @@ top:
     gcInterval: false
     cacheTTL: 0
     verbose: false
-    headers:
-      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
 
   # caching is required to activate most new lenses since snapchat removed lens urls from their website
   # requires 'app.flag.enable_web_source' to be 'true'
@@ -111,7 +109,7 @@ top:
 
   # fetch interval
   # requires 'app.flag.enable_web_source' to be 'true'
-  interval: 3600
+  interval: 43200
 
 # search configuration
 search:
