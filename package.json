@@ -1,6 +1,6 @@
 {
   "name": "snap-camera-server",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "description": "Host your own Snap Camera private server",
   "keywords": [
     "snapchat",
