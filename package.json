@@ -43,7 +43,7 @@
     "formidable": "~3.5.4",
     "fzstd": "~0.1.1",
     "jszip": "~3.10.1",
-    "mysql2": "~3.14.1",
+    "mysql2": "~3.16.1",
     "node-cache": "5.1.2",
     "sharp": "~0.34.2",
     "wayback.js": "~0.2.0",
